@@ -124,122 +124,220 @@ These can be introduced by creating new categories while reusing the existing Se
 
 ---
 
-# UML Class Diagram
-
-```mermaid
 classDiagram
 
 class Account {
-  +int accountId
-  +string email
-  +string passwordHash
-  +string role
-  +DateTime createdAt
-  +register()
-  +login()
-  +validateCredentials()
++int accountId
++string email
++string passwordHash
++string role
++DateTime createdAt
++register()
++login()
++validateCredentials()
 }
 
 class UserProfile {
-  +int userProfileId
-  +int accountId
-  +string fullName
-  +updateProfile()
-  +viewWeddingPlan()
++int userProfileId
++int accountId
++string fullName
++updateProfile()
++viewWeddingPlan()
 }
 
 class ServiceProviderProfile {
-  +int providerProfileId
-  +int accountId
-  +string businessName
-  +string description
-  +string phoneNumber
-  +string logoPath
-  +createService()
-  +updateService()
-  +viewBookingRequests()
++int providerProfileId
++int accountId
++string businessName
++string description
++string phoneNumber
++string logoPath
++createService()
++updateService()
++viewBookingRequests()
 }
 
 class ServiceCategory {
-  +int categoryId
-  +string categoryName
-  +string description
++int categoryId
++string categoryName
++string description
 }
 
 class Service {
-  +int serviceId
-  +int providerProfileId
-  +int categoryId
-  +string serviceName
-  +string description
-  +decimal price
-  +bool isActive
-  +DateTime createdAt
-  +createService()
-  +updateService()
-  +deactivateService()
-  +getServiceDetails()
++int serviceId
++int providerProfileId
++int categoryId
++string serviceName
++string description
++decimal price
++bool isActive
++DateTime createdAt
++createService()
++updateService()
++deactivateService()
++getServiceDetails()
 }
 
 class HallDetails {
-  +int hallDetailsId
-  +int serviceId
-  +int minCapacity
-  +int maxCapacity
-  +string city
-  +string address
-  +decimal latitude
-  +decimal longitude
-  +updateHallDetails()
++int hallDetailsId
++int serviceId
++int minCapacity
++int maxCapacity
++string city
++string address
++decimal latitude
++decimal longitude
++updateHallDetails()
 }
 
 class EquipmentType {
-  +int equipmentTypeId
-  +string equipmentName
++int equipmentTypeId
++string equipmentName
 }
 
 class ServiceEquipment {
-  +int serviceEquipmentId
-  +int serviceId
-  +int equipmentTypeId
-  +assignEquipment()
-  +removeEquipment()
++int serviceEquipmentId
++int serviceId
++int equipmentTypeId
++assignEquipment()
++removeEquipment()
 }
 
 class ServiceMedia {
-  +int mediaId
-  +int serviceId
-  +string filePath
-  +bool isPrimary
-  +DateTime uploadedAt
-  +uploadMedia()
-  +deleteMedia()
-  +setPrimary()
++int mediaId
++int serviceId
++string filePath
++bool isPrimary
++DateTime uploadedAt
++uploadMedia()
++deleteMedia()
++setPrimary()
 }
 
 class WeddingPlan {
-  +int weddingPlanId
-  +int ownerUserId
-  +int partnerUserId
-  +string planName
-  +Date weddingDate
-  +decimal budget
-  +DateTime createdAt
-  +createPlan()
-  +updatePlan()
-  +invitePartner()
-  +addServiceToPlan()
++int weddingPlanId
++int ownerUserId
++int partnerUserId
++string planName
++Date weddingDate
++decimal budget
++DateTime createdAt
++createPlan()
++updatePlan()
++invitePartner()
++addServiceToPlan()
 }
 
 class WeddingPlanInvitation {
-  +int invitationId
-  +int weddingPlanId
-  +string invitationCode
-  +int requestedByUserId
-  +string status
-  +DateTime createdAt
-  +DateTime respondedAt
-  +generateCode()
-  +requestJoin()
-  +
-```
++int invitationId
++int weddingPlanId
++string invitationCode
++int requestedByUserId
++string status
++DateTime createdAt
++DateTime respondedAt
++generateCode()
++requestJoin()
++approve()
++reject()
+}
+
+class WeddingPlanService {
++int weddingPlanServiceId
++int weddingPlanId
++int serviceId
++int addedByUserId
++string status
++DateTime addedAt
++markInterested()
++markSelected()
++removeFromPlan()
+}
+
+class Booking {
++int bookingId
++int weddingPlanId
++int createdByUserId
++Date bookingDate
++string notes
++string status
++decimal totalPriceAtBooking
++DateTime createdAt
++createBooking()
++cancelBooking()
++calculateTotal()
++updateStatus()
+}
+
+class BookingItem {
++int bookingItemId
++int bookingId
++int serviceId
++decimal priceAtBooking
++string status
++string rejectionReason
++DateTime respondedAt
++acceptItem()
++rejectItem()
++cancelItem()
+}
+
+class Payment {
++int paymentId
++int bookingId
++int paidByUserId
++decimal amount
++string currency
++string paymentGateway
++string gatewayPaymentId
++string gatewayTransactionId
++string gatewayReferenceNumber
++string paymentMethod
++string status
++DateTime paidAt
++DateTime createdAt
++DateTime updatedAt
++string rawResponse
++createPayment()
++confirmPayment()
++updatePaymentStatus()
+}
+
+class Favorite {
++int favoriteId
++int userId
++int serviceId
++DateTime createdAt
++addFavorite()
++removeFavorite()
+}
+
+Account "1" _-- "0..1" UserProfile : customer_profile
+Account "1" _-- "0..1" ServiceProviderProfile : provider_profile
+
+Service "1" _-- "0..1" HallDetails : hall_details
+Service "1" _-- "0.._" ServiceMedia : media
+Service "1" _-- "0..\*" ServiceEquipment : equipment
+
+WeddingPlan "1" _-- "0.._" WeddingPlanInvitation : invitations
+WeddingPlan "1" _-- "0.._" WeddingPlanService : selected_services
+WeddingPlan "1" _-- "0.._" Booking : bookings
+
+Booking "1" _-- "1.._" BookingItem : booking_items
+Booking "1" _-- "0.._" Payment : payments
+
+ServiceProviderProfile "1" --> "0.._" Service : owns
+ServiceCategory "1" --> "0.._" Service : classifies
+EquipmentType "1" --> "0..\*" ServiceEquipment : type
+
+UserProfile "1" --> "0..1" WeddingPlan : owns
+UserProfile "1" --> "0..1" WeddingPlan : partner_in
+UserProfile "1" --> "0.._" WeddingPlanInvitation : requested_by
+UserProfile "1" --> "0.._" WeddingPlanService : added_by
+UserProfile "1" --> "0.._" Booking : created_by
+UserProfile "1" --> "0.._" Payment : paid_by
+UserProfile "1" --> "0..\*" Favorite : saves
+
+Service "1" --> "0.._" WeddingPlanService : selected
+Service "1" --> "0.._" BookingItem : requested_service
+Service "1" --> "0..\*" Favorite : favorited
