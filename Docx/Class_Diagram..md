@@ -126,218 +126,179 @@ These can be introduced by creating new categories while reusing the existing Se
 
 classDiagram
 
+```mermaid
+classDiagram
 class Account {
-+int accountId
-+string email
-+string passwordHash
-+string role
-+DateTime createdAt
-+register()
-+login()
-+validateCredentials()
+  +int accountId
+  +string email
+  +string passwordHash
+  +string role
+  +datetime createdAt
 }
 
 class UserProfile {
-+int userProfileId
-+int accountId
-+string fullName
-+updateProfile()
-+viewWeddingPlan()
+  +int userProfileId
+  +int accountId
+  +string fullName
 }
 
 class ServiceProviderProfile {
-+int providerProfileId
-+int accountId
-+string businessName
-+string description
-+string phoneNumber
-+string logoPath
-+createService()
-+updateService()
-+viewBookingRequests()
+  +int providerProfileId
+  +int accountId
+  +string businessName
+  +string description
+  +string phoneNumber
+  +string logoPath
 }
 
 class ServiceCategory {
-+int categoryId
-+string categoryName
-+string description
+  +int categoryId
+  +string categoryName
+  +string description
 }
 
 class Service {
-+int serviceId
-+int providerProfileId
-+int categoryId
-+string serviceName
-+string description
-+decimal price
-+bool isActive
-+DateTime createdAt
-+createService()
-+updateService()
-+deactivateService()
-+getServiceDetails()
+  +int serviceId
+  +int providerProfileId
+  +int categoryId
+  +string serviceName
+  +string description
+  +decimal price
+  +bool isActive
+  +datetime createdAt
 }
 
 class HallDetails {
-+int hallDetailsId
-+int serviceId
-+int minCapacity
-+int maxCapacity
-+string city
-+string address
-+decimal latitude
-+decimal longitude
-+updateHallDetails()
+  +int hallDetailsId
+  +int serviceId
+  +int minCapacity
+  +int maxCapacity
+  +string city
+  +string address
+  +decimal latitude
+  +decimal longitude
 }
 
 class EquipmentType {
-+int equipmentTypeId
-+string equipmentName
+  +int equipmentTypeId
+  +string equipmentName
 }
 
 class ServiceEquipment {
-+int serviceEquipmentId
-+int serviceId
-+int equipmentTypeId
-+assignEquipment()
-+removeEquipment()
+  +int serviceEquipmentId
+  +int serviceId
+  +int equipmentTypeId
 }
 
 class ServiceMedia {
-+int mediaId
-+int serviceId
-+string filePath
-+bool isPrimary
-+DateTime uploadedAt
-+uploadMedia()
-+deleteMedia()
-+setPrimary()
+  +int mediaId
+  +int serviceId
+  +string filePath
+  +bool isPrimary
+  +datetime uploadedAt
 }
 
 class WeddingPlan {
-+int weddingPlanId
-+int ownerUserId
-+int partnerUserId
-+string planName
-+Date weddingDate
-+decimal budget
-+DateTime createdAt
-+createPlan()
-+updatePlan()
-+invitePartner()
-+addServiceToPlan()
+  +int weddingPlanId
+  +int ownerUserId
+  +int partnerUserId
+  +string planName
+  +date weddingDate
+  +decimal budget
+  +datetime createdAt
 }
 
 class WeddingPlanInvitation {
-+int invitationId
-+int weddingPlanId
-+string invitationCode
-+int requestedByUserId
-+string status
-+DateTime createdAt
-+DateTime respondedAt
-+generateCode()
-+requestJoin()
-+approve()
-+reject()
+  +int invitationId
+  +int weddingPlanId
+  +string invitationCode
+  +int requestedByUserId
+  +string status
+  +datetime createdAt
+  +datetime respondedAt
 }
 
 class WeddingPlanService {
-+int weddingPlanServiceId
-+int weddingPlanId
-+int serviceId
-+int addedByUserId
-+string status
-+DateTime addedAt
-+markInterested()
-+markSelected()
-+removeFromPlan()
+  +int weddingPlanServiceId
+  +int weddingPlanId
+  +int serviceId
+  +int addedByUserId
+  +string status
+  +datetime addedAt
 }
 
 class Booking {
-+int bookingId
-+int weddingPlanId
-+int createdByUserId
-+Date bookingDate
-+string notes
-+string status
-+decimal totalPriceAtBooking
-+DateTime createdAt
-+createBooking()
-+cancelBooking()
-+calculateTotal()
-+updateStatus()
+  +int bookingId
+  +int weddingPlanId
+  +int createdByUserId
+  +date bookingDate
+  +string notes
+  +string status
+  +decimal totalPriceAtBooking
+  +datetime createdAt
 }
 
 class BookingItem {
-+int bookingItemId
-+int bookingId
-+int serviceId
-+decimal priceAtBooking
-+string status
-+string rejectionReason
-+DateTime respondedAt
-+acceptItem()
-+rejectItem()
-+cancelItem()
+  +int bookingItemId
+  +int bookingId
+  +int serviceId
+  +decimal priceAtBooking
+  +string status
+  +string rejectionReason
+  +datetime respondedAt
 }
 
 class Payment {
-+int paymentId
-+int bookingId
-+int paidByUserId
-+decimal amount
-+string currency
-+string paymentGateway
-+string gatewayPaymentId
-+string gatewayTransactionId
-+string gatewayReferenceNumber
-+string paymentMethod
-+string status
-+DateTime paidAt
-+DateTime createdAt
-+DateTime updatedAt
-+string rawResponse
-+createPayment()
-+confirmPayment()
-+updatePaymentStatus()
+  +int paymentId
+  +int bookingId
+  +int paidByUserId
+  +decimal amount
+  +string currency
+  +string paymentGateway
+  +string gatewayPaymentId
+  +string gatewayTransactionId
+  +string gatewayReferenceNumber
+  +string paymentMethod
+  +string status
+  +datetime paidAt
+  +datetime createdAt
+  +datetime updatedAt
+  +string rawResponse
 }
 
 class Favorite {
-+int favoriteId
-+int userId
-+int serviceId
-+DateTime createdAt
-+addFavorite()
-+removeFavorite()
+  +int favoriteId
+  +int userId
+  +int serviceId
+  +datetime createdAt
 }
 
-Account "1" _-- "0..1" UserProfile : customer_profile
-Account "1" _-- "0..1" ServiceProviderProfile : provider_profile
+Account "1" *-- "0..1" UserProfile
+Account "1" *-- "0..1" ServiceProviderProfile
 
-Service "1" _-- "0..1" HallDetails : hall_details
-Service "1" _-- "0.._" ServiceMedia : media
-Service "1" _-- "0..\*" ServiceEquipment : equipment
+ServiceProviderProfile "1" --> "0..*" Service
+ServiceCategory "1" --> "0..*" Service
 
-WeddingPlan "1" _-- "0.._" WeddingPlanInvitation : invitations
-WeddingPlan "1" _-- "0.._" WeddingPlanService : selected_services
-WeddingPlan "1" _-- "0.._" Booking : bookings
+Service "1" *-- "0..1" HallDetails
+Service "1" *-- "0..*" ServiceMedia
+Service "1" *-- "0..*" ServiceEquipment
+EquipmentType "1" --> "0..*" ServiceEquipment
 
-Booking "1" _-- "1.._" BookingItem : booking_items
-Booking "1" _-- "0.._" Payment : payments
+WeddingPlan "1" *-- "0..*" WeddingPlanInvitation
+WeddingPlan "1" *-- "0..*" WeddingPlanService
+WeddingPlan "1" *-- "0..*" Booking
 
-ServiceProviderProfile "1" --> "0.._" Service : owns
-ServiceCategory "1" --> "0.._" Service : classifies
-EquipmentType "1" --> "0..\*" ServiceEquipment : type
+Booking "1" *-- "1..*" BookingItem
+Booking "1" *-- "0..*" Payment
 
-UserProfile "1" --> "0..1" WeddingPlan : owns
-UserProfile "1" --> "0..1" WeddingPlan : partner_in
-UserProfile "1" --> "0.._" WeddingPlanInvitation : requested_by
-UserProfile "1" --> "0.._" WeddingPlanService : added_by
-UserProfile "1" --> "0.._" Booking : created_by
-UserProfile "1" --> "0.._" Payment : paid_by
-UserProfile "1" --> "0..\*" Favorite : saves
+UserProfile "1" --> "0..1" WeddingPlan
+UserProfile "1" --> "0..*" WeddingPlanInvitation
+UserProfile "1" --> "0..*" WeddingPlanService
+UserProfile "1" --> "0..*" Booking
+UserProfile "1" --> "0..*" Payment
+UserProfile "1" --> "0..*" Favorite
 
-Service "1" --> "0.._" WeddingPlanService : selected
-Service "1" --> "0.._" BookingItem : requested_service
-Service "1" --> "0..\*" Favorite : favorited
+Service "1" --> "0..*" WeddingPlanService
+Service "1" --> "0..*" BookingItem
+Service "1" --> "0..*" Favorite
+```
