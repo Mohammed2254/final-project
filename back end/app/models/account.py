@@ -50,9 +50,3 @@ class Account(db.Model):
         cascade="all, delete-orphan"
     )
 
-    def __repr__(self):
-        return (
-            f"<Account(id={self.account_id}, "
-            f"email='{self.email}', "
-            f"role='{self.role.value}')>"
-        )
