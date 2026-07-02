@@ -22,4 +22,8 @@ def create_app():
     jwt.init_app(app)
     bcrypt.init_app(app)
 
+    from app.routes.account_routes import account_bp
+
+    app.register_blueprint(account_bp, url_prefix="/api/accounts")
+
     return app
