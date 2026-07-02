@@ -24,8 +24,10 @@ def create_app():
 
     from app.routes.account_routes import account_bp
     from app.routes.auth_routes import auth_bp
+    from app.routes.service_routes import service_bp
 
     app.register_blueprint(account_bp, url_prefix="/api/accounts")
     app.register_blueprint(auth_bp,url_prefix="/api/auth")
+    app.register_blueprint(service_bp,url_prefix="/api/services")
 
     return app
