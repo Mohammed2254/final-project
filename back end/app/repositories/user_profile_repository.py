@@ -10,7 +10,7 @@ class UserProfileRepository(BaseRepository):
         
         return UserProfile.query.filter_by(
             account_id=account_id
-        ).ne_or_none()
+        ).one_or_none()
 
     def exists(self, account_id: int) -> bool:
         return self.get_by_account_id(account_id) is not None
