@@ -1,0 +1,36 @@
+import { authEndpoints } from '@/services/api/endpoints';
+import { authActions } from '@/store/auth.store';
+import type {
+  LoginPayload,
+  CustomerRegisterPayload,
+  ForgotPasswordPayload,
+  ResetPasswordPayload,
+} from '@/types/auth';
+
+export const authService = {
+  async login(payload: LoginPayload) {
+    const { data } = await authEndpoints.login(payload);
+    authActions.login(data.data.account, data.data.access_token);
+    return data.data;
+  },
+
+  async registerCustomer(payload: CustomerRegisterPayload) {
+    const { data } = await authEndpoints.registerCustomer(payload);
+    authActions.login(data.data.account, data.data.access_token);
+    return data.data;
+  },
+
+  async forgotPassword(payload: ForgotPasswordPayload) {
+    const { data } = await authEndpoints.forgotPassword(payload);
+    return data.data;
+  },
+
+  async resetPassword(payload: ResetPasswordPayload) {
+    const { data } = await authEndpoints.resetPassword(payload);
+    return data.data;
+  },
+
+  logout(): void {
+    authActions.logout();
+  },
+};
