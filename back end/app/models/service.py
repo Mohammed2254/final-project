@@ -2,6 +2,10 @@ from datetime import datetime
 
 from app.extensions import db
 
+from app.models.provider_profile import ServiceProviderProfile
+from app.models.service_category import ServiceCategory
+
+
 class Service(db.Model):
     __tablename__ = "services"
 
@@ -49,13 +53,17 @@ class Service(db.Model):
         default=datetime.utcnow
     )
 
+    # ==========================
+    # Relationships
+    # ==========================
+
     provider = db.relationship(
-        "ServiceProviderProfile",
+        ServiceProviderProfile,
         back_populates="services"
     )
 
     category = db.relationship(
-        "ServiceCategory",
+        ServiceCategory,
         back_populates="services"
     )
 
