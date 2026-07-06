@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 
 from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
 from app.extensions import db, migrate, jwt, bcrypt
@@ -16,7 +17,15 @@ def create_app():
         app.config.from_object(TestingConfig)
     else:
         app.config.from_object(DevelopmentConfig)
-
+    
+    CORS(
+        app,
+        resources={r"/api/*": {"origins": [
+            "http://localhost:5173",
+            "http://127.0.0.1:5173"
+        ]}},
+        supports_credentials=True,
+    )
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
