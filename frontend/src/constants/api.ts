@@ -10,3 +10,11 @@ export const AUTH_ENDPOINTS = {
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;
+
+export const SERVICE_ENDPOINTS = {
+  LIST: '/services/',
+  DETAILS: (id: number | string) => `/services/${id}`,
+  BY_CATEGORY: (categoryId: number | string) => `/services/category/${categoryId}`,
+  BY_PROVIDER: (providerProfileId: number | string) => `/services/provider/${providerProfileId}`,
+  SEARCH: '/services/search',
+} as const;

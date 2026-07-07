@@ -30,3 +30,28 @@ export const authEndpoints = {
   resetPassword: (payload: ResetPasswordPayload) =>
     apiClient.post<ApiSuccessResponse<null>>(AUTH_ENDPOINTS.RESET_PASSWORD, payload),
 };
+
+/**
+ * Raw HTTP calls for the generic Service resource. Halls, photographers,
+ * and any future service category all go through this same backend
+ * endpoint set - see back end/app/routes/service_routes.py.
+ */
+export const serviceEndpoints = {
+  list: () => apiClient.get<ApiSuccessResponse<ServiceRecord[]>>(SERVICE_ENDPOINTS.LIST),
+
+  details: (id: number | string) =>
+    apiClient.get<ApiSuccessResponse<ServiceRecord>>(SERVICE_ENDPOINTS.DETAILS(id)),
+
+  byCategory: (categoryId: number | string) =>
+    apiClient.get<ApiSuccessResponse<ServiceRecord[]>>(SERVICE_ENDPOINTS.BY_CATEGORY(categoryId)),
+
+  byProvider: (providerProfileId: number | string) =>
+    apiClient.get<ApiSuccessResponse<ServiceRecord[]>>(
+      SERVICE_ENDPOINTS.BY_PROVIDER(providerProfileId),
+    ),
+
+  search: (keyword: string) =>
+    apiClient.get<ApiSuccessResponse<ServiceRecord[]>>(SERVICE_ENDPOINTS.SEARCH, {
+      params: { keyword },
+    }),
+};
