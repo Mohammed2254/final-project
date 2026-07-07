@@ -1,10 +1,9 @@
 import os
 from flask import Flask
-from flask_cors import CORS
 
 from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
-from app.extensions import db, migrate, jwt, bcrypt
-
+from app.extensions import db, migrate, jwt, bcrypt,cors
+from app.routes.hall_details_routes import hall_bp
 
 def create_app():
     app = Flask(__name__)
@@ -17,26 +16,30 @@ def create_app():
         app.config.from_object(TestingConfig)
     else:
         app.config.from_object(DevelopmentConfig)
-    
-    CORS(
-        app,
-        resources={r"/api/*": {"origins": [
-            "http://localhost:5173",
-            "http://127.0.0.1:5173"
-        ]}},
-        supports_credentials=True,
-    )
+
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
     bcrypt.init_app(app)
+    cors.init_app(
+    app,
+    resources={
+        r"/api/*": {
+            "origins": "http://localhost:5173"
+        }
+    }
+)
 
     from app.routes.account_routes import account_bp
     from app.routes.auth_routes import auth_bp
     from app.routes.service_routes import service_bp
 
+    with app.app_context():
+        db.create_all()
+
     app.register_blueprint(account_bp, url_prefix="/api/accounts")
     app.register_blueprint(auth_bp,url_prefix="/api/auth")
     app.register_blueprint(service_bp,url_prefix="/api/services")
+    app.register_blueprint(hall_bp,url_prefix="/api/halls")
 
     return app

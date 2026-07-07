@@ -67,3 +67,9 @@ class Service(db.Model):
         back_populates="services"
     )
 
+    hall_details = db.relationship(
+        "HallDetails",
+        back_populates="service",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
