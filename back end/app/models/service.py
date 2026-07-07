@@ -73,3 +73,10 @@ class Service(db.Model):
         uselist=False,
         cascade="all, delete-orphan"
     )
+    
+    photographer_details = db.relationship(
+        "PhotographerDetails",
+        back_populates="service",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )

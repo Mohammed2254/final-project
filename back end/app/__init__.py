@@ -33,6 +33,7 @@ def create_app():
     from app.routes.account_routes import account_bp
     from app.routes.auth_routes import auth_bp
     from app.routes.service_routes import service_bp
+    from app.routes.photographer_details_routes import photographer_bp
 
     with app.app_context():
         db.create_all()
@@ -41,5 +42,6 @@ def create_app():
     app.register_blueprint(auth_bp,url_prefix="/api/auth")
     app.register_blueprint(service_bp,url_prefix="/api/services")
     app.register_blueprint(hall_bp,url_prefix="/api/halls")
+    app.register_blueprint(photographer_bp,url_prefix="/api/photographers")
 
     return app
