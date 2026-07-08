@@ -81,7 +81,4 @@ class Service(db.Model):
         cascade="all, delete-orphan"
     )
 
-    service = db.relationship(
-        "Service",
-        back_populates="booking_items"
-    )
+    
