@@ -25,3 +25,8 @@ class UserProfile(db.Model):
         back_populates="user_profile"
     )
 
+    bookings = db.relationship(
+        "Booking",
+        back_populates="customer"
+    )
+

@@ -80,3 +80,8 @@ class Service(db.Model):
         uselist=False,
         cascade="all, delete-orphan"
     )
+
+    service = db.relationship(
+        "Service",
+        back_populates="booking_items"
+    )
