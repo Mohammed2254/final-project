@@ -49,9 +49,10 @@ class Booking(db.Model):
         back_populates="bookings"
     )
 
-    booking = db.relationship(
-        "Booking",
-        back_populates="booking_items"
+    booking_items = db.relationship(
+        "BookingItem",
+        back_populates="booking",
+        cascade="all, delete-orphan"
     )
     
     
