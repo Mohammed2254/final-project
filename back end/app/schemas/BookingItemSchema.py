@@ -28,6 +28,15 @@ class BookingUpdateSchema(Schema):
     )
 
 
+class BookingItemResponseSchema(Schema):
+        booking_item_id = fields.Int()
+        service_id = fields.Int()
+        quantity = fields.Int()
+        price_at_booking = fields.Decimal(as_string=True)
+        notes = fields.Str(allow_none=True)
+
+
+
 class BookingResponseSchema(Schema):
     booking_id = fields.Int()
     customer_profile_id = fields.Int()
@@ -41,11 +50,3 @@ class BookingResponseSchema(Schema):
         fields.Nested(BookingItemResponseSchema),
         attribute="booking_items"
     )
-
-    class BookingItemResponseSchema(Schema):
-        booking_item_id = fields.Int()
-        service_id = fields.Int()
-        quantity = fields.Int()
-        price_at_booking = fields.Decimal(as_string=True)
-        notes = fields.Str(allow_none=True)
-
