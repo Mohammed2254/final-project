@@ -33,6 +33,19 @@ class BookingResponseSchema(Schema):
     customer_profile_id = fields.Int()
     event_date = fields.Date()
     status = fields.Str()
-    notes = fields.Str(allow_none=True)
+    notes = fields.Str()
     total_price = fields.Decimal(as_string=True)
     created_at = fields.DateTime()
+
+    items = fields.List(
+        fields.Nested(BookingItemResponseSchema),
+        attribute="booking_items"
+    )
+
+    class BookingItemResponseSchema(Schema):
+        booking_item_id = fields.Int()
+        service_id = fields.Int()
+        quantity = fields.Int()
+        price_at_booking = fields.Decimal(as_string=True)
+        notes = fields.Str(allow_none=True)
+
