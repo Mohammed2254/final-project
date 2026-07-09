@@ -87,4 +87,10 @@ class Service(db.Model):
         cascade="all, delete-orphan"
     )
 
+    media = db.relationship(
+        "ServiceMedia",
+        back_populates="service",
+        cascade="all, delete-orphan"
+    )
+
     

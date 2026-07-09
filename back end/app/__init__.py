@@ -35,6 +35,7 @@ def create_app():
     from app.routes.service_routes import service_bp
     from app.routes.photographer_details_routes import photographer_bp
     from app.routes.booking_routes import booking_bp
+    from app.routes.service_media_routes import service_media_bp
 
     with app.app_context():
         db.create_all()
@@ -45,5 +46,6 @@ def create_app():
     app.register_blueprint(hall_bp,url_prefix="/api/halls")
     app.register_blueprint(photographer_bp,url_prefix="/api/photographers")
     app.register_blueprint(booking_bp,url_prefix="/api/bookings")
+    app.register_blueprint(service_media_bp,url_prefix="/api/service-media")
 
     return app

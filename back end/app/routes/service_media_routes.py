@@ -6,7 +6,6 @@ from app.schemas.service_media_schema import (
     ServiceMediaUpdateSchema,
     ServiceMediaResponseSchema
 )
-
 from app.services.service_media_service import ServiceMediaService
 from app.utils.response_helper import ResponseHelper
 
