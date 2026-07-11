@@ -30,3 +30,15 @@ class UserProfile(db.Model):
         back_populates="customer"
     )
 
+    owned_wedding_plans = db.relationship(
+        "WeddingPlan",
+        foreign_keys="WeddingPlan.owner_profile_id",
+        back_populates="owner"
+    )
+
+    joined_wedding_plans = db.relationship(
+        "WeddingPlan",
+        foreign_keys="WeddingPlan.partner_profile_id",
+        back_populates="partner"
+    )
+
