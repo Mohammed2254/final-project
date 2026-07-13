@@ -42,3 +42,9 @@ class UserProfile(db.Model):
         back_populates="partner"
     )
 
+    accepted_wedding_plan_invitations = db.relationship(
+       "WeddingPlanInvitation",
+        foreign_keys="WeddingPlanInvitation.accepted_by_profile_id",
+        back_populates="accepted_by"
+    )
+
