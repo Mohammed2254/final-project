@@ -153,7 +153,9 @@ def update_plan_service(plan_service_id):
 )
 def remove_service_from_plan(plan_service_id):
     try:
-        data = delete_schema.load(request.get_json())
+        data = delete_schema.load(
+            request.get_json(silent=True) or {}
+        )
 
         selection_service.remove_service_from_plan(
             plan_service_id=plan_service_id,
