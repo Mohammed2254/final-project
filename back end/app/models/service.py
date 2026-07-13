@@ -93,4 +93,9 @@ class Service(db.Model):
         cascade="all, delete-orphan"
     )
 
+    wedding_plan_services = db.relationship(
+        "WeddingPlanService",
+        back_populates="service"
+    )
+
     

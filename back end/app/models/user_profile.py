@@ -48,3 +48,8 @@ class UserProfile(db.Model):
         back_populates="accepted_by"
     )
 
+    added_wedding_plan_services = db.relationship(
+        "WeddingPlanService",
+        back_populates="added_by"
+    )
+
