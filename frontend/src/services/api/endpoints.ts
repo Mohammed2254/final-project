@@ -1,6 +1,10 @@
 import { apiClient } from '@/services/api/client';
-import { AUTH_ENDPOINTS } from '@/constants/api';
+import {
+  AUTH_ENDPOINTS,
+  SERVICE_ENDPOINTS,
+} from '@/constants/api';
 import type { ApiSuccessResponse } from '@/types/api';
+import type { ServiceRecord } from '@/types/service';
 import type {
   LoginPayload,
   CustomerRegisterPayload,

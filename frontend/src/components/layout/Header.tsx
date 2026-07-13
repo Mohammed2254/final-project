@@ -30,6 +30,14 @@ export function Header() {
         <div className="hidden items-center gap-3 md:flex">
           {isAuthenticated ? (
             <>
+              {account?.role === 'Provider' && (
+                <Link
+                  to={ROUTES.PROVIDER_DASHBOARD}
+                  className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                >
+                  لوحة التحكم
+                </Link>
+              )}
               <span className="text-sm text-muted-foreground">{account?.email}</span>
               <Button variant="outline" size="sm" onClick={handleLogout}>
                 تسجيل الخروج
@@ -67,6 +75,15 @@ export function Header() {
           <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
             {isAuthenticated ? (
               <>
+                {account?.role === 'Provider' && (
+                  <Link
+                    to={ROUTES.PROVIDER_DASHBOARD}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    لوحة التحكم
+                  </Link>
+                )}
                 <span className="text-sm text-muted-foreground">{account?.email}</span>
                 <Button variant="outline" size="sm" onClick={handleLogout}>
                   تسجيل الخروج

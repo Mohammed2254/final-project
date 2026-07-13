@@ -19,10 +19,13 @@ const HOW_IT_WORKS = [
   { icon: TrendingUp, label: 'تابعوا تقدمكم' },
 ] as const;
 
-
+// Static for now: the backend has no categories-list endpoint, so this
+// isn't data-driven yet. Both destinations resolve to a real page -
+// /halls is the full listing, /photographers is a Coming Soon
+// placeholder until the backend can tell service categories apart.
 const CATEGORIES = [
-  { label: 'قاعات الأفراح', to: ROUTES.HALLS, available: true },
-  { label: 'التصوير', to: ROUTES.HALLS, available: false },
+  { label: 'قاعات الأفراح', to: ROUTES.HALLS },
+  { label: 'التصوير', to: ROUTES.PHOTOGRAPHERS },
 ] as const;
 
 function FeaturedGrid({
@@ -54,8 +57,9 @@ function FeaturedGrid({
 export default function HomePage() {
   const { services, isLoading, error, reload } = useFeaturedServices();
 
-  
-  
+  // Same fetch powers both sections below (see useFeaturedServices) -
+  // sliced in half just to keep the two sections visually distinct until
+  // the backend can tell halls and photography services apart.
   const featuredHalls = services.slice(0, 4);
   const featuredServices = services.slice(4, 8);
 
@@ -77,7 +81,7 @@ export default function HomePage() {
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link to={ROUTES.HALLS} className={cn(buttonVariants({ size: 'lg' }))}>
-              ابدأ التخطيط
+              ابدأوا التخطيط
             </Link>
             <Link
               to={ROUTES.REGISTER}
@@ -108,24 +112,13 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-8 lg:px-8">
         <SectionHeader title="تصفحوا حسب الفئة" />
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {CATEGORIES.map((category) =>
-            category.available ? (
-              <Link key={category.label} to={category.to}>
-                <Card className="flex h-28 items-center justify-center text-base font-bold text-foreground transition-colors hover:border-foreground/30">
-                  {category.label}
-                </Card>
-              </Link>
-            ) : (
-              <Card
-                key={category.label}
-                aria-disabled="true"
-                className="flex h-28 items-center justify-center text-base font-bold text-muted-foreground"
-              >
+          {CATEGORIES.map((category) => (
+            <Link key={category.label} to={category.to}>
+              <Card className="flex h-28 items-center justify-center text-base font-bold text-foreground transition-colors hover:border-foreground/30">
                 {category.label}
-                <span className="ms-2 text-xs font-normal">(قريباً)</span>
               </Card>
-            ),
-          )}
+            </Link>
+          ))}
         </div>
       </section>
 
@@ -179,10 +172,10 @@ export default function HomePage() {
         </div>
       </section>
 
-       {/* CTA */}
+      {/* CTA */}
       <section className="container mx-auto px-4 py-10 lg:px-8">
         <Card className="flex flex-col items-center gap-4 bg-muted/40 p-8 text-center">
-          <p className="text-base font-extrabold text-foreground">أبدأو رحلتكم الآن</p>
+          <p className="text-base font-extrabold text-foreground">بدأوا رحلتكم الآن</p>
           <Link to={ROUTES.REGISTER} className={cn(buttonVariants({ size: 'lg' }))}>
             إنشاء حساب
           </Link>

@@ -2,6 +2,15 @@ import { Link } from 'react-router-dom';
 
 import { ROUTES } from '@/constants/routes';
 
+const FOOTER_LINKS = [
+  { to: ROUTES.HOME, label: 'الرئيسية' },
+  { to: ROUTES.HALLS, label: 'القاعات' },
+  { to: ROUTES.PHOTOGRAPHERS, label: 'التصوير' },
+  { to: ROUTES.WEDDING_PLANNER, label: 'مخطط الزفاف' },
+  { to: ROUTES.FAVORITES, label: 'المفضلة' },
+  { to: ROUTES.ABOUT, label: 'من نحن' },
+] as const;
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background">
@@ -13,16 +22,12 @@ export function Footer() {
           </p>
         </div>
 
-        <nav className="flex gap-5">
-          <Link to={ROUTES.HOME} className="hover:text-foreground">
-            الرئيسية
-          </Link>
-          <Link to={ROUTES.HALLS} className="hover:text-foreground">
-            القاعات
-          </Link>
-          <Link to={ROUTES.ABOUT} className="hover:text-foreground">
-            من نحن
-          </Link>
+        <nav className="flex flex-wrap gap-x-5 gap-y-2">
+          {FOOTER_LINKS.map((link) => (
+            <Link key={link.to} to={link.to} className="hover:text-foreground">
+              {link.label}
+            </Link>
+          ))}
         </nav>
 
         <p className="text-xs">© {new Date().getFullYear()} فرح. جميع الحقوق محفوظة.</p>
