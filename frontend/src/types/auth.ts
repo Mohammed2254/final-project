@@ -38,6 +38,15 @@ export interface CustomerRegisterPayload {
   password: string;
 }
 
+export interface ProviderRegisterPayload {
+  business_name: string;
+  description?: string | null;
+  phone_number: string;
+  logo_path?: string | null;
+  email: string;
+  password: string;
+}
+
 export interface ForgotPasswordPayload {
   email: string;
 }
@@ -56,4 +65,10 @@ export interface CustomerRegisterResponseData {
   access_token: string;
   account: Account;
   user_profile: UserProfile;
+}
+
+export interface ProviderRegisterResponseData {
+  access_token: string;
+  account: Account;
+  provider_profile: ProviderProfile;
 }

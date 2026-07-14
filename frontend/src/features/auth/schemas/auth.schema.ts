@@ -51,3 +51,54 @@ export const resetPasswordSchema = z
   });
 
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;
+
+export const providerRegisterSchema = z
+  .object({
+    business_name: z
+      .string()
+      .trim()
+      .min(2, 'اسم النشاط يجب أن يحتوي على حرفين على الأقل')
+      .max(150, 'اسم النشاط يجب ألا يتجاوز 150 حرفًا'),
+
+    description: z
+      .string()
+      .trim()
+      .max(500, 'الوصف يجب ألا يتجاوز 500 حرف')
+      .optional(),
+
+    phone_number: z
+      .string()
+      .trim()
+      .min(8, 'رقم الجوال يجب أن يحتوي على 8 أرقام على الأقل')
+      .max(20, 'رقم الجوال يجب ألا يتجاوز 20 خانة'),
+
+    logo_path: z
+      .string()
+      .trim()
+      .optional(),
+
+    email: z
+      .string()
+      .trim()
+      .email('البريد الإلكتروني غير صحيح'),
+
+    password: z
+      .string()
+      .min(8, 'كلمة المرور يجب أن تحتوي على 8 أحرف على الأقل')
+      .max(128, 'كلمة المرور طويلة جدًا'),
+
+    confirmPassword: z
+      .string()
+      .min(1, 'يرجى تأكيد كلمة المرور'),
+  })
+  .refine(
+    (values) => values.password === values.confirmPassword,
+    {
+      message: 'كلمتا المرور غير متطابقتين',
+      path: ['confirmPassword'],
+    }
+  );
+
+export type ProviderRegisterFormValues = z.infer<
+  typeof providerRegisterSchema
+>;

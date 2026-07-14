@@ -173,14 +173,45 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-4 py-10 lg:px-8">
-        <Card className="flex flex-col items-center gap-4 bg-muted/40 p-8 text-center">
-          <p className="text-base font-extrabold text-foreground">بدأوا رحلتكم الآن</p>
-          <Link to={ROUTES.REGISTER} className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}>
-            إنشاء حساب
-          </Link>
-        </Card>
-      </section>
+<section className="container mx-auto px-4 py-10 lg:px-8">
+  <Card className="flex flex-col items-center gap-5 bg-muted/40 p-8 text-center">
+    <div>
+      <p className="text-base font-extrabold text-foreground">
+        ابدأوا رحلتكم مع فرح
+      </p>
+
+      <p className="mt-2 text-sm text-muted-foreground">
+        أنشئوا حسابًا للتخطيط لحفل زفافكم، أو انضموا للمنصة كمقدم خدمة.
+      </p>
+    </div>
+
+    <div className="flex flex-wrap justify-center gap-3">
+      <Link
+        to={ROUTES.REGISTER}
+        className={cn(
+          buttonVariants({
+            variant: 'gold',
+            size: 'lg',
+          }),
+        )}
+      >
+        إنشاء حساب
+      </Link>
+
+      <Link
+        to={ROUTES.PROVIDER_REGISTER}
+        className={cn(
+          buttonVariants({
+            variant: 'outline',
+            size: 'lg',
+          }),
+        )}
+      >
+        انضم كمقدم خدمة
+      </Link>
+    </div>
+  </Card>
+</section>
     </div>
   );
 }

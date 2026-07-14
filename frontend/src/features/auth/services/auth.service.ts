@@ -3,6 +3,7 @@ import { authActions } from '@/store/auth.store';
 import type {
   LoginPayload,
   CustomerRegisterPayload,
+  ProviderRegisterPayload,
   ForgotPasswordPayload,
   ResetPasswordPayload,
 } from '@/types/auth';
@@ -19,6 +20,17 @@ export const authService = {
     authActions.login(data.data.account, data.data.access_token);
     return data.data;
   },
+
+  async registerProvider(payload: ProviderRegisterPayload) {
+  const { data } = await authEndpoints.registerProvider(payload);
+
+  authActions.login(
+    data.data.account,
+    data.data.access_token,
+  );
+
+  return data.data;
+},
 
   async forgotPassword(payload: ForgotPasswordPayload) {
     const { data } = await authEndpoints.forgotPassword(payload);

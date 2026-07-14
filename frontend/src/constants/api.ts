@@ -1,12 +1,13 @@
 export const API_BASE_URL: string =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ?? 'http://localhost:5000/api';
+  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
+  'http://localhost:5000/api';
 
 export const AUTH_ENDPOINTS = {
   LOGIN: '/auth/login',
   REGISTER_CUSTOMER: '/auth/register/customer',
   REGISTER_PROVIDER: '/auth/register/provider',
-  // Not implemented by the backend yet. The service layer is wired up
-  // and ready for these endpoints as soon as they land.
+
+  // غير منفذة في الباك إند حاليًا.
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;
@@ -14,7 +15,9 @@ export const AUTH_ENDPOINTS = {
 export const SERVICE_ENDPOINTS = {
   LIST: '/services/',
   DETAILS: (id: number | string) => `/services/${id}`,
-  BY_CATEGORY: (categoryId: number | string) => `/services/category/${categoryId}`,
-  BY_PROVIDER: (providerProfileId: number | string) => `/services/provider/${providerProfileId}`,
+  BY_CATEGORY: (categoryId: number | string) =>
+    `/services/category/${categoryId}`,
+  BY_PROVIDER: (providerProfileId: number | string) =>
+    `/services/provider/${providerProfileId}`,
   SEARCH: '/services/search',
 } as const;

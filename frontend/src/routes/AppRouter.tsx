@@ -19,9 +19,17 @@ import NotFoundPage from '@/pages/NotFoundPage';
 
 const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
 const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'));
+const ProviderRegisterPage = lazy(
+  () => import('@/features/auth/pages/ProviderRegisterPage'),
+);
 
-const HallsListPage = lazy(() => import('@/features/halls/pages/HallsListPage'));
-const HallDetailsPage = lazy(() => import('@/features/halls/pages/HallDetailsPage'));
+const HallsListPage = lazy(
+  () => import('@/features/halls/pages/HallsListPage'),
+);
+
+const HallDetailsPage = lazy(
+  () => import('@/features/halls/pages/HallDetailsPage'),
+);
 
 function RouteFallback() {
   return (
@@ -38,47 +46,92 @@ export function AppRouter() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route index element={<HomePage />} />
+
             <Route path="about" element={<AboutPage />} />
+
             <Route path="halls" element={<HallsListPage />} />
             <Route path="halls/:id" element={<HallDetailsPage />} />
-            <Route path="photographers" element={<PhotographersPage />} />
-            <Route path="planner" element={<WeddingPlannerPage />} />
-            <Route path="favorites" element={<FavoritesPage />} />
-            <Route path="booking" element={<BookingPage />} />
-            <Route path="payments" element={<PaymentsPage />} />
+
+            <Route
+              path="photographers"
+              element={<PhotographersPage />}
+            />
+
+            <Route
+              path="planner"
+              element={<WeddingPlannerPage />}
+            />
+
+            <Route
+              path="favorites"
+              element={<FavoritesPage />}
+            />
+
+            <Route
+              path="booking"
+              element={<BookingPage />}
+            />
+
+            <Route
+              path="payments"
+              element={<PaymentsPage />}
+            />
 
             {/*
-              Login-required (not yet role-gated to Provider specifically -
-              account.role is available via useAuth() for that, but there's
-              no real dashboard content yet to justify the extra branching).
+              هذه الصفحة تتطلب تسجيل الدخول.
+
+              لاحقًا يمكن إضافة ProviderGuard للتحقق من أن:
+              account.role === 'Provider'
             */}
             <Route element={<AuthGuard />}>
-              <Route path="provider/dashboard" element={<ProviderDashboardPage />} />
+              <Route
+                path="provider/dashboard"
+                element={<ProviderDashboardPage />}
+              />
             </Route>
           </Route>
 
           {/*
-            Forgot/reset password are intentionally not routed: the backend
-            has no matching endpoints yet (only /auth/login and
-            /auth/register/*). The forms and hooks are still in
-            features/auth for when that lands - just not reachable, so the
-            app never dead-ends into a flow that can't succeed.
+            صفحات المصادقة متاحة فقط للزوار غير المسجلين.
+
+            GuestGuard يمنع المستخدم المسجل من الرجوع إلى:
+            - تسجيل الدخول
+            - تسجيل العميل
+            - تسجيل مقدم الخدمة
           */}
           <Route element={<GuestGuard />}>
             <Route element={<AuthLayout />}>
-              <Route path="auth/login" element={<LoginPage />} />
-              <Route path="auth/register" element={<RegisterPage />} />
+              <Route
+                path="auth/login"
+                element={<LoginPage />}
+              />
+
+              <Route
+                path="auth/register"
+                element={<RegisterPage />}
+              />
+
+              <Route
+                path="auth/register/provider"
+                element={<ProviderRegisterPage />}
+              />
             </Route>
           </Route>
 
           {/*
-            Further protected routes (customer dashboard, profile, ...)
-            can reuse the same <AuthGuard /> pattern as provider/dashboard
-            above once those pages exist.
+            Forgot/reset password غير مضافة حاليًا؛
+            لأن الباك إند لا يحتوي على نقاط النهاية الخاصة بها.
           */}
 
-          <Route path="404" element={<NotFoundPage />} />
-          <Route path="*" element={<Navigate to="/404" replace />} />
+          <Route
+            path="404"
+            element={<NotFoundPage />}
+          />
+
+          <Route
+            path="*"
+            element={<Navigate to="/404" replace />}
+          />
         </Routes>
       </Suspense>
     </BrowserRouter>
