@@ -2,9 +2,11 @@ import { apiClient } from '@/services/api/client';
 import {
   AUTH_ENDPOINTS,
   SERVICE_ENDPOINTS,
+  PHOTOGRAPHER_ENDPOINTS,
 } from '@/constants/api';
 import type { ApiSuccessResponse } from '@/types/api';
 import type { ServiceRecord } from '@/types/service';
+import type { PhotographerDetailsRecord } from '@/types/photographer';
 import type {
   LoginPayload,
   CustomerRegisterPayload,
@@ -58,4 +60,20 @@ export const serviceEndpoints = {
     apiClient.get<ApiSuccessResponse<ServiceRecord[]>>(SERVICE_ENDPOINTS.SEARCH, {
       params: { keyword },
     }),
+};
+
+/**
+ * Raw HTTP calls for the PhotographerDetails resource. There is no
+ * categories-list endpoint (see back end/app/routes/service_routes.py), so
+ * these are joined against serviceEndpoints.details() one-by-one in
+ * features/photographers/services/photographer.service.ts.
+ */
+export const photographerEndpoints = {
+  list: () =>
+    apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord[]>>(PHOTOGRAPHER_ENDPOINTS.LIST),
+
+  byService: (serviceId: number | string) =>
+    apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord>>(
+      PHOTOGRAPHER_ENDPOINTS.BY_SERVICE(serviceId),
+    ),
 };

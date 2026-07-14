@@ -18,3 +18,8 @@ export const SERVICE_ENDPOINTS = {
   BY_PROVIDER: (providerProfileId: number | string) => `/services/provider/${providerProfileId}`,
   SEARCH: '/services/search',
 } as const;
+
+export const PHOTOGRAPHER_ENDPOINTS = {
+  LIST: '/photographers/',
+  BY_SERVICE: (serviceId: number | string) => `/photographers/service/${serviceId}`,
+} as const;
