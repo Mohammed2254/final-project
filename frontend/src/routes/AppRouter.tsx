@@ -9,7 +9,6 @@ import { Spinner } from '@/components/common/Loading';
 
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
-import PhotographersPage from '@/pages/PhotographersPage';
 import WeddingPlannerPage from '@/pages/WeddingPlannerPage';
 import FavoritesPage from '@/pages/FavoritesPage';
 import BookingPage from '@/pages/BookingPage';
@@ -29,6 +28,13 @@ const HallsListPage = lazy(
 
 const HallDetailsPage = lazy(
   () => import('@/features/halls/pages/HallDetailsPage'),
+);
+
+const PhotographersListPage = lazy(
+  () => import('@/features/photographers/pages/PhotographersListPage'),
+);
+const PhotographerDetailsPage = lazy(
+  () => import('@/features/photographers/pages/PhotographerDetailsPage'),
 );
 
 function RouteFallback() {
@@ -51,6 +57,7 @@ export function AppRouter() {
 
             <Route path="halls" element={<HallsListPage />} />
             <Route path="halls/:id" element={<HallDetailsPage />} />
+<<<<<<< HEAD
 
             <Route
               path="photographers"
@@ -76,6 +83,14 @@ export function AppRouter() {
               path="payments"
               element={<PaymentsPage />}
             />
+=======
+            <Route path="photographers" element={<PhotographersListPage />} />
+            <Route path="photographers/:id" element={<PhotographerDetailsPage />} />
+            <Route path="planner" element={<WeddingPlannerPage />} />
+            <Route path="favorites" element={<FavoritesPage />} />
+            <Route path="booking" element={<BookingPage />} />
+            <Route path="payments" element={<PaymentsPage />} />
+>>>>>>> 1acf13ad8c1867aea4c3f5ffc16ae9c241a2351e
 
             {/*
               هذه الصفحة تتطلب تسجيل الدخول.
