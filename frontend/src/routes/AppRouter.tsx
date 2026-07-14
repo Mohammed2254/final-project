@@ -16,8 +16,14 @@ import PaymentsPage from '@/pages/PaymentsPage';
 import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
-const LoginPage = lazy(() => import('@/features/auth/pages/LoginPage'));
-const RegisterPage = lazy(() => import('@/features/auth/pages/RegisterPage'));
+const LoginPage = lazy(
+  () => import('@/features/auth/pages/LoginPage'),
+);
+
+const RegisterPage = lazy(
+  () => import('@/features/auth/pages/RegisterPage'),
+);
+
 const ProviderRegisterPage = lazy(
   () => import('@/features/auth/pages/ProviderRegisterPage'),
 );
@@ -33,6 +39,7 @@ const HallDetailsPage = lazy(
 const PhotographersListPage = lazy(
   () => import('@/features/photographers/pages/PhotographersListPage'),
 );
+
 const PhotographerDetailsPage = lazy(
   () => import('@/features/photographers/pages/PhotographerDetailsPage'),
 );
@@ -56,12 +63,20 @@ export function AppRouter() {
             <Route path="about" element={<AboutPage />} />
 
             <Route path="halls" element={<HallsListPage />} />
-            <Route path="halls/:id" element={<HallDetailsPage />} />
-<<<<<<< HEAD
+
+            <Route
+              path="halls/:id"
+              element={<HallDetailsPage />}
+            />
 
             <Route
               path="photographers"
-              element={<PhotographersPage />}
+              element={<PhotographersListPage />}
+            />
+
+            <Route
+              path="photographers/:id"
+              element={<PhotographerDetailsPage />}
             />
 
             <Route
@@ -83,21 +98,7 @@ export function AppRouter() {
               path="payments"
               element={<PaymentsPage />}
             />
-=======
-            <Route path="photographers" element={<PhotographersListPage />} />
-            <Route path="photographers/:id" element={<PhotographerDetailsPage />} />
-            <Route path="planner" element={<WeddingPlannerPage />} />
-            <Route path="favorites" element={<FavoritesPage />} />
-            <Route path="booking" element={<BookingPage />} />
-            <Route path="payments" element={<PaymentsPage />} />
->>>>>>> 1acf13ad8c1867aea4c3f5ffc16ae9c241a2351e
 
-            {/*
-              هذه الصفحة تتطلب تسجيل الدخول.
-
-              لاحقًا يمكن إضافة ProviderGuard للتحقق من أن:
-              account.role === 'Provider'
-            */}
             <Route element={<AuthGuard />}>
               <Route
                 path="provider/dashboard"
@@ -106,14 +107,6 @@ export function AppRouter() {
             </Route>
           </Route>
 
-          {/*
-            صفحات المصادقة متاحة فقط للزوار غير المسجلين.
-
-            GuestGuard يمنع المستخدم المسجل من الرجوع إلى:
-            - تسجيل الدخول
-            - تسجيل العميل
-            - تسجيل مقدم الخدمة
-          */}
           <Route element={<GuestGuard />}>
             <Route element={<AuthLayout />}>
               <Route
@@ -132,11 +125,6 @@ export function AppRouter() {
               />
             </Route>
           </Route>
-
-          {/*
-            Forgot/reset password غير مضافة حاليًا؛
-            لأن الباك إند لا يحتوي على نقاط النهاية الخاصة بها.
-          */}
 
           <Route
             path="404"
