@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'react-router-dom';
 
 import { TextInput } from '@/components/forms/TextInput';
-import { Button } from '@/components/common/Button';
+import { GoldButton } from '@/components/common/GoldButton';
 import { useForgotPassword } from '@/features/auth/hooks/useForgotPassword';
 import {
   forgotPasswordSchema,
@@ -60,9 +60,9 @@ export function ForgotPasswordForm() {
         {...register('email')}
       />
 
-      <Button type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ الإرسال...">
+      <GoldButton type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ الإرسال...">
         إرسال رابط إعادة التعيين
-      </Button>
+      </GoldButton>
 
       <p className="text-center text-sm text-muted-foreground">
         تذكرت كلمة المرور؟{' '}

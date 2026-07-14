@@ -1,0 +1,1 @@
+export { GoldBadge } from './GoldBadge';

@@ -24,6 +24,9 @@
     --color-input: var(--input);
     --color-border: var(--border);
     --color-destructive: var(--destructive);
+    --color-gold-hover: var(--gold-hover);
+    --color-gold-foreground: var(--gold-foreground);
+    --color-gold: var(--gold);
     --color-accent-foreground: var(--accent-foreground);
     --color-accent: var(--accent);
     --color-muted-foreground: var(--muted-foreground);
@@ -63,6 +66,9 @@
     --accent: #ececec;
     --accent-foreground: #1c1c1c;
     --destructive: oklch(0.577 0.245 27.325);
+    --gold: #c4a35a;
+    --gold-foreground: #ffffff;
+    --gold-hover: #a8893a;
     --border: #d8d8d8;
     --input: #9a9a9a;
     --ring: #9a9a9a;
@@ -98,6 +104,9 @@
     --accent: oklch(0.269 0 0);
     --accent-foreground: oklch(0.985 0 0);
     --destructive: oklch(0.704 0.191 22.216);
+    --gold: #c4a35a;
+    --gold-foreground: #ffffff;
+    --gold-hover: #a8893a;
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);

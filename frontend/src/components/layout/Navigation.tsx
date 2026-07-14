@@ -21,7 +21,7 @@ export function Navigation({ className }: { className?: string }) {
           className={({ isActive }) =>
             cn(
               'transition-colors hover:text-foreground',
-              isActive && 'font-bold text-foreground',
+              isActive && 'font-bold text-gold',
             )
           }
         >

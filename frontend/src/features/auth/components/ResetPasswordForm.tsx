@@ -3,7 +3,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 
 import { PasswordInput } from '@/components/forms/PasswordInput';
-import { Button } from '@/components/common/Button';
+import { GoldButton } from '@/components/common/GoldButton';
 import { useResetPassword } from '@/features/auth/hooks/useResetPassword';
 import {
   resetPasswordSchema,
@@ -73,9 +73,9 @@ export function ResetPasswordForm() {
         {...register('confirmPassword')}
       />
 
-      <Button type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ الحفظ...">
+      <GoldButton type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ الحفظ...">
         حفظ كلمة المرور الجديدة
-      </Button>
+      </GoldButton>
     </form>
   );
 }

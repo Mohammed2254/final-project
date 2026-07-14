@@ -4,7 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { TextInput } from '@/components/forms/TextInput';
 import { PasswordInput } from '@/components/forms/PasswordInput';
-import { Button } from '@/components/common/Button';
+import { GoldButton } from '@/components/common/GoldButton';
 import { useLogin } from '@/features/auth/hooks/useLogin';
 import { loginSchema, type LoginFormValues } from '@/features/auth/schemas/auth.schema';
 import { ROUTES } from '@/constants/routes';
@@ -65,9 +65,9 @@ export function LoginForm() {
         </div>
       </div>
 
-      <Button type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ تسجيل الدخول...">
+      <GoldButton type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ تسجيل الدخول...">
         تسجيل الدخول
-      </Button>
+      </GoldButton>
 
       <p className="text-center text-sm text-muted-foreground">
         ليس لديك حساب؟{' '}

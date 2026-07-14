@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 
 import { TextInput } from '@/components/forms/TextInput';
 import { PasswordInput } from '@/components/forms/PasswordInput';
-import { Button } from '@/components/common/Button';
+import { GoldButton } from '@/components/common/GoldButton';
 import { useRegister } from '@/features/auth/hooks/useRegister';
 import { registerSchema, type RegisterFormValues } from '@/features/auth/schemas/auth.schema';
 import { ROUTES } from '@/constants/routes';
@@ -73,9 +73,9 @@ export function RegisterForm() {
         {...register('confirmPassword')}
       />
 
-      <Button type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ إنشاء الحساب...">
+      <GoldButton type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ إنشاء الحساب...">
         إنشاء حساب
-      </Button>
+      </GoldButton>
 
       <p className="text-center text-sm text-muted-foreground">
         لديك حساب بالفعل؟{' '}

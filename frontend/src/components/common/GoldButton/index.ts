@@ -1,0 +1,1 @@
+export { GoldButton } from './GoldButton';

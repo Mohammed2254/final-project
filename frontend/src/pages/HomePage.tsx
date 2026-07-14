@@ -80,7 +80,7 @@ export default function HomePage() {
             اختاروا أفضل مزودي الخدمات وشاركوا كل التفاصيل مع شريككم.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
-            <Link to={ROUTES.HALLS} className={cn(buttonVariants({ size: 'lg' }))}>
+            <Link to={ROUTES.HALLS} className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}>
               ابدأوا التخطيط
             </Link>
             <Link
@@ -176,7 +176,7 @@ export default function HomePage() {
       <section className="container mx-auto px-4 py-10 lg:px-8">
         <Card className="flex flex-col items-center gap-4 bg-muted/40 p-8 text-center">
           <p className="text-base font-extrabold text-foreground">بدأوا رحلتكم الآن</p>
-          <Link to={ROUTES.REGISTER} className={cn(buttonVariants({ size: 'lg' }))}>
+          <Link to={ROUTES.REGISTER} className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}>
             إنشاء حساب
           </Link>
         </Card>

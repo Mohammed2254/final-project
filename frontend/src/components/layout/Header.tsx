@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { Navigation } from '@/components/layout/Navigation';
 import { Button } from '@/components/common/Button';
+import { GoldButton } from '@/components/common/GoldButton';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { ROUTES } from '@/constants/routes';
 
@@ -51,9 +52,9 @@ export function Header() {
               >
                 تسجيل الدخول
               </Link>
-              <Button size="sm" onClick={() => navigate(ROUTES.REGISTER)}>
+              <GoldButton size="sm" onClick={() => navigate(ROUTES.REGISTER)}>
                 إنشاء حساب
-              </Button>
+              </GoldButton>
             </>
           )}
         </div>
@@ -98,9 +99,9 @@ export function Header() {
                 >
                   تسجيل الدخول
                 </Link>
-                <Button size="sm" onClick={() => navigate(ROUTES.REGISTER)}>
+                <GoldButton size="sm" onClick={() => navigate(ROUTES.REGISTER)}>
                   إنشاء حساب
-                </Button>
+                </GoldButton>
               </>
             )}
           </div>

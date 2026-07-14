@@ -3,11 +3,11 @@ import { ArrowRight } from 'lucide-react';
 
 import { Card } from '@/components/common/Card';
 import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { PriceText } from '@/components/common/PriceText';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { cn } from '@/lib/utils';
-import { formatPrice } from '@/utils/format';
 import { ROUTES } from '@/constants/routes';
 import { useHallDetails } from '@/features/halls/hooks/useHallDetails';
 
@@ -72,9 +72,7 @@ export default function HallDetailsPage() {
             <Card className="h-fit space-y-4 p-5">
               <div>
                 <p className="text-xs text-muted-foreground">السعر</p>
-                <p className="text-lg font-extrabold text-foreground">
-                  {formatPrice(hall.price)}
-                </p>
+                <PriceText price={hall.price} className="text-lg" />
               </div>
 
               {/*
@@ -85,7 +83,7 @@ export default function HallDetailsPage() {
               */}
               <Link
                 to={ROUTES.BOOKING}
-                className={cn(buttonVariants({ size: 'default' }), 'w-full')}
+                className={cn(buttonVariants({ variant: 'gold', size: 'default' }), 'w-full')}
               >
                 احجزوا الآن
               </Link>

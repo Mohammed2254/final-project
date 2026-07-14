@@ -1,6 +1,6 @@
 import { Card } from '@/components/common/Card';
 import { PlaceholderImage } from '@/components/common/PlaceholderImage';
-import { formatPrice } from '@/utils/format';
+import { PriceText } from '@/components/common/PriceText';
 import type { ServiceItem } from '@/types/service';
 
 interface ServiceCardProps {
@@ -10,7 +10,7 @@ interface ServiceCardProps {
 
 export function ServiceCard({ service }: ServiceCardProps) {
   return (
-    <Card className="overflow-hidden">
+    <Card className="overflow-hidden transition-colors hover:border-gold/50">
       <PlaceholderImage className="h-32 w-full" label={service.name} />
       <div className="space-y-1 p-3.5">
         <div className="flex items-start justify-between gap-2">
@@ -23,7 +23,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         {service.description && (
           <p className="line-clamp-1 text-xs text-muted-foreground">{service.description}</p>
         )}
-        <p className="text-sm font-bold text-foreground">{formatPrice(service.price)}</p>
+        <PriceText price={service.price} className="text-sm" />
       </div>
     </Card>
   );

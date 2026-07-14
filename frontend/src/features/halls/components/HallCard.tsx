@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { Card } from '@/components/common/Card';
 import { PlaceholderImage } from '@/components/common/PlaceholderImage';
-import { formatPrice } from '@/utils/format';
+import { PriceText } from '@/components/common/PriceText';
 import type { ServiceItem } from '@/types/service';
 
 interface HallCardProps {
@@ -12,7 +12,7 @@ interface HallCardProps {
 export function HallCard({ hall }: HallCardProps) {
   return (
     <Link to={`/halls/${hall.id}`} className="block">
-      <Card className="h-full overflow-hidden transition-colors hover:border-foreground/30">
+      <Card className="h-full overflow-hidden transition-colors hover:border-gold/50">
         <PlaceholderImage className="h-32 w-full" label={hall.name} />
         <div className="space-y-1 p-3.5">
           <div className="flex items-start justify-between gap-2">
@@ -25,7 +25,7 @@ export function HallCard({ hall }: HallCardProps) {
           {hall.description && (
             <p className="line-clamp-1 text-xs text-muted-foreground">{hall.description}</p>
           )}
-          <p className="text-sm font-bold text-foreground">{formatPrice(hall.price)}</p>
+          <PriceText price={hall.price} className="text-sm" />
         </div>
       </Card>
     </Link>
