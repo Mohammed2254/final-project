@@ -26,3 +26,12 @@ export const PHOTOGRAPHER_ENDPOINTS = {
   LIST: '/photographers/',
   BY_SERVICE: (serviceId: number | string) => `/photographers/service/${serviceId}`,
 } as const;
+
+export const BOOKING_ENDPOINTS = {
+  CREATE: '/bookings/',
+  LIST: '/bookings/',
+  DETAILS: (bookingId: number | string) =>
+    `/bookings/${bookingId}`,
+  BY_CUSTOMER: (customerProfileId: number | string) =>
+    `/bookings/customer/${customerProfileId}`,
+} as const;

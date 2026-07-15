@@ -6,7 +6,10 @@ from app.schemas.BookingItemSchema import (
     BookingUpdateSchema,
     BookingResponseSchema
 )
+
 from app.services.booking_service import BookingService
+from app.services.user_profile_service import UserProfileService
+
 from app.utils.response_helper import ResponseHelper
 
 
@@ -16,6 +19,7 @@ booking_bp = Blueprint(
 )
 
 booking_service = BookingService()
+user_profile_service = UserProfileService()
 
 create_schema = BookingCreateSchema()
 update_schema = BookingUpdateSchema()
@@ -28,8 +32,17 @@ def create_booking():
     try:
         data = create_schema.load(request.get_json())
 
+        account_id = data["account_id"]
+
+        user_profile = user_profile_service.get_by_account_id(
+            account_id
+        )
+
+        if user_profile is None:
+            raise ValueError("Customer profile not found.")
+
         booking = booking_service.create_booking(
-            customer_profile_id=data["customer_profile_id"],
+            customer_profile_id=user_profile.user_profile_id,
             event_date=data["event_date"],
             items=data["items"],
             notes=data.get("notes")

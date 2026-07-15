@@ -3,10 +3,17 @@ import {
   AUTH_ENDPOINTS,
   SERVICE_ENDPOINTS,
   PHOTOGRAPHER_ENDPOINTS,
+  BOOKING_ENDPOINTS,
 } from '@/constants/api';
+
 import type { ApiSuccessResponse } from '@/types/api';
 import type { ServiceRecord } from '@/types/service';
 import type { PhotographerDetailsRecord } from '@/types/photographer';
+import type {
+  Booking,
+  BookingCreatePayload,
+} from '@/types/booking';
+
 import type {
   LoginPayload,
   CustomerRegisterPayload,
@@ -55,9 +62,7 @@ export const authEndpoints = {
 };
 
 /**
- * Raw HTTP calls for the generic Service resource. Halls, photographers,
- * and any future service category all go through this same backend
- * endpoint set - see back end/app/routes/service_routes.py.
+ * Raw HTTP calls for the generic Service resource.
  */
 export const serviceEndpoints = {
   list: () =>
@@ -90,14 +95,39 @@ export const serviceEndpoints = {
 };
 
 /**
- * Raw HTTP calls for the PhotographerDetails resource. There is no
- * categories-list endpoint (see back end/app/routes/service_routes.py), so
- * these are joined against serviceEndpoints.details() one-by-one in
- * features/photographers/services/photographer.service.ts.
+ * Raw HTTP calls for booking resources.
+ */
+export const bookingEndpoints = {
+  create: (payload: BookingCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<Booking>>(
+      BOOKING_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  list: () =>
+    apiClient.get<ApiSuccessResponse<Booking[]>>(
+      BOOKING_ENDPOINTS.LIST,
+    ),
+
+  details: (bookingId: number | string) =>
+    apiClient.get<ApiSuccessResponse<Booking>>(
+      BOOKING_ENDPOINTS.DETAILS(bookingId),
+    ),
+
+  byCustomer: (customerProfileId: number | string) =>
+    apiClient.get<ApiSuccessResponse<Booking[]>>(
+      BOOKING_ENDPOINTS.BY_CUSTOMER(customerProfileId),
+    ),
+};
+
+/**
+ * Raw HTTP calls for the PhotographerDetails resource.
  */
 export const photographerEndpoints = {
   list: () =>
-    apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord[]>>(PHOTOGRAPHER_ENDPOINTS.LIST),
+    apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord[]>>(
+      PHOTOGRAPHER_ENDPOINTS.LIST,
+    ),
 
   byService: (serviceId: number | string) =>
     apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord>>(

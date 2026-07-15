@@ -3,8 +3,10 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import MainLayout from '@/layouts/MainLayout';
 import AuthLayout from '@/layouts/AuthLayout';
+
 import GuestGuard from '@/routes/guards/GuestGuard';
 import AuthGuard from '@/routes/guards/AuthGuard';
+
 import { Spinner } from '@/components/common/Loading';
 
 import HomePage from '@/pages/HomePage';
@@ -60,9 +62,15 @@ export function AppRouter() {
           <Route element={<MainLayout />}>
             <Route index element={<HomePage />} />
 
-            <Route path="about" element={<AboutPage />} />
+            <Route
+              path="about"
+              element={<AboutPage />}
+            />
 
-            <Route path="halls" element={<HallsListPage />} />
+            <Route
+              path="halls"
+              element={<HallsListPage />}
+            />
 
             <Route
               path="halls/:id"
@@ -90,16 +98,17 @@ export function AppRouter() {
             />
 
             <Route
-              path="booking"
-              element={<BookingPage />}
-            />
-
-            <Route
               path="payments"
               element={<PaymentsPage />}
             />
 
+            {/* الصفحات التي تحتاج تسجيل دخول */}
             <Route element={<AuthGuard />}>
+              <Route
+                path="booking/:serviceId"
+                element={<BookingPage />}
+              />
+
               <Route
                 path="provider/dashboard"
                 element={<ProviderDashboardPage />}
@@ -107,6 +116,7 @@ export function AppRouter() {
             </Route>
           </Route>
 
+          {/* صفحات الزوار فقط */}
           <Route element={<GuestGuard />}>
             <Route element={<AuthLayout />}>
               <Route

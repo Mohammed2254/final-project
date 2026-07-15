@@ -13,7 +13,10 @@ export const ROUTES = {
   PHOTOGRAPHERS: '/photographers',
   WEDDING_PLANNER: '/planner',
   FAVORITES: '/favorites',
-  BOOKING: '/booking',
+
+  BOOKING: (serviceId: number | string) =>
+    `/booking/${serviceId}`,
+
   PAYMENTS: '/payments',
   PROVIDER_DASHBOARD: '/provider/dashboard',
 
