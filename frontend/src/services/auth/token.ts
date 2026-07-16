@@ -1,9 +1,11 @@
 import { localStorageService } from '@/services/storage/localStorage';
-import type { Account } from '@/types/auth';
+import type { Account, ProviderProfile, UserProfile } from '@/types/auth';
 
 const ACCESS_TOKEN_KEY = 'farah.accessToken';
 const REFRESH_TOKEN_KEY = 'farah.refreshToken';
 const ACCOUNT_KEY = 'farah.account';
+const USER_PROFILE_KEY = 'farah.userProfile';
+const PROVIDER_PROFILE_KEY = 'farah.providerProfile';
 
 /**
  * Centralizes everything about where auth tokens live. The backend
@@ -35,9 +37,27 @@ export const tokenService = {
     localStorageService.set<Account>(ACCOUNT_KEY, account);
   },
 
+  getUserProfile(): UserProfile | null {
+    return localStorageService.get<UserProfile>(USER_PROFILE_KEY);
+  },
+
+  setUserProfile(profile: UserProfile): void {
+    localStorageService.set<UserProfile>(USER_PROFILE_KEY, profile);
+  },
+
+  getProviderProfile(): ProviderProfile | null {
+    return localStorageService.get<ProviderProfile>(PROVIDER_PROFILE_KEY);
+  },
+
+  setProviderProfile(profile: ProviderProfile): void {
+    localStorageService.set<ProviderProfile>(PROVIDER_PROFILE_KEY, profile);
+  },
+
   clear(): void {
     localStorageService.remove(ACCESS_TOKEN_KEY);
     localStorageService.remove(REFRESH_TOKEN_KEY);
     localStorageService.remove(ACCOUNT_KEY);
+    localStorageService.remove(USER_PROFILE_KEY);
+    localStorageService.remove(PROVIDER_PROFILE_KEY);
   },
 };

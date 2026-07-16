@@ -2,12 +2,22 @@ import { apiClient } from '@/services/api/client';
 import {
   AUTH_ENDPOINTS,
   SERVICE_ENDPOINTS,
+  HALL_ENDPOINTS,
   PHOTOGRAPHER_ENDPOINTS,
+  SERVICE_MEDIA_ENDPOINTS,
   BOOKING_ENDPOINTS,
 } from '@/constants/api';
 
 import type { ApiSuccessResponse } from '@/types/api';
-import type { ServiceRecord } from '@/types/service';
+import type {
+  HallDetailsCreatePayload,
+  HallDetailsRecord,
+  PhotographerDetailsCreatePayload,
+  ServiceCreatePayload,
+  ServiceMediaCreatePayload,
+  ServiceMediaRecord,
+  ServiceRecord,
+} from '@/types/service';
 import type { PhotographerDetailsRecord } from '@/types/photographer';
 import type {
   Booking,
@@ -70,6 +80,12 @@ export const serviceEndpoints = {
       SERVICE_ENDPOINTS.LIST,
     ),
 
+  create: (payload: ServiceCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<ServiceRecord>>(
+      SERVICE_ENDPOINTS.CREATE,
+      payload,
+    ),
+
   details: (id: number | string) =>
     apiClient.get<ApiSuccessResponse<ServiceRecord>>(
       SERVICE_ENDPOINTS.DETAILS(id),
@@ -91,6 +107,19 @@ export const serviceEndpoints = {
       {
         params: { keyword },
       },
+    ),
+};
+
+export const hallEndpoints = {
+  create: (payload: HallDetailsCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<HallDetailsRecord>>(
+      HALL_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  byService: (serviceId: number | string) =>
+    apiClient.get<ApiSuccessResponse<HallDetailsRecord>>(
+      HALL_ENDPOINTS.BY_SERVICE(serviceId),
     ),
 };
 
@@ -129,8 +158,27 @@ export const photographerEndpoints = {
       PHOTOGRAPHER_ENDPOINTS.LIST,
     ),
 
+  create: (payload: PhotographerDetailsCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<PhotographerDetailsRecord>>(
+      PHOTOGRAPHER_ENDPOINTS.CREATE,
+      payload,
+    ),
+
   byService: (serviceId: number | string) =>
     apiClient.get<ApiSuccessResponse<PhotographerDetailsRecord>>(
       PHOTOGRAPHER_ENDPOINTS.BY_SERVICE(serviceId),
+    ),
+};
+
+export const serviceMediaEndpoints = {
+  create: (payload: ServiceMediaCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<ServiceMediaRecord>>(
+      SERVICE_MEDIA_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  byService: (serviceId: number | string) =>
+    apiClient.get<ApiSuccessResponse<ServiceMediaRecord[]>>(
+      SERVICE_MEDIA_ENDPOINTS.BY_SERVICE(serviceId),
     ),
 };

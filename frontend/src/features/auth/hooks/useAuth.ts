@@ -8,6 +8,8 @@ export function useAuth() {
 
   return {
     account: state.account,
+    userProfile: state.userProfile,
+    providerProfile: state.providerProfile,
     isAuthenticated: state.isAuthenticated,
     isInitialized: state.isInitialized,
     logout: authService.logout,

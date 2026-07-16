@@ -11,13 +11,18 @@ import type {
 export const authService = {
   async login(payload: LoginPayload) {
     const { data } = await authEndpoints.login(payload);
-    authActions.login(data.data.account, data.data.access_token);
+    authActions.login(data.data.account, data.data.access_token, {
+      userProfile: data.data.user_profile,
+      providerProfile: data.data.provider_profile,
+    });
     return data.data;
   },
 
   async registerCustomer(payload: CustomerRegisterPayload) {
     const { data } = await authEndpoints.registerCustomer(payload);
-    authActions.login(data.data.account, data.data.access_token);
+    authActions.login(data.data.account, data.data.access_token, {
+      userProfile: data.data.user_profile,
+    });
     return data.data;
   },
 
@@ -27,6 +32,9 @@ export const authService = {
   authActions.login(
     data.data.account,
     data.data.access_token,
+    {
+      providerProfile: data.data.provider_profile,
+    },
   );
 
   return data.data;

@@ -10,6 +10,60 @@ export interface ServiceRecord {
   created_at: string;
 }
 
+export interface ServiceCreatePayload {
+  provider_profile_id: number;
+  category_id: number;
+  service_name: string;
+  description?: string | null;
+  price: string;
+}
+
+export interface HallDetailsRecord {
+  hall_details_id: number;
+  service_id: number;
+  min_capacity: number;
+  max_capacity: number;
+  city: string;
+  address: string;
+  latitude: string | null;
+  longitude: string | null;
+}
+
+export interface HallDetailsCreatePayload {
+  service_id: number;
+  min_capacity: number;
+  max_capacity: number;
+  city: string;
+  address: string;
+  latitude?: string | null;
+  longitude?: string | null;
+}
+
+export interface PhotographerDetailsCreatePayload {
+  service_id: number;
+  coverage_hours: number;
+  camera_type?: string | null;
+  has_video?: boolean;
+  has_drone?: boolean;
+  portfolio_url?: string | null;
+}
+
+export interface ServiceMediaRecord {
+  media_id: number;
+  service_id: number;
+  media_url: string;
+  media_type: string;
+  is_main: boolean;
+  created_at: string;
+}
+
+export interface ServiceMediaCreatePayload {
+  service_id: number;
+  media_url: string;
+  media_type?: string;
+  is_main?: boolean;
+}
+
 
 export interface ServiceItem {
   id: number;

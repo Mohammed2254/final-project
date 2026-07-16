@@ -14,6 +14,7 @@ export const AUTH_ENDPOINTS = {
 
 export const SERVICE_ENDPOINTS = {
   LIST: '/services/',
+  CREATE: '/services/',
   DETAILS: (id: number | string) => `/services/${id}`,
   BY_CATEGORY: (categoryId: number | string) =>
     `/services/category/${categoryId}`,
@@ -22,9 +23,21 @@ export const SERVICE_ENDPOINTS = {
   SEARCH: '/services/search',
 } as const;
 
+export const HALL_ENDPOINTS = {
+  CREATE: '/halls/',
+  BY_SERVICE: (serviceId: number | string) => `/halls/service/${serviceId}`,
+} as const;
+
 export const PHOTOGRAPHER_ENDPOINTS = {
   LIST: '/photographers/',
+  CREATE: '/photographers/',
   BY_SERVICE: (serviceId: number | string) => `/photographers/service/${serviceId}`,
+} as const;
+
+export const SERVICE_MEDIA_ENDPOINTS = {
+  CREATE: '/service-media/',
+  BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}`,
+  MAIN_BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}/main`,
 } as const;
 
 export const BOOKING_ENDPOINTS = {
