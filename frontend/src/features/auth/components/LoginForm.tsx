@@ -23,9 +23,12 @@ export function LoginForm() {
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    const success = await login(values);
-    if (success) {
-      const redirectTo = (location.state as { from?: Location })?.from?.pathname ?? ROUTES.HOME;
+    const session = await login(values);
+    if (session) {
+      const defaultRoute = session.account.role === 'Provider'
+        ? ROUTES.PROVIDER_DASHBOARD
+        : ROUTES.HOME;
+      const redirectTo = (location.state as { from?: Location })?.from?.pathname ?? defaultRoute;
       navigate(redirectTo, { replace: true });
     }
   });

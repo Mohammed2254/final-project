@@ -58,7 +58,10 @@ export interface ResetPasswordPayload {
 
 export interface LoginResponseData {
   access_token: string;
+  role: AccountRole;
   account: Account;
+  user_profile?: UserProfile;
+  provider_profile?: ProviderProfile;
 }
 
 export interface CustomerRegisterResponseData {
