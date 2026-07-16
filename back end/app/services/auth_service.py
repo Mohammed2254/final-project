@@ -94,11 +94,40 @@ class AuthService:
             role=account.role.value
         )
 
-        return {
+        result = {
             "access_token": token,
+            "role": account.role.value,
             "account": {
                 "account_id": account.account_id,
                 "email": account.email,
                 "role": account.role.value
             }
         }
+
+        if account.role == AccountRole.CUSTOMER:
+            user_profile = self.user_profile_service.get_by_account_id(
+                account.account_id
+            )
+
+            if user_profile is not None:
+                result["user_profile"] = {
+                    "user_profile_id": user_profile.user_profile_id,
+                    "full_name": user_profile.full_name
+                }
+
+        if account.role == AccountRole.PROVIDER:
+            provider_profile = (
+                self.provider_profile_service.get_by_account_id(
+                    account.account_id
+                )
+            )
+
+            if provider_profile is not None:
+                result["provider_profile"] = {
+                    "provider_profile_id": (
+                        provider_profile.provider_profile_id
+                    ),
+                    "business_name": provider_profile.business_name
+                }
+
+        return result
