@@ -1,10 +1,15 @@
 from app.models.service import Service
+from app.models.service_category import ServiceCategory
+from app.repositories.base_repository import BaseRepository
+from app.repositories.provider_profile_repository import ProviderProfileRepository
 from app.repositories.service_repository import ServiceRepository
 
 class ServiceService:
 
     def __init__(self):
         self.repository = ServiceRepository()
+        self.provider_repository = ProviderProfileRepository()
+        self.category_repository = BaseRepository(ServiceCategory)
 
     def create_service(
         self,
@@ -14,6 +19,12 @@ class ServiceService:
         description: str,
         price
     ) -> Service:
+        if self.provider_repository.get_by_id(provider_profile_id) is None:
+            raise ValueError("Provider profile not found.")
+
+        if self.category_repository.get_by_id(category_id) is None:
+            raise ValueError("Service category not found.")
+
         service = Service(
             provider_profile_id=provider_profile_id,
             category_id=category_id,

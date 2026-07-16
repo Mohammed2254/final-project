@@ -1,11 +1,13 @@
 from app.models.photographer_details import PhotographerDetails
 from app.repositories.photographer_details_repository import PhotographerDetailsRepository
+from app.repositories.service_repository import ServiceRepository
 
 
 class PhotographerDetailsService:
 
     def __init__(self):
         self.repository = PhotographerDetailsRepository()
+        self.service_repository = ServiceRepository()
 
     def create_photographer_details(
         self,
@@ -16,6 +18,9 @@ class PhotographerDetailsService:
         has_drone: bool = False,
         portfolio_url: str = None
     ) -> PhotographerDetails:
+
+        if self.service_repository.get_by_id(service_id) is None:
+            raise ValueError("Service not found.")
 
         if self.repository.exists(service_id):
             raise ValueError("Photographer details already exist for this service.")

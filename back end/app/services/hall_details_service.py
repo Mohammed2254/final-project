@@ -1,10 +1,12 @@
 from app.models.hall_details import HallDetails
 from app.repositories.hall_details_repository import HallDetailsRepository
+from app.repositories.service_repository import ServiceRepository
 
 class HallDetailsService:
 
     def __init__(self):
         self.repository = HallDetailsRepository()
+        self.service_repository = ServiceRepository()
 
     def create_hall_details(
         self,
@@ -17,8 +19,14 @@ class HallDetailsService:
         longitude=None
     ) -> HallDetails:
 
+        if self.service_repository.get_by_id(service_id) is None:
+            raise ValueError("Service not found.")
+
         if self.repository.exists(service_id):
             raise ValueError("Hall details already exist for this service.")
+
+        if max_capacity < min_capacity:
+            raise ValueError("Max capacity cannot be less than min capacity.")
 
         hall_details = HallDetails(
             service_id=service_id,
