@@ -64,6 +64,12 @@ export interface ServiceMediaCreatePayload {
   is_main?: boolean;
 }
 
+export interface ServiceCategoryRecord {
+  category_id: number;
+  category_name: string;
+  description: string | null;
+}
+
 
 export interface ServiceItem {
   id: number;

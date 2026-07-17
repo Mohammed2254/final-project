@@ -94,6 +94,21 @@ export default function HallDetailsPage() {
                   {hall.description}
                 </p>
               )}
+
+              {(hall.city || hall.address || (hall.minCapacity && hall.maxCapacity)) && (
+                <Card className="mt-5 space-y-2 p-5">
+                  <p className="text-sm font-bold text-foreground">تفاصيل القاعة</p>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    {hall.city && <li>المدينة: {hall.city}</li>}
+                    {hall.address && <li>العنوان: {hall.address}</li>}
+                    {hall.minCapacity && hall.maxCapacity && (
+                      <li>
+                        السعة: من {hall.minCapacity} إلى {hall.maxCapacity} شخص
+                      </li>
+                    )}
+                  </ul>
+                </Card>
+              )}
             </section>
 
             <Card className="h-fit space-y-4 p-5">

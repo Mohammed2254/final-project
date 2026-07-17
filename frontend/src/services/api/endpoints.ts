@@ -2,6 +2,7 @@ import { apiClient } from '@/services/api/client';
 import {
   AUTH_ENDPOINTS,
   SERVICE_ENDPOINTS,
+  SERVICE_CATEGORY_ENDPOINTS,
   HALL_ENDPOINTS,
   PHOTOGRAPHER_ENDPOINTS,
   SERVICE_MEDIA_ENDPOINTS,
@@ -13,6 +14,7 @@ import type {
   HallDetailsCreatePayload,
   HallDetailsRecord,
   PhotographerDetailsCreatePayload,
+  ServiceCategoryRecord,
   ServiceCreatePayload,
   ServiceMediaCreatePayload,
   ServiceMediaRecord,
@@ -107,6 +109,13 @@ export const serviceEndpoints = {
       {
         params: { keyword },
       },
+    ),
+};
+
+export const serviceCategoryEndpoints = {
+  list: () =>
+    apiClient.get<ApiSuccessResponse<ServiceCategoryRecord[]>>(
+      SERVICE_CATEGORY_ENDPOINTS.LIST,
     ),
 };
 

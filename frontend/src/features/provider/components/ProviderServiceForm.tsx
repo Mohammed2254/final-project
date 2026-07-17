@@ -7,6 +7,7 @@ import { Card, CardBody } from '@/components/common/Card';
 import { TextInput } from '@/components/forms/TextInput';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useServiceCategories } from '@/hooks/useServiceCategories';
 import {
   providerServiceSchema,
   type ProviderServiceFormInput,
@@ -40,6 +41,8 @@ const DEFAULT_VALUES: ProviderServiceFormInput = {
 };
 
 export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceFormProps) {
+  const { categories, isLoading: isLoadingCategories } = useServiceCategories();
+
   const {
     register,
     reset,
@@ -84,14 +87,31 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
               </select>
             </div>
 
-            <TextInput
-              label="رقم التصنيف"
-              type="number"
-              min={1}
-              hint="مثال: 1 للقاعات أو الرقم الموجود في جدول service_categories"
-              error={errors.category_id?.message}
-              {...register('category_id')}
-            />
+            <div>
+              <Label htmlFor="category_id">التصنيف</Label>
+              <select
+                id="category_id"
+                disabled={isLoadingCategories || categories.length === 0}
+                className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                {...register('category_id')}
+              >
+                {categories.length === 0 && (
+                  <option value="">
+                    {isLoadingCategories ? 'جارٍ تحميل التصنيفات...' : 'لا توجد تصنيفات متاحة'}
+                  </option>
+                )}
+                {categories.map((category) => (
+                  <option key={category.category_id} value={category.category_id}>
+                    {category.category_name}
+                  </option>
+                ))}
+              </select>
+              {errors.category_id && (
+                <p role="alert" className="mt-1.5 text-xs font-medium text-destructive">
+                  {errors.category_id.message}
+                </p>
+              )}
+            </div>
 
             <TextInput
               label="اسم الخدمة"

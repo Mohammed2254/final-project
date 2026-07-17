@@ -111,7 +111,7 @@ export default function PhotographerDetailsPage() {
               </div>
 
               <Link
-                to={ROUTES.BOOKING}
+                to={ROUTES.BOOKING(photographer.id)}
                 className={cn(buttonVariants({ variant: 'gold', size: 'default' }), 'w-full')}
               >
                 احجزوا الآن

@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.schemas.BookingItemSchema import (
@@ -9,6 +10,7 @@ from app.schemas.BookingItemSchema import (
 
 from app.services.booking_service import BookingService
 from app.services.user_profile_service import UserProfileService
+from app.utils.jwt_helper import JwtHelper
 
 from app.utils.response_helper import ResponseHelper
 
@@ -28,11 +30,12 @@ responses_schema = BookingResponseSchema(many=True)
 
 
 @booking_bp.post("/")
+@jwt_required()
 def create_booking():
     try:
         data = create_schema.load(request.get_json())
 
-        account_id = data["account_id"]
+        account_id = JwtHelper.get_account_id()
 
         user_profile = user_profile_service.get_by_account_id(
             account_id

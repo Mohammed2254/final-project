@@ -1,5 +1,7 @@
-import { serviceEndpoints } from '@/services/api/endpoints';
+import { hallEndpoints, serviceEndpoints } from '@/services/api/endpoints';
 import { toServiceItem, type ServiceItem } from '@/types/service';
+import { toHallItem, type HallItem } from '@/types/hall';
+import { ApiException } from '@/types/api';
 
 export interface HallListParams {
   keyword?: string;
@@ -33,8 +35,19 @@ export const hallService = {
     return applyPriceRange(items, params.minPrice, params.maxPrice);
   },
 
-  async getById(id: number | string): Promise<ServiceItem> {
-    const { data } = await serviceEndpoints.details(id);
-    return toServiceItem(data.data);
+  async getById(id: number | string): Promise<HallItem> {
+    const { data: serviceResponse } = await serviceEndpoints.details(id);
+
+    try {
+      const { data: detailsResponse } = await hallEndpoints.byService(id);
+      return toHallItem(serviceResponse.data, detailsResponse.data);
+    } catch (err) {
+      // Not every service is a hall (or has hall_details yet) - render the
+      // page with what we have instead of failing it entirely.
+      if (err instanceof ApiException && err.status === 404) {
+        return toHallItem(serviceResponse.data, null);
+      }
+      throw err;
+    }
   },
 };

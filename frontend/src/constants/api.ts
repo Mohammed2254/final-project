@@ -23,6 +23,10 @@ export const SERVICE_ENDPOINTS = {
   SEARCH: '/services/search',
 } as const;
 
+export const SERVICE_CATEGORY_ENDPOINTS = {
+  LIST: '/service-categories/',
+} as const;
+
 export const HALL_ENDPOINTS = {
   CREATE: '/halls/',
   BY_SERVICE: (serviceId: number | string) => `/halls/service/${serviceId}`,

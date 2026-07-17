@@ -9,7 +9,6 @@ class BookingItemSchema(Schema):
 
 
 class BookingCreateSchema(Schema):
-    account_id = fields.Int(required=True)
     event_date = fields.Date(required=True)
     notes = fields.Str(required=False, allow_none=True)
     items = fields.List(

@@ -144,7 +144,6 @@ export default function BookingPage() {
     }
 
     const booking = await createBooking({
-      account_id: account.account_id,
       event_date: eventDate,
       notes: notes.trim() || null,
 
