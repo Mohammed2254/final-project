@@ -52,3 +52,9 @@ export const BOOKING_ENDPOINTS = {
   BY_CUSTOMER: (customerProfileId: number | string) =>
     `/bookings/customer/${customerProfileId}`,
 } as const;
+
+export const FAVORITE_ENDPOINTS = {
+  LIST: '/favorites/',
+  CREATE: '/favorites/',
+  DELETE: (serviceId: number | string) => `/favorites/${serviceId}`,
+} as const;

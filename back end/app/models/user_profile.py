@@ -53,3 +53,9 @@ class UserProfile(db.Model):
         back_populates="added_by"
     )
 
+    favorites = db.relationship(
+        "Favorite",
+        back_populates="user_profile",
+        cascade="all, delete-orphan"
+    )
+

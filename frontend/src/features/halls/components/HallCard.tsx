@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 
 import { Card } from '@/components/common/Card';
+import { FavoriteButton } from '@/components/common/FavoriteButton';
 import { PlaceholderImage } from '@/components/common/PlaceholderImage';
 import { PriceText } from '@/components/common/PriceText';
 import type { ServiceItem } from '@/types/service';
@@ -11,23 +12,23 @@ interface HallCardProps {
 
 export function HallCard({ hall }: HallCardProps) {
   return (
-    <Link to={`/halls/${hall.id}`} className="block">
-      <Card className="h-full overflow-hidden transition-colors hover:border-gold/50">
+    <Card className="relative h-full overflow-hidden transition-colors hover:border-gold/50">
+      {/* Sibling of the Link below, not nested inside it - keeps the heart
+          independently clickable without triggering card navigation. */}
+      <FavoriteButton
+        serviceId={hall.id}
+        className="absolute end-3 top-3 z-10 size-8 bg-background/80 backdrop-blur-sm"
+      />
+      <Link to={`/halls/${hall.id}`} className="block">
         <PlaceholderImage className="h-32 w-full" label={hall.name} />
         <div className="space-y-1 p-3.5">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-sm font-bold text-foreground">{hall.name}</p>
-            {/* Favorites has no backend endpoint yet - decorative only. */}
-            <span aria-hidden="true" className="text-muted-foreground">
-              ♡
-            </span>
-          </div>
+          <p className="text-sm font-bold text-foreground">{hall.name}</p>
           {hall.description && (
             <p className="line-clamp-1 text-xs text-muted-foreground">{hall.description}</p>
           )}
           <PriceText price={hall.price} className="text-sm" />
         </div>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

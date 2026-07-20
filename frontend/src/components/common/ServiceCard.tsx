@@ -1,4 +1,5 @@
 import { Card } from '@/components/common/Card';
+import { FavoriteButton } from '@/components/common/FavoriteButton';
 import { PlaceholderImage } from '@/components/common/PlaceholderImage';
 import { PriceText } from '@/components/common/PriceText';
 import type { ServiceItem } from '@/types/service';
@@ -15,10 +16,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       <div className="space-y-1 p-3.5">
         <div className="flex items-start justify-between gap-2">
           <p className="text-sm font-bold text-foreground">{service.name}</p>
-          {/* Favorites aren't backed by any endpoint yet . */}
-          <span aria-hidden="true" className="text-muted-foreground">
-            ♡
-          </span>
+          <FavoriteButton serviceId={service.id} />
         </div>
         {service.description && (
           <p className="line-clamp-1 text-xs text-muted-foreground">{service.description}</p>

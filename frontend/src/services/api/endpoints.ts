@@ -7,6 +7,7 @@ import {
   PHOTOGRAPHER_ENDPOINTS,
   SERVICE_MEDIA_ENDPOINTS,
   BOOKING_ENDPOINTS,
+  FAVORITE_ENDPOINTS,
 } from '@/constants/api';
 
 import type { ApiSuccessResponse } from '@/types/api';
@@ -25,6 +26,10 @@ import type {
   Booking,
   BookingCreatePayload,
 } from '@/types/booking';
+import type {
+  FavoriteCreatePayload,
+  FavoriteRecord,
+} from '@/types/favorite';
 
 import type {
   LoginPayload,
@@ -155,6 +160,28 @@ export const bookingEndpoints = {
   byCustomer: (customerProfileId: number | string) =>
     apiClient.get<ApiSuccessResponse<Booking[]>>(
       BOOKING_ENDPOINTS.BY_CUSTOMER(customerProfileId),
+    ),
+};
+
+/**
+ * Raw HTTP calls for favorites - all require an authenticated Customer;
+ * identity is derived server-side from the JWT (see favorite_routes.py).
+ */
+export const favoriteEndpoints = {
+  list: () =>
+    apiClient.get<ApiSuccessResponse<FavoriteRecord[]>>(
+      FAVORITE_ENDPOINTS.LIST,
+    ),
+
+  add: (payload: FavoriteCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<FavoriteRecord>>(
+      FAVORITE_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  remove: (serviceId: number | string) =>
+    apiClient.delete<ApiSuccessResponse<null>>(
+      FAVORITE_ENDPOINTS.DELETE(serviceId),
     ),
 };
 

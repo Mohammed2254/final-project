@@ -12,7 +12,6 @@ import { Spinner } from '@/components/common/Loading';
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
 import WeddingPlannerPage from '@/pages/WeddingPlannerPage';
-import FavoritesPage from '@/pages/FavoritesPage';
 import BookingPage from '@/pages/BookingPage';
 import PaymentsPage from '@/pages/PaymentsPage';
 import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
@@ -44,6 +43,10 @@ const PhotographersListPage = lazy(
 
 const PhotographerDetailsPage = lazy(
   () => import('@/features/photographers/pages/PhotographerDetailsPage'),
+);
+
+const FavoritesPage = lazy(
+  () => import('@/features/favorites/pages/FavoritesPage'),
 );
 
 function RouteFallback() {
@@ -93,11 +96,6 @@ export function AppRouter() {
             />
 
             <Route
-              path="favorites"
-              element={<FavoritesPage />}
-            />
-
-            <Route
               path="payments"
               element={<PaymentsPage />}
             />
@@ -107,6 +105,11 @@ export function AppRouter() {
               <Route
                 path="booking/:serviceId"
                 element={<BookingPage />}
+              />
+
+              <Route
+                path="favorites"
+                element={<FavoritesPage />}
               />
 
               <Route
