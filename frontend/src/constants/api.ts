@@ -58,3 +58,24 @@ export const FAVORITE_ENDPOINTS = {
   CREATE: '/favorites/',
   DELETE: (serviceId: number | string) => `/favorites/${serviceId}`,
 } as const;
+
+export const WEDDING_PLAN_ENDPOINTS = {
+  CREATE: '/wedding-plans/',
+  MINE: '/wedding-plans/me',
+  DETAILS: (planId: number | string) => `/wedding-plans/${planId}`,
+  DELETE: (planId: number | string) => `/wedding-plans/${planId}`,
+} as const;
+
+export const WEDDING_PLAN_INVITATION_ENDPOINTS = {
+  CREATE: '/wedding-plan-invitations/',
+  ACCEPT: '/wedding-plan-invitations/accept',
+  REJECT: '/wedding-plan-invitations/reject',
+} as const;
+
+export const WEDDING_PLAN_SELECTION_ENDPOINTS = {
+  CREATE: '/wedding-plan-selections/',
+  BY_PLAN: (planId: number | string) => `/wedding-plan-selections/plan/${planId}`,
+  DELETE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}`,
+  APPROVE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/approve`,
+  REJECT: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/reject`,
+} as const;

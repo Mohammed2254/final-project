@@ -20,6 +20,14 @@ class WeddingPlanRepository:
             owner_profile_id=owner_profile_id
         ).all()
 
+    def get_by_member(self, profile_id: int) -> list[WeddingPlan]:
+        return WeddingPlan.query.filter(
+            db.or_(
+                WeddingPlan.owner_profile_id == profile_id,
+                WeddingPlan.partner_profile_id == profile_id
+            )
+        ).all()
+
     def update(self) -> None:
         db.session.commit()
 

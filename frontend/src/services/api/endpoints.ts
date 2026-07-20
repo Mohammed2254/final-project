@@ -8,6 +8,9 @@ import {
   SERVICE_MEDIA_ENDPOINTS,
   BOOKING_ENDPOINTS,
   FAVORITE_ENDPOINTS,
+  WEDDING_PLAN_ENDPOINTS,
+  WEDDING_PLAN_INVITATION_ENDPOINTS,
+  WEDDING_PLAN_SELECTION_ENDPOINTS,
 } from '@/constants/api';
 
 import type { ApiSuccessResponse } from '@/types/api';
@@ -30,6 +33,14 @@ import type {
   FavoriteCreatePayload,
   FavoriteRecord,
 } from '@/types/favorite';
+import type {
+  WeddingPlanCreatePayload,
+  WeddingPlanRecord,
+  WeddingPlanInvitationCreatePayload,
+  WeddingPlanInvitationRecord,
+  WeddingPlanSelectionCreatePayload,
+  WeddingPlanSelectionRecord,
+} from '@/types/weddingPlan';
 
 import type {
   LoginPayload,
@@ -182,6 +193,85 @@ export const favoriteEndpoints = {
   remove: (serviceId: number | string) =>
     apiClient.delete<ApiSuccessResponse<null>>(
       FAVORITE_ENDPOINTS.DELETE(serviceId),
+    ),
+};
+
+/**
+ * Raw HTTP calls for the shared wedding plan (owner + optional partner).
+ * Identity for owner/added_by is always derived server-side from the JWT
+ * (see wedding_plan_routes.py / wedding_plan_selection_routes.py) - never
+ * sent from the client.
+ */
+export const weddingPlanEndpoints = {
+  create: (payload: WeddingPlanCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanRecord>>(
+      WEDDING_PLAN_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  mine: () =>
+    apiClient.get<ApiSuccessResponse<WeddingPlanRecord[]>>(
+      WEDDING_PLAN_ENDPOINTS.MINE,
+    ),
+
+  details: (planId: number | string) =>
+    apiClient.get<ApiSuccessResponse<WeddingPlanRecord>>(
+      WEDDING_PLAN_ENDPOINTS.DETAILS(planId),
+    ),
+
+  remove: (planId: number | string) =>
+    apiClient.delete<ApiSuccessResponse<null>>(
+      WEDDING_PLAN_ENDPOINTS.DELETE(planId),
+    ),
+};
+
+export const weddingPlanInvitationEndpoints = {
+  create: (payload: WeddingPlanInvitationCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanInvitationRecord>>(
+      WEDDING_PLAN_INVITATION_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  accept: (inviteCode: string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanInvitationRecord>>(
+      WEDDING_PLAN_INVITATION_ENDPOINTS.ACCEPT,
+      { invite_code: inviteCode },
+    ),
+
+  reject: (inviteCode: string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanInvitationRecord>>(
+      WEDDING_PLAN_INVITATION_ENDPOINTS.REJECT,
+      { invite_code: inviteCode },
+    ),
+};
+
+export const weddingPlanSelectionEndpoints = {
+  create: (payload: WeddingPlanSelectionCreatePayload) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.CREATE,
+      payload,
+    ),
+
+  byPlan: (planId: number | string) =>
+    apiClient.get<ApiSuccessResponse<WeddingPlanSelectionRecord[]>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.BY_PLAN(planId),
+    ),
+
+  remove: (planServiceId: number | string) =>
+    apiClient.delete<ApiSuccessResponse<null>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.DELETE(planServiceId),
+    ),
+
+  approve: (planServiceId: number | string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.APPROVE(planServiceId),
+      {},
+    ),
+
+  reject: (planServiceId: number | string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.REJECT(planServiceId),
+      {},
     ),
 };
 

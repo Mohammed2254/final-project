@@ -2,7 +2,6 @@ from marshmallow import Schema, fields
 
 
 class WeddingPlanCreateSchema(Schema):
-    owner_profile_id = fields.Int(required=True)
     plan_name = fields.Str(required=True)
     event_date = fields.Date(required=True)
     budget = fields.Decimal(required=True, as_string=True)

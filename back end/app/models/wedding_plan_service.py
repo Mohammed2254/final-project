@@ -34,6 +34,12 @@ class WeddingPlanService(db.Model):
         nullable=False
     )
 
+    status = db.Column(
+        db.String(30),
+        nullable=False,
+        default="PENDING"
+    )
+
     notes = db.Column(
         db.Text,
         nullable=True

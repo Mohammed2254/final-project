@@ -8,7 +8,6 @@ class WeddingPlanInvitationCreateSchema(Schema):
 
 class WeddingPlanInvitationAcceptSchema(Schema):
     invite_code = fields.Str(required=True)
-    accepted_by_profile_id = fields.Int(required=True)
 
 
 class WeddingPlanInvitationRejectSchema(Schema):

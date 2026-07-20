@@ -24,13 +24,17 @@ class WeddingPlanInvitationService:
     def create_invitation(
         self,
         plan_id: int,
-        invited_email: str
+        invited_email: str,
+        profile_id: int
     ) -> WeddingPlanInvitation:
 
         plan = self.plan_service.get_by_id(plan_id)
 
         if plan is None:
             raise ValueError("Wedding plan not found.")
+
+        if plan.owner_profile_id != profile_id:
+            raise ValueError("Only the plan owner can invite a partner.")
 
         if plan.partner_profile_id is not None:
             raise ValueError("This wedding plan already has a partner.")
@@ -67,13 +71,17 @@ class WeddingPlanInvitationService:
     def accept_invitation(
         self,
         invite_code: str,
-        accepted_by_profile_id: int
+        accepted_by_profile_id: int,
+        account_email: str
     ) -> WeddingPlanInvitation:
 
         invitation = self.get_by_code(invite_code)
 
         if invitation is None:
             raise ValueError("Invitation not found.")
+
+        if invitation.invited_email.lower() != account_email.lower():
+            raise ValueError("This invitation was not sent to your account.")
 
         if invitation.status != "PENDING":
             raise ValueError("Invitation is no longer pending.")
@@ -98,13 +106,17 @@ class WeddingPlanInvitationService:
 
     def reject_invitation(
         self,
-        invite_code: str
+        invite_code: str,
+        account_email: str
     ) -> WeddingPlanInvitation:
 
         invitation = self.get_by_code(invite_code)
 
         if invitation is None:
             raise ValueError("Invitation not found.")
+
+        if invitation.invited_email.lower() != account_email.lower():
+            raise ValueError("This invitation was not sent to your account.")
 
         if invitation.status != "PENDING":
             raise ValueError("Invitation is no longer pending.")
@@ -117,13 +129,19 @@ class WeddingPlanInvitationService:
 
     def delete_invitation(
         self,
-        invitation_id: int
+        invitation_id: int,
+        profile_id: int
     ) -> bool:
 
         invitation = self.get_by_id(invitation_id)
 
         if invitation is None:
             raise ValueError("Invitation not found.")
+
+        plan = self.plan_service.get_by_id(invitation.plan_id)
+
+        if plan is None or plan.owner_profile_id != profile_id:
+            raise ValueError("Only the plan owner can cancel this invitation.")
 
         self.repository.delete(invitation)
 
