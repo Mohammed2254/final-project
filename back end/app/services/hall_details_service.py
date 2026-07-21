@@ -40,6 +40,9 @@ class HallDetailsService:
 
         return self.repository.add(hall_details)
 
+    def get_all(self) -> list[HallDetails]:
+        return self.repository.get_all()
+
     def get_by_id(self, hall_details_id: int) -> HallDetails | None:
         return self.repository.get_by_id(hall_details_id)
 

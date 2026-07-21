@@ -7,18 +7,13 @@ export const bookingService = {
     return data.data;
   },
 
-  async list() {
-    const { data } = await bookingEndpoints.list();
-    return data.data;
-  },
-
   async details(bookingId: number | string) {
     const { data } = await bookingEndpoints.details(bookingId);
     return data.data;
   },
 
-  async byCustomer(customerProfileId: number | string) {
-    const { data } = await bookingEndpoints.byCustomer(customerProfileId);
+  async mine() {
+    const { data } = await bookingEndpoints.mine();
     return data.data;
   },
 };

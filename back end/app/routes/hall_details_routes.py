@@ -60,6 +60,15 @@ def create_hall_details():
         )
 
 
+@hall_bp.get("/")
+def get_all_hall_details():
+    halls = hall_service.get_all()
+
+    return ResponseHelper.success(
+        data=halls_response_schema.dump(halls)
+    )
+
+
 @hall_bp.get("/<int:hall_details_id>")
 def get_hall_details(hall_details_id):
 

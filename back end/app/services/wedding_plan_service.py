@@ -39,16 +39,27 @@ class WeddingPlanService:
 
         return self.repository.get_by_owner(owner_profile_id)
 
+    def get_by_member(
+        self,
+        profile_id: int
+    ) -> list[WeddingPlan]:
+
+        return self.repository.get_by_member(profile_id)
+
     def update_plan(
         self,
         plan_id: int,
-        data: dict
+        data: dict,
+        profile_id: int
     ) -> WeddingPlan:
 
         plan = self.get_by_id(plan_id)
 
         if plan is None:
             raise ValueError("Wedding plan not found.")
+
+        if profile_id not in {plan.owner_profile_id, plan.partner_profile_id}:
+            raise ValueError("Only wedding plan members can update this plan.")
 
         allowed_fields = {
             "plan_name",
@@ -89,12 +100,15 @@ class WeddingPlanService:
 
         return plan
 
-    def delete_plan(self, plan_id: int) -> bool:
+    def delete_plan(self, plan_id: int, profile_id: int) -> bool:
 
         plan = self.get_by_id(plan_id)
 
         if plan is None:
             raise ValueError("Wedding plan not found.")
+
+        if plan.owner_profile_id != profile_id:
+            raise ValueError("Only the plan owner can delete this wedding plan.")
 
         self.repository.delete(plan)
 

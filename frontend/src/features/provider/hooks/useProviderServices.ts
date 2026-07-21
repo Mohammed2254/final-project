@@ -31,6 +31,7 @@ export function useProviderServices(providerProfileId?: number) {
   }, [providerProfileId]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void loadServices();
   }, [loadServices]);
 

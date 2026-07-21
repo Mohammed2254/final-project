@@ -6,7 +6,6 @@ import { PriceText } from '@/components/common/PriceText';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useMyBookings } from '@/features/bookings/hooks/useMyBookings';
 import { ROUTES } from '@/constants/routes';
 
@@ -17,10 +16,7 @@ const STATUS_LABELS: Record<string, string> = {
 };
 
 export default function MyBookingsPage() {
-  const { userProfile } = useAuth();
-  const customerProfileId = userProfile?.user_profile_id;
-
-  const { bookings, isLoading, error, reload } = useMyBookings(customerProfileId);
+  const { bookings, isLoading, error, reload } = useMyBookings();
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">

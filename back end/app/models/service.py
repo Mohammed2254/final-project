@@ -98,4 +98,10 @@ class Service(db.Model):
         back_populates="service"
     )
 
+    favorited_by = db.relationship(
+        "Favorite",
+        back_populates="service",
+        cascade="all, delete-orphan"
+    )
+
     

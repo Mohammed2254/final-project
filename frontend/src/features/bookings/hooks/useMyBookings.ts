@@ -4,22 +4,17 @@ import { bookingService } from '@/features/bookings/services/booking.service';
 import { ApiException } from '@/types/api';
 import type { Booking } from '@/types/booking';
 
-export function useMyBookings(customerProfileId?: number) {
+export function useMyBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchBookings = useCallback(async () => {
-    if (!customerProfileId) {
-      setIsLoading(false);
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
     try {
-      const data = await bookingService.byCustomer(customerProfileId);
+      const data = await bookingService.mine();
       setBookings(data);
     } catch (err) {
       setError(
@@ -30,7 +25,7 @@ export function useMyBookings(customerProfileId?: number) {
     } finally {
       setIsLoading(false);
     }
-  }, [customerProfileId]);
+  }, []);
 
   useEffect(() => {
     void fetchBookings();

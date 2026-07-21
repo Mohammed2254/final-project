@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.schemas.service_media_schema import (
@@ -7,6 +8,9 @@ from app.schemas.service_media_schema import (
     ServiceMediaResponseSchema
 )
 from app.services.service_media_service import ServiceMediaService
+from app.services.service_service import ServiceService
+from app.services.provider_profile_service import ProviderProfileService
+from app.utils.jwt_helper import JwtHelper
 from app.utils.response_helper import ResponseHelper
 
 
@@ -16,6 +20,8 @@ service_media_bp = Blueprint(
 )
 
 service_media_service = ServiceMediaService()
+service_service = ServiceService()
+provider_profile_service = ProviderProfileService()
 
 create_schema = ServiceMediaCreateSchema()
 update_schema = ServiceMediaUpdateSchema()
@@ -23,10 +29,34 @@ response_schema = ServiceMediaResponseSchema()
 responses_schema = ServiceMediaResponseSchema(many=True)
 
 
+def _get_current_provider_profile_id():
+    account_id = JwtHelper.get_account_id()
+    provider_profile = provider_profile_service.get_by_account_id(account_id)
+
+    if provider_profile is None:
+        raise ValueError("Provider profile not found.")
+
+    return provider_profile.provider_profile_id
+
+
+def _assert_owns_service(service_id: int, provider_profile_id: int):
+    service = service_service.get_by_id(service_id)
+
+    if service is None:
+        raise ValueError("Service not found.")
+
+    if service.provider_profile_id != provider_profile_id:
+        raise ValueError("You do not have access to this service.")
+
+
 @service_media_bp.post("/")
+@jwt_required()
 def add_media():
     try:
         data = create_schema.load(request.get_json())
+
+        provider_profile_id = _get_current_provider_profile_id()
+        _assert_owns_service(data["service_id"], provider_profile_id)
 
         media = service_media_service.add_media(
             service_id=data["service_id"],
@@ -104,9 +134,21 @@ def get_main_media_by_service(service_id):
 
 
 @service_media_bp.put("/<int:media_id>")
+@jwt_required()
 def update_media(media_id):
     try:
         data = update_schema.load(request.get_json())
+
+        provider_profile_id = _get_current_provider_profile_id()
+
+        existing = service_media_service.get_by_id(media_id)
+        if existing is None:
+            return ResponseHelper.error(
+                message="Media not found.",
+                status_code=404
+            )
+
+        _assert_owns_service(existing.service_id, provider_profile_id)
 
         media = service_media_service.update_media(
             media_id,
@@ -133,8 +175,20 @@ def update_media(media_id):
 
 
 @service_media_bp.delete("/<int:media_id>")
+@jwt_required()
 def delete_media(media_id):
     try:
+        provider_profile_id = _get_current_provider_profile_id()
+
+        existing = service_media_service.get_by_id(media_id)
+        if existing is None:
+            return ResponseHelper.error(
+                message="Media not found.",
+                status_code=404
+            )
+
+        _assert_owns_service(existing.service_id, provider_profile_id)
+
         service_media_service.delete_media(media_id)
 
         return ResponseHelper.success(

@@ -62,9 +62,30 @@ class BookingService:
             customer_profile_id
         )
 
-    def update_booking(
+    def get_by_provider_id(
+        self,
+        provider_profile_id: int
+    ) -> list[Booking]:
+
+        return self.repository.get_by_provider_id(
+            provider_profile_id
+        )
+
+    def is_provider_booking(
+        self,
+        booking: Booking,
+        provider_profile_id: int
+    ) -> bool:
+
+        return any(
+            item.service.provider_profile_id == provider_profile_id
+            for item in booking.booking_items
+        )
+
+    def update_booking_by_customer(
         self,
         booking_id: int,
+        customer_profile_id: int,
         data: dict
     ) -> Booking:
 
@@ -73,8 +94,38 @@ class BookingService:
         if booking is None:
             raise ValueError("Booking not found.")
 
+        if booking.customer_profile_id != customer_profile_id:
+            raise ValueError("You do not have access to this booking.")
+
+        allowed_fields = {"event_date", "notes"}
+
         for key, value in data.items():
-            setattr(booking, key, value)
+            if key in allowed_fields:
+                setattr(booking, key, value)
+
+        self.repository.update()
+
+        return booking
+
+    def update_status_by_provider(
+        self,
+        booking_id: int,
+        provider_profile_id: int,
+        new_status: str
+    ) -> Booking:
+
+        if new_status not in {"CONFIRMED", "REJECTED"}:
+            raise ValueError("Status must be CONFIRMED or REJECTED.")
+
+        booking = self.get_by_id(booking_id)
+
+        if booking is None:
+            raise ValueError("Booking not found.")
+
+        if not self.is_provider_booking(booking, provider_profile_id):
+            raise ValueError("You do not have access to this booking.")
+
+        booking.status = new_status
 
         self.repository.update()
 
@@ -82,13 +133,17 @@ class BookingService:
 
     def delete_booking(
         self,
-        booking_id: int
+        booking_id: int,
+        customer_profile_id: int
     ) -> bool:
 
         booking = self.get_by_id(booking_id)
 
         if booking is None:
             raise ValueError("Booking not found.")
+
+        if booking.customer_profile_id != customer_profile_id:
+            raise ValueError("You do not have access to this booking.")
 
         self.repository.delete(booking)
 

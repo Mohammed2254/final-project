@@ -7,8 +7,9 @@ export const providerServiceSchema = z
     service_name: z.string().min(2, 'اسم الخدمة مطلوب').max(150),
     description: z.string().max(1000).optional(),
     price: z.coerce.number().positive('السعر مطلوب'),
-    media_url: z.string().url('رابط الصورة غير صحيح').optional().or(z.literal('')),
-    is_main: z.boolean().optional(),
+    media_urls: z
+      .array(z.object({ value: z.string().url('رابط الصورة غير صحيح').optional().or(z.literal('')) }))
+      .optional(),
 
     min_capacity: z.coerce.number().int().positive().optional(),
     max_capacity: z.coerce.number().int().positive().optional(),

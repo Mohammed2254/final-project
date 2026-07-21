@@ -3,6 +3,9 @@ import { tokenService } from '@/services/auth/token';
 import { UNAUTHORIZED_EVENT } from '@/services/api/interceptors';
 import type { Account, ProviderProfile, UserProfile } from '@/types/auth';
 
+/** Dispatched on every logout (manual or forced) so other stores (e.g. favorites) can reset without importing auth.store directly. */
+export const LOGOUT_EVENT = 'farah:logout';
+
 interface AuthState {
   account: Account | null;
   userProfile: UserProfile | null;
@@ -61,6 +64,7 @@ export const authActions = {
       providerProfile: null,
       isAuthenticated: false,
     });
+    window.dispatchEvent(new Event(LOGOUT_EVENT));
   },
 };
 

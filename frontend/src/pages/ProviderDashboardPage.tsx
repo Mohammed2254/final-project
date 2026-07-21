@@ -1,11 +1,13 @@
-import { Building2, Camera, LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard, Tag } from 'lucide-react';
 
 import { Card, CardBody } from '@/components/common/Card';
 import { ErrorState } from '@/components/common/EmptyState';
 import { ProviderServiceForm } from '@/features/provider/components/ProviderServiceForm';
 import { ProviderServicesPanel } from '@/features/provider/components/ProviderServicesPanel';
+import { ProviderBookingsPanel } from '@/features/provider/components/ProviderBookingsPanel';
 import { useProviderServices } from '@/features/provider/hooks/useProviderServices';
 import { useAuth } from '@/features/auth/hooks/useAuth';
+import { useServiceCategories } from '@/hooks/useServiceCategories';
 
 export default function ProviderDashboardPage() {
   const { account, providerProfile } = useAuth();
@@ -19,6 +21,8 @@ export default function ProviderDashboardPage() {
     createService,
     reload,
   } = useProviderServices(providerProfileId);
+
+  const { categories } = useServiceCategories();
 
   if (!providerProfileId) {
     return (
@@ -48,35 +52,29 @@ export default function ProviderDashboardPage() {
         <div className="text-sm text-muted-foreground">{account?.email}</div>
       </section>
 
-      <section className="grid gap-4 md:grid-cols-3">
+      <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardBody>
             <p className="text-sm text-muted-foreground">إجمالي الخدمات</p>
             <p className="mt-2 text-2xl font-bold text-foreground">{services.length}</p>
           </CardBody>
         </Card>
-        <Card>
-          <CardBody>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Building2 size={16} />
-              القاعات
-            </div>
-            <p className="mt-2 text-2xl font-bold text-foreground">
-              {services.filter((service) => service.categoryId === 1).length}
-            </p>
-          </CardBody>
-        </Card>
-        <Card>
-          <CardBody>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Camera size={16} />
-              خدمات التصوير
-            </div>
-            <p className="mt-2 text-2xl font-bold text-foreground">
-              {services.filter((service) => service.categoryId !== 1).length}
-            </p>
-          </CardBody>
-        </Card>
+
+        {/* عدد ديناميكي لكل تصنيف حقيقي - لا يفترض وجود قاعات/تصوير فقط،
+            ويعمل تلقائياً مع أي تصنيف جديد يُضاف مستقبلاً. */}
+        {categories.map((category) => (
+          <Card key={category.category_id}>
+            <CardBody>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Tag size={16} />
+                {category.category_name}
+              </div>
+              <p className="mt-2 text-2xl font-bold text-foreground">
+                {services.filter((service) => service.categoryId === category.category_id).length}
+              </p>
+            </CardBody>
+          </Card>
+        ))}
       </section>
 
       {error && (
@@ -93,6 +91,8 @@ export default function ProviderDashboardPage() {
         />
         <ProviderServiceForm isLoading={isCreating} onSubmit={createService} />
       </div>
+
+      <ProviderBookingsPanel />
     </div>
   );
 }

@@ -23,7 +23,12 @@ export const SERVICE_ENDPOINTS = {
   SEARCH: '/services/search',
 } as const;
 
+export const SERVICE_CATEGORY_ENDPOINTS = {
+  LIST: '/service-categories/',
+} as const;
+
 export const HALL_ENDPOINTS = {
+  LIST: '/halls/',
   CREATE: '/halls/',
   BY_SERVICE: (serviceId: number | string) => `/halls/service/${serviceId}`,
 } as const;
@@ -38,13 +43,43 @@ export const SERVICE_MEDIA_ENDPOINTS = {
   CREATE: '/service-media/',
   BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}`,
   MAIN_BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}/main`,
+  UPDATE: (mediaId: number | string) => `/service-media/${mediaId}`,
+  DELETE: (mediaId: number | string) => `/service-media/${mediaId}`,
 } as const;
 
 export const BOOKING_ENDPOINTS = {
   CREATE: '/bookings/',
-  LIST: '/bookings/',
   DETAILS: (bookingId: number | string) =>
     `/bookings/${bookingId}`,
-  BY_CUSTOMER: (customerProfileId: number | string) =>
-    `/bookings/customer/${customerProfileId}`,
+  MINE: '/bookings/customer/me',
+  PROVIDER_MINE: '/bookings/provider/me',
+  UPDATE_STATUS: (bookingId: number | string) =>
+    `/bookings/${bookingId}/status`,
+} as const;
+
+export const FAVORITE_ENDPOINTS = {
+  LIST: '/favorites/',
+  CREATE: '/favorites/',
+  DELETE: (serviceId: number | string) => `/favorites/${serviceId}`,
+} as const;
+
+export const WEDDING_PLAN_ENDPOINTS = {
+  CREATE: '/wedding-plans/',
+  MINE: '/wedding-plans/me',
+  DETAILS: (planId: number | string) => `/wedding-plans/${planId}`,
+  DELETE: (planId: number | string) => `/wedding-plans/${planId}`,
+} as const;
+
+export const WEDDING_PLAN_INVITATION_ENDPOINTS = {
+  CREATE: '/wedding-plan-invitations/',
+  ACCEPT: '/wedding-plan-invitations/accept',
+  REJECT: '/wedding-plan-invitations/reject',
+} as const;
+
+export const WEDDING_PLAN_SELECTION_ENDPOINTS = {
+  CREATE: '/wedding-plan-selections/',
+  BY_PLAN: (planId: number | string) => `/wedding-plan-selections/plan/${planId}`,
+  DELETE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}`,
+  APPROVE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/approve`,
+  REJECT: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/reject`,
 } as const;

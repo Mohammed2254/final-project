@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 import { Card } from '@/components/common/Card';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { ServiceImage } from '@/components/common/ServiceImage';
 import { PriceText } from '@/components/common/PriceText';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
@@ -80,7 +80,8 @@ export default function HallDetailsPage() {
         {!isLoading && !notFound && !error && hall && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.5fr_1fr]">
             <section>
-              <PlaceholderImage
+              <ServiceImage
+                imageUrl={hall.imageUrl}
                 className="h-72 w-full rounded-lg lg:h-96"
                 label={hall.name}
               />
@@ -93,6 +94,21 @@ export default function HallDetailsPage() {
                 <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted-foreground">
                   {hall.description}
                 </p>
+              )}
+
+              {(hall.city || hall.address || (hall.minCapacity && hall.maxCapacity)) && (
+                <Card className="mt-5 space-y-2 p-5">
+                  <p className="text-sm font-bold text-foreground">تفاصيل القاعة</p>
+                  <ul className="space-y-1.5 text-sm text-muted-foreground">
+                    {hall.city && <li>المدينة: {hall.city}</li>}
+                    {hall.address && <li>العنوان: {hall.address}</li>}
+                    {hall.minCapacity && hall.maxCapacity && (
+                      <li>
+                        السعة: من {hall.minCapacity} إلى {hall.maxCapacity} شخص
+                      </li>
+                    )}
+                  </ul>
+                </Card>
               )}
             </section>
 

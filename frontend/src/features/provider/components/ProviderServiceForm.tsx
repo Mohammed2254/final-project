@@ -1,12 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ImagePlus, Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { ImagePlus, Plus, Trash2 } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
+import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
 import { Card, CardBody } from '@/components/common/Card';
 import { TextInput } from '@/components/forms/TextInput';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { useServiceCategories } from '@/hooks/useServiceCategories';
 import {
   providerServiceSchema,
   type ProviderServiceFormInput,
@@ -24,8 +26,7 @@ const DEFAULT_VALUES: ProviderServiceFormInput = {
   service_name: '',
   description: '',
   price: 0,
-  media_url: '',
-  is_main: true,
+  media_urls: [{ value: '' }],
   min_capacity: 1,
   max_capacity: 1,
   city: '',
@@ -40,10 +41,13 @@ const DEFAULT_VALUES: ProviderServiceFormInput = {
 };
 
 export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceFormProps) {
+  const { categories, isLoading: isLoadingCategories } = useServiceCategories();
+
   const {
     register,
     reset,
     watch,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<ProviderServiceFormInput, unknown, ProviderServiceFormValues>({
@@ -52,6 +56,11 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
   });
 
   const serviceType = watch('serviceType');
+
+  const { fields: mediaFields, append: appendMedia, remove: removeMedia } = useFieldArray({
+    control,
+    name: 'media_urls',
+  });
 
   const submit = handleSubmit(async (values) => {
     const created = await onSubmit(values);
@@ -84,14 +93,31 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
               </select>
             </div>
 
-            <TextInput
-              label="رقم التصنيف"
-              type="number"
-              min={1}
-              hint="مثال: 1 للقاعات أو الرقم الموجود في جدول service_categories"
-              error={errors.category_id?.message}
-              {...register('category_id')}
-            />
+            <div>
+              <Label htmlFor="category_id">التصنيف</Label>
+              <select
+                id="category_id"
+                disabled={isLoadingCategories || categories.length === 0}
+                className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50"
+                {...register('category_id')}
+              >
+                {categories.length === 0 && (
+                  <option value="">
+                    {isLoadingCategories ? 'جارٍ تحميل التصنيفات...' : 'لا توجد تصنيفات متاحة'}
+                  </option>
+                )}
+                {categories.map((category) => (
+                  <option key={category.category_id} value={category.category_id}>
+                    {category.category_name}
+                  </option>
+                ))}
+              </select>
+              {errors.category_id && (
+                <p role="alert" className="mt-1.5 text-xs font-medium text-destructive">
+                  {errors.category_id.message}
+                </p>
+              )}
+            </div>
 
             <TextInput
               label="اسم الخدمة"
@@ -193,18 +219,46 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
             </div>
           )}
 
-          <div className="grid gap-4 border-t border-border pt-5 md:grid-cols-[1fr_auto]">
-            <TextInput
-              label="رابط الصورة الرئيسية"
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              error={errors.media_url?.message}
-              {...register('media_url')}
-            />
-            <label className="flex items-end gap-2 pb-3 text-sm font-medium">
-              <Input type="checkbox" className="h-4 w-4" {...register('is_main')} />
-              صورة رئيسية
-            </label>
+          <div className="space-y-3 border-t border-border pt-5">
+            <Label>صور الخدمة</Label>
+            <p className="text-xs text-muted-foreground">
+              أضف رابط صورة واحدة أو أكثر. أول صورة تُحفظ ستكون الصورة الرئيسية، ويمكن تغييرها لاحقاً من لوحة الخدمات.
+            </p>
+
+            {mediaFields.map((field, index) => (
+              <div key={field.id} className="flex items-start gap-2">
+                <div className="flex-1">
+                  <TextInput
+                    label={`رابط الصورة ${index + 1}`}
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    error={errors.media_urls?.[index]?.value?.message}
+                    {...register(`media_urls.${index}.value` as const)}
+                  />
+                </div>
+                {mediaFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeMedia(index)}
+                    aria-label="حذف الرابط"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                )}
+              </div>
+            ))}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendMedia({ value: '' })}
+            >
+              <Plus size={14} />
+              إضافة رابط صورة آخر
+            </Button>
           </div>
 
           <GoldButton

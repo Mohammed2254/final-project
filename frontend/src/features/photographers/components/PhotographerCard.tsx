@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom';
 
+import { AddToWeddingPlanButton } from '@/components/common/AddToWeddingPlanButton';
 import { Card } from '@/components/common/Card';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { FavoriteButton } from '@/components/common/FavoriteButton';
+import { ServiceImage } from '@/components/common/ServiceImage';
 import { PriceText } from '@/components/common/PriceText';
 import type { PhotographerItem } from '@/types/photographer';
 
@@ -11,17 +13,15 @@ interface PhotographerCardProps {
 
 export function PhotographerCard({ photographer }: PhotographerCardProps) {
   return (
-    <Link to={`/photographers/${photographer.id}`} className="block">
-      <Card className="h-full overflow-hidden transition-colors hover:border-gold/50">
-        <PlaceholderImage className="h-32 w-full" label={photographer.name} />
+    <Card className="relative h-full overflow-hidden transition-colors hover:border-gold/50">
+      <div className="absolute end-3 top-3 z-10 flex items-center gap-1 rounded-full bg-background/80 p-1 backdrop-blur-sm">
+        <AddToWeddingPlanButton serviceId={photographer.id} price={photographer.price} className="size-6" />
+        <FavoriteButton serviceId={photographer.id} className="size-6" />
+      </div>
+      <Link to={`/photographers/${photographer.id}`} className="block">
+        <ServiceImage imageUrl={photographer.imageUrl} className="h-32 w-full" label={photographer.name} />
         <div className="space-y-1 p-3.5">
-          <div className="flex items-start justify-between gap-2">
-            <p className="text-sm font-bold text-foreground">{photographer.name}</p>
-            {/* Favorites has no backend endpoint yet - decorative only. */}
-            <span aria-hidden="true" className="text-muted-foreground">
-              ♡
-            </span>
-          </div>
+          <p className="text-sm font-bold text-foreground">{photographer.name}</p>
           {photographer.description && (
             <p className="line-clamp-1 text-xs text-muted-foreground">
               {photographer.description}
@@ -29,7 +29,7 @@ export function PhotographerCard({ photographer }: PhotographerCardProps) {
           )}
           <PriceText price={photographer.price} className="text-sm" />
         </div>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }

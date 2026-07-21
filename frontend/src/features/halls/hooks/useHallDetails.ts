@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { hallService } from '@/features/halls/services/hall.service';
 import { ApiException } from '@/types/api';
-import type { ServiceItem } from '@/types/service';
+import type { HallItem } from '@/types/hall';
 
 export function useHallDetails(id: string | undefined) {
-  const [hall, setHall] = useState<ServiceItem | null>(null);
+  const [hall, setHall] = useState<HallItem | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);

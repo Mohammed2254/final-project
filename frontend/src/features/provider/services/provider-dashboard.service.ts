@@ -55,13 +55,16 @@ export const providerDashboardService = {
       });
     }
 
-    const mediaUrl = nullableText(values.media_url);
-    if (mediaUrl) {
+    const mediaUrls = (values.media_urls ?? [])
+      .map((entry) => nullableText(entry.value))
+      .filter((url): url is string => url !== null);
+
+    for (const [index, mediaUrl] of mediaUrls.entries()) {
       await serviceMediaEndpoints.create({
         service_id: service.service_id,
         media_url: mediaUrl,
         media_type: 'IMAGE',
-        is_main: values.is_main ?? true,
+        is_main: index === 0,
       });
     }
 
