@@ -64,6 +64,12 @@ export interface ServiceMediaCreatePayload {
   is_main?: boolean;
 }
 
+export interface ServiceMediaUpdatePayload {
+  media_url?: string;
+  media_type?: string;
+  is_main?: boolean;
+}
+
 export interface ServiceCategoryRecord {
   category_id: number;
   category_name: string;
@@ -80,6 +86,8 @@ export interface ServiceItem {
   price: number;
   isActive: boolean;
   createdAt: string;
+  /** Populated separately via serviceMediaEndpoints - the Service API itself has no media field. */
+  imageUrl: string | null;
 }
 
 export function toServiceItem(record: ServiceRecord): ServiceItem {
@@ -92,5 +100,6 @@ export function toServiceItem(record: ServiceRecord): ServiceItem {
     price: Number(record.price),
     isActive: record.is_active,
     createdAt: record.created_at,
+    imageUrl: null,
   };
 }

@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ImagePlus, Plus } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { ImagePlus, Plus, Trash2 } from 'lucide-react';
+import { useFieldArray, useForm } from 'react-hook-form';
 
+import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
 import { Card, CardBody } from '@/components/common/Card';
 import { TextInput } from '@/components/forms/TextInput';
@@ -25,8 +26,7 @@ const DEFAULT_VALUES: ProviderServiceFormInput = {
   service_name: '',
   description: '',
   price: 0,
-  media_url: '',
-  is_main: true,
+  media_urls: [{ value: '' }],
   min_capacity: 1,
   max_capacity: 1,
   city: '',
@@ -47,6 +47,7 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
     register,
     reset,
     watch,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<ProviderServiceFormInput, unknown, ProviderServiceFormValues>({
@@ -55,6 +56,11 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
   });
 
   const serviceType = watch('serviceType');
+
+  const { fields: mediaFields, append: appendMedia, remove: removeMedia } = useFieldArray({
+    control,
+    name: 'media_urls',
+  });
 
   const submit = handleSubmit(async (values) => {
     const created = await onSubmit(values);
@@ -213,18 +219,46 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
             </div>
           )}
 
-          <div className="grid gap-4 border-t border-border pt-5 md:grid-cols-[1fr_auto]">
-            <TextInput
-              label="رابط الصورة الرئيسية"
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              error={errors.media_url?.message}
-              {...register('media_url')}
-            />
-            <label className="flex items-end gap-2 pb-3 text-sm font-medium">
-              <Input type="checkbox" className="h-4 w-4" {...register('is_main')} />
-              صورة رئيسية
-            </label>
+          <div className="space-y-3 border-t border-border pt-5">
+            <Label>صور الخدمة</Label>
+            <p className="text-xs text-muted-foreground">
+              أضف رابط صورة واحدة أو أكثر. أول صورة تُحفظ ستكون الصورة الرئيسية، ويمكن تغييرها لاحقاً من لوحة الخدمات.
+            </p>
+
+            {mediaFields.map((field, index) => (
+              <div key={field.id} className="flex items-start gap-2">
+                <div className="flex-1">
+                  <TextInput
+                    label={`رابط الصورة ${index + 1}`}
+                    type="url"
+                    placeholder="https://example.com/image.jpg"
+                    error={errors.media_urls?.[index]?.value?.message}
+                    {...register(`media_urls.${index}.value` as const)}
+                  />
+                </div>
+                {mediaFields.length > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => removeMedia(index)}
+                    aria-label="حذف الرابط"
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                )}
+              </div>
+            ))}
+
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => appendMedia({ value: '' })}
+            >
+              <Plus size={14} />
+              إضافة رابط صورة آخر
+            </Button>
           </div>
 
           <GoldButton

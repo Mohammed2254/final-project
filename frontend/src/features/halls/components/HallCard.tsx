@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { AddToWeddingPlanButton } from '@/components/common/AddToWeddingPlanButton';
 import { Card } from '@/components/common/Card';
 import { FavoriteButton } from '@/components/common/FavoriteButton';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { ServiceImage } from '@/components/common/ServiceImage';
 import { PriceText } from '@/components/common/PriceText';
 import type { ServiceItem } from '@/types/service';
 
@@ -21,7 +21,7 @@ export function HallCard({ hall }: HallCardProps) {
         <FavoriteButton serviceId={hall.id} className="size-6" />
       </div>
       <Link to={`/halls/${hall.id}`} className="block">
-        <PlaceholderImage className="h-32 w-full" label={hall.name} />
+        <ServiceImage imageUrl={hall.imageUrl} className="h-32 w-full" label={hall.name} />
         <div className="space-y-1 p-3.5">
           <p className="text-sm font-bold text-foreground">{hall.name}</p>
           {hall.description && (

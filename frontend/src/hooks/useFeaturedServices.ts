@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { serviceEndpoints } from '@/services/api/endpoints';
 import { toServiceItem, type ServiceItem } from '@/types/service';
 import { ApiException } from '@/types/api';
+import { withMainImages } from '@/utils/attachServiceImages';
 
 /**
  * Backs the Home page's "Featured Halls" and "Featured Services"
@@ -22,7 +23,8 @@ export function useFeaturedServices() {
     setError(null);
     try {
       const { data } = await serviceEndpoints.list();
-      setServices(data.data.filter((record) => record.is_active).map(toServiceItem));
+      const items = data.data.filter((record) => record.is_active).map(toServiceItem);
+      setServices(await withMainImages(items));
     } catch (err) {
       setError(
         err instanceof ApiException ? err.message : 'تعذر تحميل البيانات، يرجى المحاولة مرة أخرى.',

@@ -1,5 +1,7 @@
 from app.extensions import db
 from app.models.booking import Booking
+from app.models.booking_item import BookingItem
+from app.models.service import Service
 
 
 class BookingRepository:
@@ -19,6 +21,16 @@ class BookingRepository:
         return Booking.query.filter_by(
             customer_profile_id=customer_profile_id
         ).all()
+
+    def get_by_provider_id(self, provider_profile_id: int) -> list[Booking]:
+        return (
+            Booking.query
+            .join(BookingItem, BookingItem.booking_id == Booking.booking_id)
+            .join(Service, Service.service_id == BookingItem.service_id)
+            .filter(Service.provider_profile_id == provider_profile_id)
+            .distinct()
+            .all()
+        )
 
     def get_by_status(self, status: str) -> list[Booking]:
         return Booking.query.filter_by(

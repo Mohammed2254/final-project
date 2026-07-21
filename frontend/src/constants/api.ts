@@ -28,6 +28,7 @@ export const SERVICE_CATEGORY_ENDPOINTS = {
 } as const;
 
 export const HALL_ENDPOINTS = {
+  LIST: '/halls/',
   CREATE: '/halls/',
   BY_SERVICE: (serviceId: number | string) => `/halls/service/${serviceId}`,
 } as const;
@@ -42,15 +43,18 @@ export const SERVICE_MEDIA_ENDPOINTS = {
   CREATE: '/service-media/',
   BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}`,
   MAIN_BY_SERVICE: (serviceId: number | string) => `/service-media/service/${serviceId}/main`,
+  UPDATE: (mediaId: number | string) => `/service-media/${mediaId}`,
+  DELETE: (mediaId: number | string) => `/service-media/${mediaId}`,
 } as const;
 
 export const BOOKING_ENDPOINTS = {
   CREATE: '/bookings/',
-  LIST: '/bookings/',
   DETAILS: (bookingId: number | string) =>
     `/bookings/${bookingId}`,
-  BY_CUSTOMER: (customerProfileId: number | string) =>
-    `/bookings/customer/${customerProfileId}`,
+  MINE: '/bookings/customer/me',
+  PROVIDER_MINE: '/bookings/provider/me',
+  UPDATE_STATUS: (bookingId: number | string) =>
+    `/bookings/${bookingId}/status`,
 } as const;
 
 export const FAVORITE_ENDPOINTS = {

@@ -3,10 +3,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { ServiceImage } from '@/components/common/ServiceImage';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useCreateBooking } from '@/features/bookings/hooks/useCreateBooking';
-import { serviceEndpoints } from '@/services/api/endpoints';
+import { serviceEndpoints, serviceMediaEndpoints } from '@/services/api/endpoints';
 import { ROUTES } from '@/constants/routes';
 import type { ServiceRecord } from '@/types/service';
 
@@ -74,6 +74,8 @@ export default function BookingPage() {
   const [service, setService] =
     useState<BookableService | null>(null);
 
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
   const [eventDate, setEventDate] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -102,6 +104,13 @@ export default function BookingPage() {
           await serviceEndpoints.details(serviceId);
 
         setService(data.data);
+
+        try {
+          const { data: mediaResponse } = await serviceMediaEndpoints.mainByService(serviceId);
+          setImageUrl(mediaResponse.data.media_url);
+        } catch {
+          // No main image set for this service yet - not an error, just no image.
+        }
       } catch {
         setPageError('تعذر تحميل بيانات القاعة.');
       } finally {
@@ -214,7 +223,8 @@ export default function BookingPage() {
       </header>
 
       <Card className="mt-6 overflow-hidden">
-        <PlaceholderImage
+        <ServiceImage
+          imageUrl={imageUrl}
           className="h-52 w-full"
           label={serviceName}
         />

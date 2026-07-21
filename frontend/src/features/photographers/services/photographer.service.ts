@@ -1,5 +1,6 @@
 import { photographerEndpoints, serviceEndpoints } from '@/services/api/endpoints';
 import { toPhotographerItem, type PhotographerItem } from '@/types/photographer';
+import { withMainImage, withMainImages } from '@/utils/attachServiceImages';
 
 export interface PhotographerListParams {
   keyword?: string;
@@ -51,7 +52,8 @@ export const photographerService = {
       .map((result) => result.value);
 
     const active = items.filter((item) => item.isActive);
-    return applyFilters(active, params.keyword, params.minPrice, params.maxPrice);
+    const withImages = await withMainImages(active);
+    return applyFilters(withImages, params.keyword, params.minPrice, params.maxPrice);
   },
 
   async getById(serviceId: number | string): Promise<PhotographerItem> {
@@ -60,6 +62,6 @@ export const photographerService = {
       photographerEndpoints.byService(serviceId),
     ]);
 
-    return toPhotographerItem(serviceResponse.data, detailsResponse.data);
+    return withMainImage(toPhotographerItem(serviceResponse.data, detailsResponse.data));
   },
 };

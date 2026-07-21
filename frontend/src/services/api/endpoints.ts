@@ -22,12 +22,14 @@ import type {
   ServiceCreatePayload,
   ServiceMediaCreatePayload,
   ServiceMediaRecord,
+  ServiceMediaUpdatePayload,
   ServiceRecord,
 } from '@/types/service';
 import type { PhotographerDetailsRecord } from '@/types/photographer';
 import type {
   Booking,
   BookingCreatePayload,
+  BookingStatus,
 } from '@/types/booking';
 import type {
   FavoriteCreatePayload,
@@ -136,6 +138,11 @@ export const serviceCategoryEndpoints = {
 };
 
 export const hallEndpoints = {
+  list: () =>
+    apiClient.get<ApiSuccessResponse<HallDetailsRecord[]>>(
+      HALL_ENDPOINTS.LIST,
+    ),
+
   create: (payload: HallDetailsCreatePayload) =>
     apiClient.post<ApiSuccessResponse<HallDetailsRecord>>(
       HALL_ENDPOINTS.CREATE,
@@ -149,7 +156,8 @@ export const hallEndpoints = {
 };
 
 /**
- * Raw HTTP calls for booking resources.
+ * Raw HTTP calls for booking resources. Identity (customer/provider) is
+ * always derived server-side from the JWT (see booking_routes.py).
  */
 export const bookingEndpoints = {
   create: (payload: BookingCreatePayload) =>
@@ -158,19 +166,25 @@ export const bookingEndpoints = {
       payload,
     ),
 
-  list: () =>
-    apiClient.get<ApiSuccessResponse<Booking[]>>(
-      BOOKING_ENDPOINTS.LIST,
-    ),
-
   details: (bookingId: number | string) =>
     apiClient.get<ApiSuccessResponse<Booking>>(
       BOOKING_ENDPOINTS.DETAILS(bookingId),
     ),
 
-  byCustomer: (customerProfileId: number | string) =>
+  mine: () =>
     apiClient.get<ApiSuccessResponse<Booking[]>>(
-      BOOKING_ENDPOINTS.BY_CUSTOMER(customerProfileId),
+      BOOKING_ENDPOINTS.MINE,
+    ),
+
+  providerMine: () =>
+    apiClient.get<ApiSuccessResponse<Booking[]>>(
+      BOOKING_ENDPOINTS.PROVIDER_MINE,
+    ),
+
+  updateStatus: (bookingId: number | string, status: BookingStatus) =>
+    apiClient.post<ApiSuccessResponse<Booking>>(
+      BOOKING_ENDPOINTS.UPDATE_STATUS(bookingId),
+      { status },
     ),
 };
 
@@ -306,5 +320,21 @@ export const serviceMediaEndpoints = {
   byService: (serviceId: number | string) =>
     apiClient.get<ApiSuccessResponse<ServiceMediaRecord[]>>(
       SERVICE_MEDIA_ENDPOINTS.BY_SERVICE(serviceId),
+    ),
+
+  mainByService: (serviceId: number | string) =>
+    apiClient.get<ApiSuccessResponse<ServiceMediaRecord>>(
+      SERVICE_MEDIA_ENDPOINTS.MAIN_BY_SERVICE(serviceId),
+    ),
+
+  update: (mediaId: number | string, payload: ServiceMediaUpdatePayload) =>
+    apiClient.put<ApiSuccessResponse<ServiceMediaRecord>>(
+      SERVICE_MEDIA_ENDPOINTS.UPDATE(mediaId),
+      payload,
+    ),
+
+  remove: (mediaId: number | string) =>
+    apiClient.delete<ApiSuccessResponse<null>>(
+      SERVICE_MEDIA_ENDPOINTS.DELETE(mediaId),
     ),
 };

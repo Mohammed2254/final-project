@@ -1,5 +1,6 @@
 import { favoriteEndpoints, serviceEndpoints } from '@/services/api/endpoints';
 import { toServiceItem, type ServiceItem } from '@/types/service';
+import { withMainImages } from '@/utils/attachServiceImages';
 
 /**
  * Business-logic layer over the Favorite resource. The backend only stores
@@ -23,9 +24,11 @@ export const favoriteService = {
       }),
     );
 
-    return results
+    const items = results
       .filter((result): result is PromiseFulfilledResult<ServiceItem> => result.status === 'fulfilled')
       .map((result) => result.value);
+
+    return withMainImages(items);
   },
 
   async add(serviceId: number): Promise<void> {

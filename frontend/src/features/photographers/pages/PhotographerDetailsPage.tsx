@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 import { Card } from '@/components/common/Card';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
+import { ServiceImage } from '@/components/common/ServiceImage';
 import { PriceText } from '@/components/common/PriceText';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
@@ -58,7 +58,8 @@ export default function PhotographerDetailsPage() {
         {!isLoading && !notFound && !error && photographer && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.5fr_1fr]">
             <div className="space-y-5">
-              <PlaceholderImage
+              <ServiceImage
+                imageUrl={photographer.imageUrl}
                 className="h-72 w-full rounded-lg lg:h-96"
                 label={photographer.name}
               />
