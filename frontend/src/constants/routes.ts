@@ -18,6 +18,7 @@ export const ROUTES = {
     `/booking/${serviceId}`,
 
   PAYMENTS: '/payments',
+  MY_BOOKINGS: '/my-bookings',
   PROVIDER_DASHBOARD: '/provider/dashboard',
 
   NOT_FOUND: '/404',

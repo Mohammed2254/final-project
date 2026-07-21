@@ -46,6 +46,10 @@ const PhotographerDetailsPage = lazy(
   () => import('@/features/photographers/pages/PhotographerDetailsPage'),
 );
 
+const MyBookingsPage = lazy(
+  () => import('@/features/bookings/pages/MyBookingsPage'),
+);
+
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
@@ -107,6 +111,11 @@ export function AppRouter() {
               <Route
                 path="booking/:serviceId"
                 element={<BookingPage />}
+              />
+
+              <Route
+                path="my-bookings"
+                element={<MyBookingsPage />}
               />
 
               <Route

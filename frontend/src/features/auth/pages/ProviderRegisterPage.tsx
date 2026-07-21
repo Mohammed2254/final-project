@@ -1,4 +1,5 @@
 import { ProviderRegisterForm } from '@/features/auth/components/ProviderRegisterForm';
+import { RegisterTabs } from '@/features/auth/components/RegisterTabs';
 
 export default function ProviderRegisterPage() {
   return (
@@ -10,6 +11,8 @@ export default function ProviderRegisterPage() {
           أنشئ حسابًا لعرض خدماتك وإدارة حجوزاتك.
         </p>
       </header>
+
+      <RegisterTabs />
 
       <ProviderRegisterForm />
     </div>

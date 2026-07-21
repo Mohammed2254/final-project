@@ -1,4 +1,5 @@
 import { RegisterForm } from '@/features/auth/components/RegisterForm';
+import { RegisterTabs } from '@/features/auth/components/RegisterTabs';
 
 export default function RegisterPage() {
   return (
@@ -8,6 +9,7 @@ export default function RegisterPage() {
         ابدأوا رحلتكم في تخطيط زفافكم معاً
       </p>
       <div className="mt-5">
+        <RegisterTabs />
         <RegisterForm />
       </div>
     </div>

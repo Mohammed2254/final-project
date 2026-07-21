@@ -22,7 +22,7 @@ export interface BookingItem {
 
 export interface Booking {
   booking_id: number;
-  account_id: number;
+  customer_profile_id: number;
   event_date: string;
   status: string;
   notes: string | null;

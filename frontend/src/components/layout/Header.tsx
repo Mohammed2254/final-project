@@ -31,6 +31,14 @@ export function Header() {
         <div className="hidden items-center gap-3 md:flex">
           {isAuthenticated ? (
             <>
+              {account?.role === 'Customer' && (
+                <Link
+                  to={ROUTES.MY_BOOKINGS}
+                  className="text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+                >
+                  حجوزاتي
+                </Link>
+              )}
               {account?.role === 'Provider' && (
                 <Link
                   to={ROUTES.PROVIDER_DASHBOARD}
@@ -76,6 +84,15 @@ export function Header() {
           <div className="mt-4 flex flex-col gap-2 border-t border-border pt-4">
             {isAuthenticated ? (
               <>
+                {account?.role === 'Customer' && (
+                  <Link
+                    to={ROUTES.MY_BOOKINGS}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    حجوزاتي
+                  </Link>
+                )}
                 {account?.role === 'Provider' && (
                   <Link
                     to={ROUTES.PROVIDER_DASHBOARD}
