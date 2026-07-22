@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.schemas.photographer_details_schema import (
@@ -24,6 +25,7 @@ responses_schema = PhotographerDetailsResponseSchema(many=True)
 
 
 @photographer_bp.post("/")
+@jwt_required()
 def create_photographer_details():
     try:
         data = create_schema.load(request.get_json())
@@ -97,6 +99,7 @@ def get_photographer_by_service(service_id):
 
 
 @photographer_bp.put("/<int:photographer_details_id>")
+@jwt_required()
 def update_photographer_details(photographer_details_id):
     try:
         data = update_schema.load(request.get_json())
@@ -126,6 +129,7 @@ def update_photographer_details(photographer_details_id):
 
 
 @photographer_bp.delete("/<int:photographer_details_id>")
+@jwt_required()
 def delete_photographer_details(photographer_details_id):
     try:
         photographer_service.delete_photographer_details(
