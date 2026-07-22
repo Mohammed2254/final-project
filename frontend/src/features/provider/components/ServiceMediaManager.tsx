@@ -106,23 +106,31 @@ export function ServiceMediaManager({ serviceId }: ServiceMediaManagerProps) {
 
           {error && <p className="text-xs text-destructive">{error}</p>}
 
-          <div className="flex gap-2">
-            <input
-              type="url"
-              value={url}
-              onChange={(event) => setUrl(event.target.value)}
-              placeholder="https://example.com/image.jpg"
-              className="min-w-0 flex-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-foreground"
-            />
-            <Button
-              type="button"
-              size="sm"
-              isLoading={isAdding}
-              disabled={!url.trim()}
-              onClick={handleAdd}
-            >
-              إضافة صورة
-            </Button>
+          <div className="space-y-1.5">
+            <div className="flex gap-2">
+              <input
+                type="url"
+                value={url}
+                onChange={(event) => setUrl(event.target.value)}
+                placeholder="https://images.example.com/photo.jpg"
+                className="min-w-0 flex-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-foreground"
+              />
+              <Button
+                type="button"
+                size="sm"
+                isLoading={isAdding}
+                disabled={!url.trim()}
+                onClick={handleAdd}
+              >
+                إضافة صورة
+              </Button>
+            </div>
+
+            <p className="text-[0.7rem] leading-relaxed text-muted-foreground">
+              الصق رابط الصورة المباشر (ينتهي عادةً بـ .jpg أو .png)، وليس رابط
+              صفحة البحث. للحصول عليه: اضغط بزر الفأرة الأيمن على الصورة ثم
+              اختر «نسخ عنوان الصورة».
+            </p>
           </div>
         </>
       )}
