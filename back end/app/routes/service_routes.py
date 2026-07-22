@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.schemas.service_schema import (
@@ -8,6 +9,8 @@ from app.schemas.service_schema import (
 )
 
 from app.services.service_service import ServiceService
+from app.services.provider_profile_service import ProviderProfileService
+from app.utils.jwt_helper import JwtHelper
 from app.utils.response_helper import ResponseHelper
 
 
@@ -17,6 +20,7 @@ service_bp = Blueprint(
 )
 
 service_service = ServiceService()
+provider_profile_service = ProviderProfileService()
 
 service_create_schema = ServiceCreateSchema()
 service_update_schema = ServiceUpdateSchema()
@@ -25,13 +29,39 @@ service_response_schema = ServiceResponseSchema()
 services_response_schema = ServiceResponseSchema(many=True)
 
 
+def _get_current_provider_profile_id():
+    account_id = JwtHelper.get_account_id()
+    provider_profile = provider_profile_service.get_by_account_id(account_id)
+
+    if provider_profile is None:
+        raise ValueError("Provider profile not found.")
+
+    return provider_profile.provider_profile_id
+
+
+def _assert_owns_service(service_id: int, provider_profile_id: int):
+    service = service_service.get_by_id(service_id)
+
+    if service is None:
+        raise ValueError("Service not found.")
+
+    if service.provider_profile_id != provider_profile_id:
+        raise ValueError("You do not have access to this service.")
+
+
 @service_bp.post("/")
+@jwt_required()
 def create_service():
     try:
         data = service_create_schema.load(request.get_json())
 
+        # The owning provider comes from the authenticated token, never
+        # from the request body - so a client can't create services on
+        # behalf of another provider by sending a different id.
+        provider_profile_id = _get_current_provider_profile_id()
+
         service = service_service.create_service(
-            provider_profile_id=data["provider_profile_id"],
+            provider_profile_id=provider_profile_id,
             category_id=data["category_id"],
             service_name=data["service_name"],
             description=data.get("description"),
@@ -85,9 +115,13 @@ def get_service(service_id):
 
 
 @service_bp.put("/<int:service_id>")
+@jwt_required()
 def update_service(service_id):
 
     try:
+        provider_profile_id = _get_current_provider_profile_id()
+        _assert_owns_service(service_id, provider_profile_id)
+
         data = service_update_schema.load(request.get_json())
 
         service = service_service.update_service(
@@ -118,9 +152,13 @@ def update_service(service_id):
 
 
 @service_bp.delete("/<int:service_id>")
+@jwt_required()
 def delete_service(service_id):
 
     try:
+        provider_profile_id = _get_current_provider_profile_id()
+        _assert_owns_service(service_id, provider_profile_id)
+
         service = service_service.deactivate_service(service_id)
 
         return ResponseHelper.success(

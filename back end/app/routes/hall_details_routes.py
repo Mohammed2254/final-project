@@ -1,4 +1,5 @@
 from flask import Blueprint, request
+from flask_jwt_extended import jwt_required
 from marshmallow import ValidationError
 
 from app.schemas.hall_details_schema import (
@@ -26,6 +27,7 @@ halls_response_schema = HallDetailsResponseSchema(many=True)
 
 
 @hall_bp.post("/")
+@jwt_required()
 def create_hall_details():
     try:
         data = hall_create_schema.load(request.get_json())
@@ -102,6 +104,7 @@ def get_hall_by_service(service_id):
 
 
 @hall_bp.put("/<int:hall_details_id>")
+@jwt_required()
 def update_hall_details(hall_details_id):
     try:
         data = hall_update_schema.load(request.get_json())
@@ -131,6 +134,7 @@ def update_hall_details(hall_details_id):
 
 
 @hall_bp.delete("/<int:hall_details_id>")
+@jwt_required()
 def delete_hall_details(hall_details_id):
     try:
         hall_service.delete_hall_details(hall_details_id)

@@ -1,8 +1,11 @@
 from marshmallow import Schema, fields, validate
 
 class ServiceCreateSchema(Schema):
+    # Optional and ignored on create - the owning provider is taken from
+    # the JWT, not the request body. Kept here only for backward
+    # compatibility with clients that still send it.
     provider_profile_id = fields.Integer(
-        required=True
+        required=False
     )
 
     category_id = fields.Integer(
