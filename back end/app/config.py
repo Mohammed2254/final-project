@@ -21,10 +21,29 @@ class DevelopmentConfig(Config):
     )
 
 
+def _normalize_db_url(url):
+    """Make a hosted Postgres URL work with the psycopg (v3) driver.
+
+    Render/Heroku hand out URLs like `postgres://...` or `postgresql://...`,
+    but SQLAlchemy would default those to psycopg2 (which we don't install).
+    Rewrite them to the explicit `postgresql+psycopg://` form.
+    """
+    if not url:
+        return url
+
+    if url.startswith("postgres://"):
+        url = url.replace("postgres://", "postgresql://", 1)
+
+    if url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+psycopg://", 1)
+
+    return url
+
+
 class ProductionConfig(Config):
     DEBUG = False
-    SQLALCHEMY_DATABASE_URI = os.getenv(
-        "PROD_DATABASE_URL"
+    SQLALCHEMY_DATABASE_URI = _normalize_db_url(
+        os.getenv("PROD_DATABASE_URL")
     )
 
 

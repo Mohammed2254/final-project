@@ -1,10 +1,41 @@
 import os
-from flask import Flask
+from flask import Flask, send_from_directory
 
 from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
 from app.extensions import db, migrate, jwt, bcrypt,cors
 from app.routes.hall_details_routes import hall_bp
 from app.utils.response_helper import ResponseHelper
+
+# Where the built React app lands after `npm run build`
+# (back end/app/__init__.py -> ../../frontend/dist).
+FRONTEND_DIST = os.path.join(
+    os.path.dirname(__file__), "..", "..", "frontend", "dist"
+)
+
+
+def _seed_service_categories():
+    """Insert the base service categories if the table is empty.
+
+    A freshly created database (e.g. on first deploy) has no categories,
+    and creating a service requires a valid category_id - so we seed the
+    two the app relies on.
+    """
+    from app.models.service_category import ServiceCategory
+
+    if ServiceCategory.query.count() > 0:
+        return
+
+    db.session.add_all([
+        ServiceCategory(
+            category_name="قاعات الأفراح",
+            description="خدمات قاعات وصالات الأفراح",
+        ),
+        ServiceCategory(
+            category_name="التصوير",
+            description="خدمات تصوير حفلات الزفاف",
+        ),
+    ])
+    db.session.commit()
 
 def create_app():
     app = Flask(__name__)
@@ -69,6 +100,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        _seed_service_categories()
 
     app.register_blueprint(account_bp, url_prefix="/api/accounts")
     app.register_blueprint(auth_bp,url_prefix="/api/auth")
@@ -82,5 +114,19 @@ def create_app():
     app.register_blueprint(wedding_plan_bp,url_prefix="/api/wedding-plans")
     app.register_blueprint(wedding_plan_invitation_bp,url_prefix="/api/wedding-plan-invitations")
     app.register_blueprint(wedding_plan_selection_bp,url_prefix="/api/wedding-plan-selections")
+
+    # Serve the built React app. API routes above are matched first; any
+    # other path returns a built file if it exists (JS/CSS/images), or
+    # falls back to index.html so React Router can handle client-side
+    # routes like /halls or /login.
+    @app.route("/", defaults={"path": ""})
+    @app.route("/<path:path>")
+    def serve_frontend(path):
+        file_path = os.path.join(FRONTEND_DIST, path)
+
+        if path and os.path.exists(file_path):
+            return send_from_directory(FRONTEND_DIST, path)
+
+        return send_from_directory(FRONTEND_DIST, "index.html")
 
     return app

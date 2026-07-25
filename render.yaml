@@ -1,0 +1,27 @@
+# Render deployment blueprint for Farah.
+# One web service (Flask serves the built React app + the API) plus a
+# managed PostgreSQL database.
+services:
+  - type: web
+    name: farah
+    runtime: python
+    plan: free
+    buildCommand: |
+      cd frontend && npm install && npm run build
+      cd "../back end" && pip install -r requirements.txt
+    startCommand: cd "back end" && gunicorn run:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_ENV
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: PROD_DATABASE_URL
+        fromDatabase:
+          name: farah-db
+          property: connectionString
+
+databases:
+  - name: farah-db
+    plan: free
