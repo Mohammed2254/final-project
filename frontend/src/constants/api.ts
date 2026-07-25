@@ -1,6 +1,9 @@
+// In dev (vite dev server on :5173) the backend runs separately on :5000.
+// In a production build, Flask serves the frontend itself, so a relative
+// path always resolves to the right host - no env var needed.
 export const API_BASE_URL: string =
   (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  'http://localhost:5000/api';
+  (import.meta.env.DEV ? 'http://localhost:5000/api' : '/api');
 
 export const AUTH_ENDPOINTS = {
   LOGIN: '/auth/login',
