@@ -6,20 +6,14 @@ from app.extensions import db, migrate, jwt, bcrypt,cors
 from app.routes.hall_details_routes import hall_bp
 from app.utils.response_helper import ResponseHelper
 
-# Where the built React app lands after `npm run build`
-# (back end/app/__init__.py -> ../../frontend/dist).
+# path to the built React app (frontend/dist)
 FRONTEND_DIST = os.path.join(
     os.path.dirname(__file__), "..", "..", "frontend", "dist"
 )
 
 
 def _seed_service_categories():
-    """Insert the base service categories if the table is empty.
-
-    A freshly created database (e.g. on first deploy) has no categories,
-    and creating a service requires a valid category_id - so we seed the
-    two the app relies on.
-    """
+    # a fresh database has no categories, and creating a service needs one
     from app.models.service_category import ServiceCategory
 
     if ServiceCategory.query.count() > 0:
@@ -115,10 +109,7 @@ def create_app():
     app.register_blueprint(wedding_plan_invitation_bp,url_prefix="/api/wedding-plan-invitations")
     app.register_blueprint(wedding_plan_selection_bp,url_prefix="/api/wedding-plan-selections")
 
-    # Serve the built React app. API routes above are matched first; any
-    # other path returns a built file if it exists (JS/CSS/images), or
-    # falls back to index.html so React Router can handle client-side
-    # routes like /halls or /login.
+    # serve the React app for any non-api path (React Router handles the rest)
     @app.route("/", defaults={"path": ""})
     @app.route("/<path:path>")
     def serve_frontend(path):
