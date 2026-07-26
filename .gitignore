@@ -44,6 +44,11 @@ eggs/
 lib/
 lib64/
 parts/
+
+# ...except our actual frontend source folder (matched by the generic
+# Python "lib/" rule above, which broke the Render build).
+!frontend/src/lib/
+!frontend/src/lib/**
 sdist/
 var/
 wheels/

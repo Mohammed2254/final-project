@@ -1,49 +1,44 @@
 # Stage 4 — Sprint Reviews
 
-Reviews were conducted primarily through our **weekly mentor sessions**
-(6 total across the project), where we demoed current progress and
-received feedback that shaped the next sprint's priorities. Internal
-progress was also reviewed informally in near-daily team check-ins.
+Reviews happened mainly in our **weekly mentor sessions** (6 across the
+project), where we showed what was working and took feedback into the
+next week. We also reviewed progress informally in team check-ins.
 
-## Sprint 1 Review — Backend Foundation
+We didn't keep written minutes of every session. What follows is what
+was demonstrable at the end of each sprint, based on the state of the
+code at that point (verifiable in the Git history).
 
-**Demoed:** Account registration/login via Postman, layered backend
-structure (routes/services/repositories/models) for the `Account` and
-`Service` resources.
+## Sprint 1 — Backend foundation
 
-**Outcome:** Foundation approved; team proceeded to build outward from
-this pattern for every subsequent resource.
+**Shown:** Account registration and login working through Postman, and
+the layered backend structure (routes / services / repositories /
+models) applied to the `Account` and `Service` resources.
 
-## Sprint 2 Review — Core Catalog & Booking
+**Outcome:** The pattern was approved, and every resource after this
+followed it.
 
-**Demoed:** Browsable halls/photographers on the frontend fetching real
-data from the backend; ability to create a booking with multiple items.
+## Sprint 2 — Catalog and booking
 
-**Outcome:** Core user journey (browse → book) confirmed working
-end-to-end for the first time.
+**Shown:** The frontend listing real halls and photographers pulled from
+the backend, and a booking created with multiple items.
 
-## Sprint 3 Review — Shared Wedding Planning
+**Outcome:** The main user journey — browse, then book — worked
+end to end for the first time.
 
-**Demoed:** The platform's key differentiator — a couple creating a
-shared wedding plan, inviting a partner by code, and both members
-approving service selections together.
+## Sprint 3 — Shared wedding planning
 
-**Outcome:** The feature that distinguishes Farah from a generic
-booking site was functional and demoed successfully.
+**Shown:** A couple creating a shared plan, inviting a partner with a
+code, and both members approving service selections.
 
-## Sprint 4 Review — Production Readiness
+**Outcome:** The feature that separates Farah from a plain booking site
+was working.
 
-**Demoed:**
-- Full test suite passing (11/11).
-- Live production deployment: **https://farah-592g.onrender.com**
-- Security fix walkthrough: unauthenticated requests correctly rejected
-  (401) on protected endpoints.
+## Sprint 4 — Production readiness
 
-**Outcome:** MVP considered feature-complete and live for evaluation.
+**Shown:**
+- 47 automated tests passing (24 backend, 23 frontend).
+- The live site: **https://farah-592g.onrender.com**
+- Security check: unauthenticated requests to protected endpoints
+  correctly rejected with 401.
 
-## Honest note
-
-We do not have formal written minutes for every mentor session — this
-document summarizes what was demoed based on the state of the codebase
-at each point in time (verifiable via Git history) rather than
-transcribing meetings we did not record in writing.
+**Outcome:** MVP feature-complete and live.
