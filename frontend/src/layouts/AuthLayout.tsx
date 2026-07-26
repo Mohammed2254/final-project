@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 
+import logo from '@/assets/logo-farah.webp';
 import { ROUTES } from '@/constants/routes';
 
 /**
@@ -12,8 +13,8 @@ export default function AuthLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background">
       <header className="flex items-center justify-between border-b border-border px-6 py-4 sm:px-8">
-        <Link to={ROUTES.HOME} className="text-xl font-extrabold tracking-wide text-foreground">
-          فرح
+        <Link to={ROUTES.HOME}>
+          <img src={logo} alt="فرح" className="h-9 w-auto" />
         </Link>
         <Link
           to={ROUTES.HOME}

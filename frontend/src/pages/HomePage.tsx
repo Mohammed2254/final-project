@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Mail, Users, Settings, TrendingUp } from 'lucide-react';
 
+import heroImage from '@/assets/hero-home.webp';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { Card } from '@/components/common/Card';
-import { PlaceholderImage } from '@/components/common/PlaceholderImage';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { ServiceCard } from '@/components/common/ServiceCard';
 import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyState';
@@ -67,7 +67,14 @@ export default function HomePage() {
     <div>
       {/* Hero */}
       <section className="container mx-auto grid grid-cols-1 items-center gap-8 px-4 py-10 lg:grid-cols-2 lg:px-8 lg:py-16">
-        <PlaceholderImage className="h-64 w-full rounded-lg lg:h-72" label="فرح" />
+        <img
+          src={heroImage}
+          alt="خاتما زفاف ذهبيان بجانب باقة ورد أبيض"
+          width={1536}
+          height={1024}
+          fetchPriority="high"
+          className="h-64 w-full rounded-lg border border-border object-cover lg:h-72"
+        />
         <div>
           <h1 className="text-2xl font-extrabold leading-relaxed text-foreground lg:text-3xl">
             خططوا زفافكم معاً

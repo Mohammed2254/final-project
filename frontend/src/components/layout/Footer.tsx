@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 
+import logo from '@/assets/logo-farah.webp';
 import { ROUTES } from '@/constants/routes';
 
 const FOOTER_LINKS = [
@@ -16,8 +17,8 @@ export function Footer() {
     <footer className="border-t border-border bg-background">
       <div className="container mx-auto flex flex-col gap-4 px-4 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between lg:px-8">
         <div>
-          <p className="text-base font-extrabold text-foreground">فرح</p>
-          <p className="mt-1 max-w-xs text-xs leading-relaxed">
+          <img src={logo} alt="فرح" className="h-7 w-auto" />
+          <p className="mt-2 max-w-xs text-xs leading-relaxed">
             منصة التخطيط المشترك لحفلات الزفاف — اكتشفوا القاعات وخدمات التصوير في مكان واحد.
           </p>
         </div>

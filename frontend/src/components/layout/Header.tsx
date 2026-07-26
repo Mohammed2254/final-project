@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
 
+import logo from '@/assets/logo-farah.webp';
 import { Navigation } from '@/components/layout/Navigation';
 import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
@@ -22,8 +23,8 @@ export function Header() {
   return (
     <header className="border-b border-border bg-background">
       <div className="container mx-auto flex items-center justify-between px-4 py-3.5 lg:px-8">
-        <Link to={ROUTES.HOME} className="text-lg font-extrabold tracking-wide text-foreground">
-          فرح
+        <Link to={ROUTES.HOME}>
+          <img src={logo} alt="فرح" className="h-8 w-auto" />
         </Link>
 
         <Navigation className="hidden md:flex" />
