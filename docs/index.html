@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فرح · منصة تخطيط الأعراس المشتركة</title>
+  <meta name="description" content="فرح — منصة سعودية تتيح للعروسين تخطيط زفافهما معًا: تصفّح القاعات والمصوّرين، وأضف الخدمات لخطة مشتركة تحتاج موافقة الطرفين." />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --gold: #c4a35a;
+      --gold-hover: #a8893a;
+      --fg: #1c1c1c;
+      --bg: #ffffff;
+      --cream: #faf8f4;
+      --muted: #777777;
+      --border: #e5e0d6;
+      --radius: 0.5rem;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a { color: inherit; }
+
+    .wrap {
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: 1.25rem;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 0.85rem;
+    }
+
+    .nav__logo img { height: 2rem; width: auto; }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .nav__links a {
+      text-decoration: none;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+
+    .nav__links a:hover { color: var(--fg); }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn--gold { background: var(--gold); color: #fff; }
+    .btn--gold:hover { background: var(--gold-hover); }
+
+    .btn--outline { border-color: var(--fg); color: var(--fg); background: transparent; }
+    .btn--outline:hover { background: var(--fg); color: #fff; }
+
+    .btn--sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+    :where(a, button):focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: 3.5rem 4.5rem; }
+
+    .hero__grid {
+      display: grid;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 0 0 1rem;
+    }
+
+    .hero h1 span { color: var(--gold); }
+
+    .hero p {
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: var(--muted);
+      margin: 0 0 2rem;
+      max-width: 34rem;
+    }
+
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .hero__img {
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    /* ---------- Sections ---------- */
+    section { scroll-margin-top: 4.5rem; }
+
+    .band { background: var(--cream); border-block: 1px solid var(--border); }
+
+    .sec { padding-block: 4rem; }
+
+    .sec__head { max-width: 40rem; margin-bottom: 2.5rem; }
+
+    .sec__head h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 800;
+      margin: 0 0 0.75rem;
+    }
+
+    .sec__head p { color: var(--muted); margin: 0; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.6rem;
+    }
+
+    /* ---------- Features ---------- */
+    .features { display: grid; gap: 2rem; }
+
+    .feature {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature__media {
+      aspect-ratio: 16 / 10;
+      background: linear-gradient(135deg, #f6f2ea, #ece5d8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .feature__media img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Visible slot until a real screenshot replaces it */
+    .slot {
+      text-align: center;
+      padding: 1.5rem;
+      color: var(--gold-hover);
+      font-size: 0.85rem;
+      font-weight: 600;
+      line-height: 1.9;
+    }
+
+    .slot code {
+      display: inline-block;
+      margin-top: 0.4rem;
+      background: rgba(196, 163, 90, 0.14);
+      padding: 0.15rem 0.5rem;
+      border-radius: 0.3rem;
+      font-size: 0.78rem;
+      direction: ltr;
+    }
+
+    .feature__body { padding: 1.5rem; flex: 1; }
+
+    .feature__num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .feature__body h3 { margin: 0 0 0.6rem; font-size: 1.15rem; font-weight: 700; }
+
+    .feature__body p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    /* ---------- Tech / architecture ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat { background: #fff; padding: 1.4rem 1rem; text-align: center; }
+
+    .stat__num { font-size: 1.6rem; font-weight: 800; color: var(--gold); line-height: 1.2; }
+
+    .stat__label { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+    .stack { display: grid; gap: 1.25rem; }
+
+    .layer {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.35rem 1.5rem;
+    }
+
+    .layer h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .layer h3::before {
+      content: '';
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .layer p { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.9rem; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      direction: ltr;
+    }
+
+    /* ---------- About ---------- */
+    .about { display: grid; gap: 2.5rem; }
+
+    .prose p { margin: 0 0 1.15rem; }
+
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose strong { font-weight: 700; }
+
+    .timeline {
+      border-inline-start: 2px solid var(--border);
+      padding-inline-start: 1.25rem;
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .tl__item { position: relative; }
+
+    .tl__item::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: -1.6rem;
+      top: 0.55rem;
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .tl__date { font-size: 0.8rem; font-weight: 700; color: var(--gold); }
+
+    .tl__text { font-size: 0.92rem; color: var(--muted); }
+
+    /* ---------- Team ---------- */
+    .team { display: grid; gap: 1.25rem; }
+
+    .member {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.4rem;
+      text-align: center;
+    }
+
+    .member__avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.8rem;
+    }
+
+    .member__name { font-weight: 700; margin-bottom: 0.15rem; }
+
+    .member__role { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.9rem; }
+
+    .socials { display: flex; justify-content: center; gap: 0.5rem; }
+
+    .socials a {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .socials a:hover { color: var(--gold); border-color: var(--gold); }
+
+    .socials svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+    /* ---------- CTA ---------- */
+    .cta { text-align: center; padding-block: 4rem; }
+
+    .cta h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 800; margin: 0 0 0.75rem; }
+
+    .cta p { color: var(--muted); margin: 0 auto 2rem; max-width: 32rem; }
+
+    .cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .foot {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+    .foot a:hover { color: var(--fg); }
+
+    .foot__links { display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; }
+
+    /* ---------- Responsive ---------- */
+    @media (min-width: 640px) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+      .team { grid-template-columns: repeat(2, 1fr); }
+      .foot { flex-direction: row; justify-content: space-between; text-align: start; }
+    }
+
+    @media (min-width: 900px) {
+      .hero__grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+      .features { grid-template-columns: repeat(3, 1fr); }
+      .stack { grid-template-columns: repeat(3, 1fr); }
+      .about { grid-template-columns: 1.4fr 1fr; gap: 3.5rem; }
+      .team { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (max-width: 520px) {
+      .nav__links { gap: 0.9rem; font-size: 0.8rem; }
+      .nav__links .nav__cta { display: none; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header>
+    <div class="wrap nav">
+      <a class="nav__logo" href="#top" aria-label="فرح — أعلى الصفحة">
+        <img src="assets/logo-farah.webp" alt="فرح" />
+      </a>
+
+      <nav class="nav__links" aria-label="أقسام الصفحة">
+        <a href="#features">المميزات</a>
+        <a href="#tech">التقنيات</a>
+        <a href="#about">القصة</a>
+        <a href="#team">الفريق</a>
+        <a class="btn btn--gold btn--sm nav__cta" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+          جرّب التطبيق
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div>
+          <span class="eyebrow">مشروع تخرّج · Holberton School</span>
+          <h1>خطّطوا زفافكم <span>معًا</span>، لا كلٌّ على حدة.</h1>
+          <p>
+            منصة سعودية تجمع قاعات الأفراح والمصوّرين في مكان واحد — وتتيح للعروسين
+            خطة مشتركة لا تُعتمد فيها أي خدمة إلا بموافقة الطرفين.
+          </p>
+          <div class="hero__actions">
+            <a class="btn btn--gold" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+              جرّب التطبيق المباشر
+            </a>
+            <a class="btn btn--outline" href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">
+              الكود على GitHub
+            </a>
+          </div>
+        </div>
+
+        <img
+          class="hero__img"
+          src="assets/hero-home.webp"
+          alt="خاتما زفاف ذهبيان بجانب باقة ورد أبيض"
+          width="1536" height="1024"
+          fetchpriority="high"
+        />
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="band">
+      <div class="wrap sec">
+        <div class="sec__head">
+          <span class="eyebrow">المميزات</span>
+          <h2>ثلاث ميزات تشكّل جوهر المنصة</h2>
+          <p>
+            بُنيت هذه الميزات لتغطي رحلة التخطيط كاملة: من تصفّح الخدمات، إلى
+            الاتفاق عليها كزوجين، إلى إدارتها من طرف مزوّد الخدمة.
+          </p>
+        </div>
+
+        <div class="features">
+
+          <article class="feature">
+            <div class="feature__media">
+              <!-- استبدل هذا السطر بـ: <img src="assets/feature-planner.webp" alt="..." /> -->
+              <p class="slot">
+                📸 لقطة «المخطط المشترك»<br />
+                <code>assets/feature-planner.webp</code>
+              </p>
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">01</p>
+              <h3>المخطط المشترك للعروسين</h3>
+              <p>
+                ينشئ أحد الطرفين خطة الزفاف ويدعو شريكه برمز خاص. أي خدمة يضيفها
+                أحدهما تبقى «بانتظار الموافقة» حتى يوافق الآخر — فلا قرار يُتخذ
+                من طرف واحد.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature">
+            <div class="feature__media">
+              <!-- استبدل هذا السطر بـ: <img src="assets/feature-browse.webp" alt="..." /> -->
+              <p class="slot">
+                📸 لقطة «تصفّح الخدمات»<br />
+                <code>assets/feature-browse.webp</code>
+              </p>
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">02</p>
+              <h3>تصفّح القاعات والمصوّرين</h3>
+              <p>
+                فهرس موحّد لقاعات الأفراح وخدمات التصوير، مع فلترة بالسعر والكلمة
+                المفتاحية، وصفحة تفاصيل لكل خدمة تعرض السعة والموقع ومعدات التصوير
+                — ثم الحجز مباشرة.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature">
+            <div class="feature__media">
+              <!-- استبدل هذا السطر بـ: <img src="assets/feature-provider.webp" alt="..." /> -->
+              <p class="slot">
+                📸 لقطة «لوحة المزوّد»<br />
+                <code>assets/feature-provider.webp</code>
+              </p>
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">03</p>
+              <h3>لوحة تحكم مزوّد الخدمة</h3>
+              <p>
+                يسجّل المزوّد نشاطه، ويضيف خدماته بأسعارها وصورها، ويستقبل طلبات
+                الحجز ليقبلها أو يرفضها — كل ذلك من لوحة واحدة.
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TECH ============ -->
+    <section id="tech">
+      <div class="wrap sec">
+        <div class="sec__head">
+          <span class="eyebrow">تحت الغطاء</span>
+          <h2>كيف بُنيت المنصة</h2>
+          <p>
+            تطبيق ويب متكامل، منشور فعليًا كخدمة واحدة: Flask يقدّم واجهة React
+            المبنية إلى جانب الـ API، وقاعدة PostgreSQL مُدارة خلفهما.
+          </p>
+        </div>
+
+        <div class="stats">
+          <div class="stat">
+            <div class="stat__num">63</div>
+            <div class="stat__label">نقطة API</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num">14</div>
+            <div class="stat__label">جدول في قاعدة البيانات</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num">47</div>
+            <div class="stat__label">اختبار آلي ناجح</div>
+          </div>
+          <div class="stat">
+            <div class="stat__num">112</div>
+            <div class="stat__label">commit على main</div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="layer">
+            <h3>الواجهة الأمامية</h3>
+            <p>
+              بنية قائمة على الميزات (Feature-Based)، مع تحميل كسول لكل صفحة
+              وحُرّاس مسارات تفصل الصفحات العامة عن المحمية.
+            </p>
+            <div class="tags">
+              <span class="tag">React 19</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Vite</span>
+              <span class="tag">Tailwind CSS</span>
+              <span class="tag">React Router</span>
+            </div>
+          </div>
+
+          <div class="layer">
+            <h3>الواجهة الخلفية</h3>
+            <p>
+              بنية طبقية صارمة: routes ← schemas ← services ← repositories ←
+              models، مع ظرف استجابة موحّد ومصادقة JWT على كل عمليات الكتابة.
+            </p>
+            <div class="tags">
+              <span class="tag">Flask</span>
+              <span class="tag">SQLAlchemy</span>
+              <span class="tag">Marshmallow</span>
+              <span class="tag">JWT</span>
+              <span class="tag">pytest</span>
+            </div>
+          </div>
+
+          <div class="layer">
+            <h3>البيانات والنشر</h3>
+            <p>
+              PostgreSQL مُدارة على Render، ونشر تلقائي مع كل دفعة إلى فرع
+              <code style="direction:ltr">main</code>.
+            </p>
+            <div class="tags">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Render</span>
+              <span class="tag">Gunicorn</span>
+              <span class="tag">Vitest</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="band">
+      <div class="wrap sec">
+        <div class="sec__head">
+          <span class="eyebrow">القصة</span>
+          <h2>لماذا بنينا «فرح»</h2>
+        </div>
+
+        <div class="about">
+          <div class="prose">
+            <p>
+              بدأت الفكرة من ملاحظة تكرّرت أمامنا أكثر من مرة: تخطيط زفاف واحد في
+              السعودية يعني الاتصال بأكثر من عشرة مزوّدين، ومقارنة الأسعار يدويًا،
+              وتشتيت القرارات بين محادثات واتساب متفرقة. عملية مرهقة، بطيئة،
+              ومبعثرة.
+            </p>
+            <p>
+              لكن ما لفت انتباهنا فعلًا لم يكن التشتّت وحده، بل شيء أدق:
+              <strong>العروسان غالبًا ليسا في المكان نفسه وقت اتخاذ القرار</strong> —
+              ومع ذلك، كل المنصات الموجودة مبنية على أساس مستخدم واحد يقرّر.
+            </p>
+            <p>
+              من هنا وُلد السؤال الذي حدّد المشروع كله:
+              <em>«كيف يمكن أن نجعل الزوجين يقرّران معًا حتى وهما متباعدان؟»</em>
+              فبنينا الخطة المشتركة: أي خدمة يضيفها أحد الطرفين تبقى معلّقة حتى
+              يوافق الآخر عليها. هذه هي الميزة التي جعلتنا نختار هذه الفكرة من بين
+              خمس عشرة فكرة أخرى درسناها وقيّمناها.
+            </p>
+            <p>
+              كان الطريق تعليميًا بقدر ما كان تقنيًا: انتقلنا من SQLite إلى
+              PostgreSQL، واكتشفنا في مراجعة أمنية متأخرة أن نقاط الكتابة كانت
+              مفتوحة دون مصادقة فأغلقناها، وواجهنا ثلاثة أعطال لم تظهر إلا في
+              بيئة الإنتاج — كل واحد منها كان درسًا مكتوبًا في
+              <a href="https://github.com/Mohammed2254/final-project/blob/main/stage5_Docs/02_lessons_learned.md" target="_blank" rel="noopener">مستند الدروس المستفادة</a>.
+            </p>
+            <p>
+              «فرح» هو مشروع التخرّج لفريقنا في
+              <a href="https://www.holbertonschool.com/" target="_blank" rel="noopener">Holberton School</a>،
+              وقد بُني بالكامل خلال عشرة أسابيع.
+            </p>
+          </div>
+
+          <div>
+            <div class="timeline">
+              <div class="tl__item">
+                <div class="tl__date">١٦ مايو ٢٠٢٦</div>
+                <div class="tl__text">تكوين الفريق، وتقييم ١٥ فكرة واختيار واحدة.</div>
+              </div>
+              <div class="tl__item">
+                <div class="tl__date">يونيو ٢٠٢٦</div>
+                <div class="tl__text">ميثاق المشروع، والتوثيق التقني: قصص المستخدم، مخطط قاعدة البيانات، معمارية النظام.</div>
+              </div>
+              <div class="tl__item">
+                <div class="tl__date">٢٧ يونيو — ١٦ يوليو</div>
+                <div class="tl__text">بناء الواجهة الخلفية والمصادقة، ثم فهرس الخدمات والحجوزات وبداية الواجهة الأمامية.</div>
+              </div>
+              <div class="tl__item">
+                <div class="tl__date">١٧ — ٢١ يوليو</div>
+                <div class="tl__text">إطلاق المخطط المشترك — الميزة الجوهرية للمشروع.</div>
+              </div>
+              <div class="tl__item">
+                <div class="tl__date">٢٢ — ٢٦ يوليو</div>
+                <div class="tl__text">تقوية أمنية، ٤٧ اختبارًا آليًا، والنشر إلى الإنتاج.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TEAM ============ -->
+    <section id="team">
+      <div class="wrap sec">
+        <div class="sec__head">
+          <span class="eyebrow">الفريق</span>
+          <h2>من بنى المشروع</h2>
+        </div>
+
+        <!--
+          ⚠️ استبدل روابط # أدناه بالروابط الحقيقية لكل عضو.
+          احذف أي وسم <a> لا يملك صاحبه حسابًا على تلك المنصة.
+        -->
+        <div class="team">
+
+          <div class="member">
+            <div class="member__avatar" aria-hidden="true">م</div>
+            <div class="member__name">محمد العبدلي</div>
+            <div class="member__role">مدير المشروع · مطوّر Full-Stack</div>
+            <div class="socials">
+              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على GitHub" title="GitHub">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على LinkedIn" title="LinkedIn">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على X" title="X (Twitter)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="member">
+            <div class="member__avatar" aria-hidden="true">س</div>
+            <div class="member__name">سلمان الغنّام</div>
+            <div class="member__role">قائد الفريق · مطوّر Backend</div>
+            <div class="socials">
+              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على GitHub" title="GitHub">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على LinkedIn" title="LinkedIn">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على X" title="X (Twitter)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="member">
+            <div class="member__avatar" aria-hidden="true">ع</div>
+            <div class="member__name">عبدالله الدغيّم</div>
+            <div class="member__role">مطوّر Frontend</div>
+            <div class="socials">
+              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على GitHub" title="GitHub">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على LinkedIn" title="LinkedIn">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على X" title="X (Twitter)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+          <div class="member">
+            <div class="member__avatar" aria-hidden="true">ف</div>
+            <div class="member__name">فهد العنزي</div>
+            <div class="member__role">عضو الفريق</div>
+            <div class="socials">
+              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على GitHub" title="GitHub">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على LinkedIn" title="LinkedIn">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
+              </a>
+              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على X" title="X (Twitter)">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="band">
+      <div class="wrap cta">
+        <h2>جرّبها بنفسك</h2>
+        <p>
+          التطبيق منشور ويعمل. أنشئ حسابًا، تصفّح الخدمات، وابدأ خطة زفاف مشتركة.
+        </p>
+        <div class="cta__actions">
+          <a class="btn btn--gold" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+            افتح التطبيق المباشر
+          </a>
+          <a class="btn btn--outline" href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">
+            تصفّح الكود المصدري
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="wrap foot">
+      <p style="margin:0">© ٢٠٢٦ فرح · مشروع تخرّج في Holberton School</p>
+      <div class="foot__links">
+        <a href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">مستودع GitHub</a>
+        <a href="https://farah-592g.onrender.com" target="_blank" rel="noopener">التطبيق المباشر</a>
+        <a href="https://www.holbertonschool.com/" target="_blank" rel="noopener">Holberton School</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
