@@ -9,6 +9,7 @@ import { ServiceCard } from '@/components/common/ServiceCard';
 import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyState';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
+import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useFeaturedServices } from '@/hooks/useFeaturedServices';
 import type { ServiceItem } from '@/types/service';
 
@@ -56,6 +57,11 @@ function FeaturedGrid({
 
 export default function HomePage() {
   const { services, isLoading, error, reload } = useFeaturedServices();
+  const { isAuthenticated, account, userProfile, providerProfile } = useAuth();
+
+  const displayName =
+    userProfile?.full_name ?? providerProfile?.business_name ?? account?.email ?? '';
+  const isProvider = account?.role === 'Provider';
 
   // Same fetch powers both sections below (see useFeaturedServices) -
   // sliced in half just to keep the two sections visually distinct until
@@ -180,45 +186,65 @@ export default function HomePage() {
       </section>
 
       {/* CTA */}
-<section className="container mx-auto px-4 py-10 lg:px-8">
-  <Card className="flex flex-col items-center gap-5 bg-muted/40 p-8 text-center">
-    <div>
-      <p className="text-base font-extrabold text-foreground">
-        ابدأوا رحلتكم مع فرح
-      </p>
+      <section className="container mx-auto px-4 py-10 lg:px-8">
+        <Card className="flex flex-col items-center gap-5 bg-muted/40 p-8 text-center">
+          {isAuthenticated ? (
+            <>
+              <div>
+                <p className="text-base font-extrabold text-foreground">
+                  مرحبًا، {displayName}
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  {isProvider
+                    ? 'تابعوا خدماتكم وطلبات الحجز من لوحة التحكم.'
+                    : 'أكملوا خطة زفافكم أو تصفّحوا المزيد من الخدمات.'}
+                </p>
+              </div>
 
-      <p className="mt-2 text-sm text-muted-foreground">
-        أنشئوا حسابًا للتخطيط لحفل زفافكم، أو انضموا للمنصة كمقدم خدمة.
-      </p>
-    </div>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link
+                  to={isProvider ? ROUTES.PROVIDER_DASHBOARD : ROUTES.WEDDING_PLANNER}
+                  className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}
+                >
+                  {isProvider ? 'لوحة التحكم' : 'مخطط الزفاف'}
+                </Link>
+                <Link
+                  to={ROUTES.HALLS}
+                  className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+                >
+                  تصفّح الخدمات
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div>
+                <p className="text-base font-extrabold text-foreground">
+                  ابدأوا رحلتكم مع فرح
+                </p>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  أنشئوا حسابًا للتخطيط لحفل زفافكم، أو انضموا للمنصة كمقدم خدمة.
+                </p>
+              </div>
 
-    <div className="flex flex-wrap justify-center gap-3">
-      <Link
-        to={ROUTES.REGISTER}
-        className={cn(
-          buttonVariants({
-            variant: 'gold',
-            size: 'lg',
-          }),
-        )}
-      >
-        إنشاء حساب
-      </Link>
-
-      <Link
-        to={ROUTES.PROVIDER_REGISTER}
-        className={cn(
-          buttonVariants({
-            variant: 'outline',
-            size: 'lg',
-          }),
-        )}
-      >
-        انضم كمقدم خدمة
-      </Link>
-    </div>
-  </Card>
-</section>
+              <div className="flex flex-wrap justify-center gap-3">
+                <Link
+                  to={ROUTES.REGISTER}
+                  className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}
+                >
+                  إنشاء حساب
+                </Link>
+                <Link
+                  to={ROUTES.PROVIDER_REGISTER}
+                  className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+                >
+                  انضم كمقدم خدمة
+                </Link>
+              </div>
+            </>
+          )}
+        </Card>
+      </section>
     </div>
   );
 }
