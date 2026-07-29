@@ -5,6 +5,7 @@ import { ROUTES } from '@/constants/routes';
 
 const NAV_ITEMS = [
   { to: ROUTES.HOME, label: 'الرئيسية', end: true },
+  { to: ROUTES.WEDDING_PLANNER, label: 'مخطط الزفاف', end: true },
   { to: ROUTES.HALLS, label: 'القاعات', end: false },
   { to: ROUTES.PHOTOGRAPHERS, label: 'التصوير', end: true },
   { to: ROUTES.ABOUT, label: 'من نحن', end: true },
