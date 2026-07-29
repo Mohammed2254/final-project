@@ -126,8 +126,8 @@ export default function HomePage() {
         <SectionHeader title="تصفحوا حسب الفئة" />
         <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {CATEGORIES.map((category) => (
-            <Link key={category.label} to={category.to}>
-              <Card className="flex h-28 items-center justify-center text-base font-bold text-foreground transition-colors hover:border-foreground/30">
+            <Link key={category.label} to={category.to} className="group">
+              <Card className="flex h-28 items-center justify-center border-2 text-base font-bold text-foreground transition-all group-hover:-translate-y-0.5 group-hover:border-gold group-hover:text-gold group-hover:shadow-md group-active:translate-y-0 group-active:shadow-none">
                 {category.label}
               </Card>
             </Link>
