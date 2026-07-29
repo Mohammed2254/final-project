@@ -39,6 +39,19 @@ class WeddingPlanInvitationService:
         if plan.partner_profile_id is not None:
             raise ValueError("This wedding plan already has a partner.")
 
+        pending = self._get_pending_invitation(plan_id)
+
+        if pending is not None:
+            if pending.invited_email.lower() == invited_email.lower():
+                # Re-opening the invite screen or clicking "send" again for
+                # the same person - hand back the code they may have already
+                # shared, instead of silently invalidating it.
+                return pending
+
+            # Re-inviting a different email: the old code is for the wrong
+            # person now, drop it instead of leaving it dangling forever.
+            self.repository.delete(pending)
+
         invitation = WeddingPlanInvitation(
             plan_id=plan_id,
             invited_email=invited_email,
@@ -46,6 +59,19 @@ class WeddingPlanInvitationService:
         )
 
         return self.repository.add(invitation)
+
+    def _get_pending_invitation(
+        self,
+        plan_id: int
+    ) -> WeddingPlanInvitation | None:
+
+        now = datetime.utcnow()
+
+        for invitation in self.repository.get_by_plan_id(plan_id):
+            if invitation.status == "PENDING" and invitation.expires_at >= now:
+                return invitation
+
+        return None
 
     def get_by_id(
         self,
