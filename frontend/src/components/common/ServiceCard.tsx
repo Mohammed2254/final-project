@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { Card } from '@/components/common/Card';
 import { FavoriteButton } from '@/components/common/FavoriteButton';
 import { ServiceImage } from '@/components/common/ServiceImage';
@@ -8,14 +10,32 @@ interface ServiceCardProps {
   service: ServiceItem;
 }
 
+// Seeded once at boot (see _seed_service_categories in app/__init__.py) in
+// this fixed order, so the id is stable: 1 = halls, 2 = photographers.
+const PHOTOGRAPHER_CATEGORY_ID = 2;
 
 export function ServiceCard({ service }: ServiceCardProps) {
+  const detailsPath =
+    service.categoryId === PHOTOGRAPHER_CATEGORY_ID
+      ? `/photographers/${service.id}`
+      : `/halls/${service.id}`;
+
   return (
-    <Card className="overflow-hidden transition-colors hover:border-gold/50">
-      <ServiceImage imageUrl={service.imageUrl} className="h-32 w-full" label={service.name} />
+    <Card className="group overflow-hidden transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-md">
+      {/* Sibling of the Link below, not nested inside it - keeps the
+          favorite button's own click from also triggering navigation. */}
+      <Link to={detailsPath} className="block overflow-hidden">
+        <ServiceImage
+          imageUrl={service.imageUrl}
+          className="h-32 w-full transition-transform duration-300 group-hover:scale-105"
+          label={service.name}
+        />
+      </Link>
       <div className="space-y-1 p-3.5">
         <div className="flex items-start justify-between gap-2">
-          <p className="text-sm font-bold text-foreground">{service.name}</p>
+          <Link to={detailsPath} className="text-sm font-bold text-foreground hover:underline">
+            {service.name}
+          </Link>
           <FavoriteButton serviceId={service.id} />
         </div>
         {service.description && (
