@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>فرح · منصة تخطيط الأعراس المشتركة</title>
+  <meta name="description" content="فرح — منصة سعودية تتيح للعروسين تخطيط زفافهما معًا: تصفّح القاعات والمصوّرين، وأضف الخدمات لخطة مشتركة تحتاج موافقة الطرفين." />
+
+  <link rel="icon" type="image/png" href="assets/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --gold: #c4a35a;
+      --gold-hover: #a8893a;
+      --fg: #1c1c1c;
+      --bg: #ffffff;
+      --cream: #faf8f4;
+      --muted: #777777;
+      --border: #e5e0d6;
+      --radius: 0.5rem;
+      --max: 1120px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      color: var(--fg);
+      background: var(--bg);
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    a { color: inherit; }
+
+    .wrap {
+      max-width: var(--max);
+      margin-inline: auto;
+      padding-inline: 1.25rem;
+    }
+
+    /* ---------- Header ---------- */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-block: 0.85rem;
+    }
+
+    .nav__logo img { height: 2rem; width: auto; }
+
+    .nav__links {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .nav__links a {
+      text-decoration: none;
+      color: var(--muted);
+      transition: color 0.15s;
+    }
+
+    .nav__links a:hover { color: var(--fg); }
+
+    /* ---------- Buttons ---------- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      border: 1px solid transparent;
+      transition: background-color 0.15s, border-color 0.15s, color 0.15s;
+      white-space: nowrap;
+    }
+
+    .btn--gold { background: var(--gold); color: #fff; }
+    .btn--gold:hover { background: var(--gold-hover); }
+
+    .btn--outline { border-color: var(--fg); color: var(--fg); background: transparent; }
+    .btn--outline:hover { background: var(--fg); color: #fff; }
+
+    .btn--sm { padding: 0.5rem 1rem; font-size: 0.85rem; }
+
+    :where(a, button):focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    /* ---------- Hero ---------- */
+    .hero { padding-block: 3.5rem 4.5rem; }
+
+    .hero__grid {
+      display: grid;
+      gap: 2.5rem;
+      align-items: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 5vw, 3rem);
+      font-weight: 800;
+      line-height: 1.35;
+      margin: 0 0 1rem;
+    }
+
+    .hero h1 span { color: var(--gold); }
+
+    .hero p {
+      font-size: clamp(1rem, 2.2vw, 1.15rem);
+      color: var(--muted);
+      margin: 0 0 2rem;
+      max-width: 34rem;
+    }
+
+    .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+    .hero__img {
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      aspect-ratio: 3 / 2;
+      object-fit: cover;
+      width: 100%;
+    }
+
+    /* ---------- Sections ---------- */
+    section { scroll-margin-top: 4.5rem; }
+
+    .band { background: var(--cream); border-block: 1px solid var(--border); }
+
+    .sec { padding-block: 4rem; }
+
+    .sec__head { max-width: 40rem; margin-bottom: 2.5rem; }
+
+    .sec__head h2 {
+      font-size: clamp(1.5rem, 3.5vw, 2rem);
+      font-weight: 800;
+      margin: 0 0 0.75rem;
+    }
+
+    .sec__head p { color: var(--muted); margin: 0; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.04em;
+      margin-bottom: 0.6rem;
+    }
+
+    /* ---------- Features ---------- */
+    .features { display: grid; gap: 2rem; }
+
+    .feature {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .feature__media {
+      aspect-ratio: 16 / 10;
+      background: var(--cream);
+      padding: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* `contain`, not `cover`: these are real product screenshots, so cropping
+       the sides would cut off the RTL content that starts at the right edge. */
+    .feature__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0.35rem;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .feature__body { padding: 1.5rem; flex: 1; }
+
+    .feature__num {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: var(--gold);
+      margin-bottom: 0.35rem;
+    }
+
+    .feature__body h3 { margin: 0 0 0.6rem; font-size: 1.15rem; font-weight: 700; }
+
+    .feature__body p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+
+    /* ---------- Tech / architecture ---------- */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      overflow: hidden;
+      margin-bottom: 2.5rem;
+    }
+
+    .stat { background: #fff; padding: 1.4rem 1rem; text-align: center; }
+
+    .stat__num { font-size: 1.6rem; font-weight: 800; color: var(--gold); line-height: 1.2; }
+
+    .stat__label { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
+
+    .stack { display: grid; gap: 1.25rem; }
+
+    .layer {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.35rem 1.5rem;
+    }
+
+    .layer h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .layer h3::before {
+      content: '';
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--gold);
+      flex-shrink: 0;
+    }
+
+    .layer p { margin: 0 0 0.75rem; color: var(--muted); font-size: 0.9rem; }
+
+    .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    .tag {
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.2rem 0.7rem;
+      direction: ltr;
+    }
+
+    /* ---------- About ---------- */
+    .about { display: grid; gap: 2.5rem; }
+
+    .prose p { margin: 0 0 1.15rem; }
+
+    .prose p:last-child { margin-bottom: 0; }
+
+    .prose strong { font-weight: 700; }
+
+    .timeline {
+      border-inline-start: 2px solid var(--border);
+      padding-inline-start: 1.25rem;
+      display: grid;
+      gap: 1.25rem;
+    }
+
+    .tl__item { position: relative; }
+
+    .tl__item::before {
+      content: '';
+      position: absolute;
+      inset-inline-start: -1.6rem;
+      top: 0.55rem;
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+      background: var(--gold);
+      border: 2px solid #fff;
+      box-shadow: 0 0 0 2px var(--border);
+    }
+
+    .tl__date { font-size: 0.8rem; font-weight: 700; color: var(--gold); }
+
+    .tl__text { font-size: 0.92rem; color: var(--muted); }
+
+    /* ---------- Team ---------- */
+    .team { display: grid; gap: 1.25rem; }
+
+    .member {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1.4rem;
+      text-align: center;
+    }
+
+    .member__avatar {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 50%;
+      background: var(--cream);
+      border: 1px solid var(--border);
+      color: var(--gold);
+      font-weight: 800;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 0.8rem;
+    }
+
+    .member__name { font-weight: 700; margin-bottom: 0.15rem; }
+
+    .member__role { font-size: 0.83rem; color: var(--muted); margin-bottom: 0.9rem; }
+
+    .socials { display: flex; justify-content: center; gap: 0.5rem; }
+
+    .socials a {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      transition: color 0.15s, border-color 0.15s;
+    }
+
+    .socials a:hover { color: var(--gold); border-color: var(--gold); }
+
+    .socials svg { width: 1rem; height: 1rem; fill: currentColor; }
+
+    /* ---------- CTA ---------- */
+    .cta { text-align: center; padding-block: 4rem; }
+
+    .cta h2 { font-size: clamp(1.5rem, 3.5vw, 2rem); font-weight: 800; margin: 0 0 0.75rem; }
+
+    .cta p { color: var(--muted); margin: 0 auto 2rem; max-width: 32rem; }
+
+    .cta__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center; }
+
+    /* ---------- Footer ---------- */
+    footer {
+      border-top: 1px solid var(--border);
+      padding-block: 2rem;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .foot {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      align-items: center;
+      text-align: center;
+    }
+
+    .foot a { color: var(--muted); text-decoration: underline; text-underline-offset: 3px; }
+
+    .foot a:hover { color: var(--fg); }
+
+    .foot__links { display: flex; flex-wrap: wrap; gap: 1.25rem; justify-content: center; }
+
+    /* ---------- Responsive ---------- */
+    @media (min-width: 640px) {
+      .stats { grid-template-columns: repeat(4, 1fr); }
+      .team { grid-template-columns: repeat(2, 1fr); }
+      .foot { flex-direction: row; justify-content: space-between; text-align: start; }
+    }
+
+    @media (min-width: 900px) {
+      .hero__grid { grid-template-columns: 1fr 1fr; gap: 3.5rem; }
+      .features { grid-template-columns: repeat(3, 1fr); }
+      .stack { grid-template-columns: repeat(3, 1fr); }
+      .about { grid-template-columns: 1.4fr 1fr; gap: 3.5rem; }
+      .team { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    @media (max-width: 520px) {
+      .nav__links { gap: 0.9rem; font-size: 0.8rem; }
+      .nav__links .nav__cta { display: none; }
+    }
+
+    /* ---------- Motion ----------
+       Everything below is wrapped in `prefers-reduced-motion: no-preference`,
+       so a visitor who has asked their OS to limit animation gets the page
+       fully rendered and static - never a blank section waiting on JS. */
+    @media (prefers-reduced-motion: no-preference) {
+
+      /* Scroll reveal. The `.is-visible` class is added by IntersectionObserver. */
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Hero content enters on load rather than on scroll - it's already
+         in view, so waiting for an intersection would never fire. */
+      .hero [data-enter] {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .hero__img {
+        opacity: 0;
+        transform: scale(0.97);
+        animation: enterImg 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+      }
+
+      @keyframes enter {
+        to { opacity: 1; transform: none; }
+      }
+
+      @keyframes enterImg {
+        to { opacity: 1; transform: none; }
+      }
+
+      /* Lift interactions */
+      .feature,
+      .layer,
+      .member {
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s, border-color 0.3s;
+      }
+
+      .feature:hover,
+      .layer:hover,
+      .member:hover {
+        transform: translateY(-4px);
+        border-color: rgba(196, 163, 90, 0.45);
+        box-shadow: 0 12px 28px -14px rgba(28, 28, 28, 0.28);
+      }
+
+      .btn {
+        transition:
+          background-color 0.15s, border-color 0.15s, color 0.15s,
+          transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s;
+      }
+
+      .btn--gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -10px rgba(196, 163, 90, 0.85);
+      }
+
+      .btn--outline:hover { transform: translateY(-2px); }
+
+      .btn:active { transform: translateY(0); }
+
+      .stat { transition: background-color 0.25s; }
+      .stat:hover { background: var(--cream); }
+
+      .socials a { transition: color 0.15s, border-color 0.15s, transform 0.2s; }
+      .socials a:hover { transform: translateY(-2px); }
+
+      .tag { transition: border-color 0.2s, background-color 0.2s; }
+      .layer:hover .tag { border-color: rgba(196, 163, 90, 0.4); }
+
+      /* Header shrinks slightly once you start scrolling. */
+      header { transition: box-shadow 0.3s, background-color 0.3s; }
+      header.is-scrolled { box-shadow: 0 4px 20px -12px rgba(28, 28, 28, 0.35); }
+    }
+
+    /* Underline that grows out from the start edge on hover. */
+    .nav__links a:not(.btn) {
+      position: relative;
+      padding-block: 0.15rem;
+    }
+
+    .nav__links a:not(.btn)::after {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      background: var(--gold);
+      transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav__links a:not(.btn):hover::after { width: 100%; }
+
+    /* Scroll progress bar pinned under the header. */
+    .progress {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      height: 3px;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: right;   /* RTL: fills right to left */
+      background: var(--gold);
+      z-index: 60;
+      will-change: transform;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ============ HEADER ============ -->
+  <header id="siteHeader">
+    <div class="wrap nav">
+      <a class="nav__logo" href="#top" aria-label="فرح — أعلى الصفحة">
+        <img src="assets/logo-farah.webp" alt="فرح" />
+      </a>
+
+      <nav class="nav__links" aria-label="أقسام الصفحة">
+        <a href="#features">المميزات</a>
+        <a href="#tech">التقنيات</a>
+        <a href="#about">القصة</a>
+        <a href="#team">الفريق</a>
+        <a class="btn btn--gold btn--sm nav__cta" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+          جرّب التطبيق
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+
+    <!-- ============ HERO ============ -->
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div>
+          <span class="eyebrow" data-enter style="animation-delay:.05s">مشروع تخرّج · Holberton School</span>
+          <h1 data-enter style="animation-delay:.15s">خطّطوا زفافكم <span>معًا</span>، لا كلٌّ على حدة.</h1>
+          <p data-enter style="animation-delay:.28s">
+            منصة سعودية تجمع قاعات الأفراح والمصوّرين في مكان واحد — وتتيح للعروسين
+            خطة مشتركة لا تُعتمد فيها أي خدمة إلا بموافقة الطرفين.
+          </p>
+          <div class="hero__actions" data-enter style="animation-delay:.4s">
+            <a class="btn btn--gold" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+              جرّب التطبيق المباشر
+            </a>
+            <a class="btn btn--outline" href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">
+              الكود على GitHub
+            </a>
+          </div>
+        </div>
+
+        <img
+          class="hero__img"
+          src="assets/hero-home.webp"
+          alt="خاتما زفاف ذهبيان بجانب باقة ورد أبيض"
+          width="1536" height="1024"
+          fetchpriority="high"
+        />
+      </div>
+    </section>
+
+    <!-- ============ FEATURES ============ -->
+    <section id="features" class="band">
+      <div class="wrap sec">
+        <div class="sec__head" data-reveal>
+          <span class="eyebrow">المميزات</span>
+          <h2>ثلاث ميزات تشكّل جوهر المنصة</h2>
+          <p>
+            بُنيت هذه الميزات لتغطي رحلة التخطيط كاملة: من تصفّح الخدمات، إلى
+            الاتفاق عليها كزوجين، إلى إدارتها من طرف مزوّد الخدمة.
+          </p>
+        </div>
+
+        <div class="features">
+
+          <article class="feature" data-reveal data-stagger>
+            <div class="feature__media">
+              <img src="assets/feature-planner.webp" alt="خطة زفاف مشتركة تعرض خدمة بحالة «بانتظار موافقة الشريك»" width="1400" height="388" loading="lazy" />
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">01</p>
+              <h3>المخطط المشترك للعروسين</h3>
+              <p>
+                ينشئ أحد الطرفين خطة الزفاف ويدعو شريكه برمز خاص. أي خدمة يضيفها
+                أحدهما تبقى «بانتظار الموافقة» حتى يوافق الآخر — فلا قرار يُتخذ
+                من طرف واحد.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature" data-reveal data-stagger>
+            <div class="feature__media">
+              <img src="assets/feature-browse.webp" alt="صفحة تصفّح قاعات الأفراح مع فلاتر البحث والسعر" width="1400" height="603" loading="lazy" />
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">02</p>
+              <h3>تصفّح القاعات والمصوّرين</h3>
+              <p>
+                فهرس موحّد لقاعات الأفراح وخدمات التصوير، مع فلترة بالسعر والكلمة
+                المفتاحية، وصفحة تفاصيل لكل خدمة تعرض السعة والموقع ومعدات التصوير
+                — ثم الحجز مباشرة.
+              </p>
+            </div>
+          </article>
+
+          <article class="feature" data-reveal data-stagger>
+            <div class="feature__media">
+              <img src="assets/feature-photographers.webp" alt="صفحة تصفّح مصوّري الأفراح مع فلاتر البحث والسعر" width="1400" height="603" loading="lazy" />
+            </div>
+            <div class="feature__body">
+              <p class="feature__num">03</p>
+              <h3>لوحة تحكم مزوّد الخدمة</h3>
+              <p>
+                يسجّل المزوّد نشاطه، ويضيف خدماته بأسعارها وصورها، ويستقبل طلبات
+                الحجز ليقبلها أو يرفضها — كل ذلك من لوحة واحدة.
+              </p>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TECH ============ -->
+    <section id="tech">
+      <div class="wrap sec">
+        <div class="sec__head" data-reveal>
+          <span class="eyebrow">تحت الغطاء</span>
+          <h2>كيف بُنيت المنصة</h2>
+          <p>
+            تطبيق ويب متكامل، منشور فعليًا كخدمة واحدة: Flask يقدّم واجهة React
+            المبنية إلى جانب الـ API، وقاعدة PostgreSQL مُدارة خلفهما.
+          </p>
+        </div>
+
+        <div class="stats">
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="63">63</div>
+            <div class="stat__label">نقطة API</div>
+          </div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="14">14</div>
+            <div class="stat__label">جدول في قاعدة البيانات</div>
+          </div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="47">47</div>
+            <div class="stat__label">اختبار آلي ناجح</div>
+          </div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="112">112</div>
+            <div class="stat__label">commit على main</div>
+          </div>
+        </div>
+
+        <div class="stack">
+          <div class="layer" data-reveal data-stagger>
+            <h3>الواجهة الأمامية</h3>
+            <p>
+              بنية قائمة على الميزات (Feature-Based)، مع تحميل كسول لكل صفحة
+              وحُرّاس مسارات تفصل الصفحات العامة عن المحمية.
+            </p>
+            <div class="tags">
+              <span class="tag">React 19</span>
+              <span class="tag">TypeScript</span>
+              <span class="tag">Vite</span>
+              <span class="tag">Tailwind CSS</span>
+              <span class="tag">React Router</span>
+            </div>
+          </div>
+
+          <div class="layer" data-reveal data-stagger>
+            <h3>الواجهة الخلفية</h3>
+            <p>
+              بنية طبقية صارمة: routes ← schemas ← services ← repositories ←
+              models، مع ظرف استجابة موحّد ومصادقة JWT على كل عمليات الكتابة.
+            </p>
+            <div class="tags">
+              <span class="tag">Flask</span>
+              <span class="tag">SQLAlchemy</span>
+              <span class="tag">Marshmallow</span>
+              <span class="tag">JWT</span>
+              <span class="tag">pytest</span>
+            </div>
+          </div>
+
+          <div class="layer" data-reveal data-stagger>
+            <h3>البيانات والنشر</h3>
+            <p>
+              PostgreSQL مُدارة على Render، ونشر تلقائي مع كل دفعة إلى فرع
+              <code style="direction:ltr">main</code>.
+            </p>
+            <div class="tags">
+              <span class="tag">PostgreSQL</span>
+              <span class="tag">Render</span>
+              <span class="tag">Gunicorn</span>
+              <span class="tag">Vitest</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT ============ -->
+    <section id="about" class="band">
+      <div class="wrap sec">
+        <div class="sec__head" data-reveal>
+          <span class="eyebrow">القصة</span>
+          <h2>لماذا بنينا «فرح»</h2>
+        </div>
+
+        <div class="about">
+          <div class="prose" data-reveal>
+            <p>
+              بدأت الفكرة من ملاحظة تكرّرت أمامنا أكثر من مرة: تخطيط زفاف واحد في
+              السعودية يعني الاتصال بأكثر من عشرة مزوّدين، ومقارنة الأسعار يدويًا،
+              وتشتيت القرارات بين محادثات واتساب متفرقة. عملية مرهقة، بطيئة،
+              ومبعثرة.
+            </p>
+            <p>
+              لكن ما لفت انتباهنا فعلًا لم يكن التشتّت وحده، بل شيء أدق:
+              <strong>العروسان غالبًا ليسا في المكان نفسه وقت اتخاذ القرار</strong> —
+              ومع ذلك، كل المنصات الموجودة مبنية على أساس مستخدم واحد يقرّر.
+            </p>
+            <p>
+              من هنا وُلد السؤال الذي حدّد المشروع كله:
+              <em>«كيف يمكن أن نجعل الزوجين يقرّران معًا حتى وهما متباعدان؟»</em>
+              فبنينا الخطة المشتركة: أي خدمة يضيفها أحد الطرفين تبقى معلّقة حتى
+              يوافق الآخر عليها. هذه هي الميزة التي جعلتنا نختار هذه الفكرة من بين
+              خمس عشرة فكرة أخرى درسناها وقيّمناها.
+            </p>
+            <p>
+              كان الطريق تعليميًا بقدر ما كان تقنيًا: انتقلنا من SQLite إلى
+              PostgreSQL، واكتشفنا في مراجعة أمنية متأخرة أن نقاط الكتابة كانت
+              مفتوحة دون مصادقة فأغلقناها، وواجهنا ثلاثة أعطال لم تظهر إلا في
+              بيئة الإنتاج — كل واحد منها كان درسًا مكتوبًا في
+              <a href="https://github.com/Mohammed2254/final-project/blob/main/stage5_Docs/02_lessons_learned.md" target="_blank" rel="noopener">مستند الدروس المستفادة</a>.
+            </p>
+            <p>
+              «فرح» هو مشروع التخرّج لفريقنا في
+              <a href="https://www.holbertonschool.com/" target="_blank" rel="noopener">Holberton School</a>،
+              وقد بُني بالكامل خلال عشرة أسابيع.
+            </p>
+          </div>
+
+          <div>
+            <div class="timeline">
+              <div class="tl__item" data-reveal data-stagger>
+                <div class="tl__date">١٦ مايو ٢٠٢٦</div>
+                <div class="tl__text">تكوين الفريق، وتقييم ١٥ فكرة واختيار واحدة.</div>
+              </div>
+              <div class="tl__item" data-reveal data-stagger>
+                <div class="tl__date">يونيو ٢٠٢٦</div>
+                <div class="tl__text">ميثاق المشروع، والتوثيق التقني: قصص المستخدم، مخطط قاعدة البيانات، معمارية النظام.</div>
+              </div>
+              <div class="tl__item" data-reveal data-stagger>
+                <div class="tl__date">٢٧ يونيو — ١٦ يوليو</div>
+                <div class="tl__text">بناء الواجهة الخلفية والمصادقة، ثم فهرس الخدمات والحجوزات وبداية الواجهة الأمامية.</div>
+              </div>
+              <div class="tl__item" data-reveal data-stagger>
+                <div class="tl__date">١٧ — ٢١ يوليو</div>
+                <div class="tl__text">إطلاق المخطط المشترك — الميزة الجوهرية للمشروع.</div>
+              </div>
+              <div class="tl__item" data-reveal data-stagger>
+                <div class="tl__date">٢٢ — ٢٦ يوليو</div>
+                <div class="tl__text">تقوية أمنية، ٤٧ اختبارًا آليًا، والنشر إلى الإنتاج.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ TEAM ============ -->
+    <section id="team">
+      <div class="wrap sec">
+        <div class="sec__head" data-reveal>
+          <span class="eyebrow">الفريق</span>
+          <h2>من بنى المشروع</h2>
+        </div>
+
+        <!--
+          ⚠️ استبدل روابط # أدناه بالروابط الحقيقية لكل عضو.
+          احذف أي وسم <a> لا يملك صاحبه حسابًا على تلك المنصة.
+        -->
+        <div class="team">
+
+          <div class="member" data-reveal data-stagger>
+            <div class="member__avatar" aria-hidden="true">م</div>
+            <div class="member__name">محمد العبدلي</div>
+            <div class="member__role">مدير المشروع · مطوّر Full-Stack</div>
+            <div class="socials">
+                <a href="https://github.com/Mohammed2254" target="_blank" rel="noopener" aria-label="محمد العبدلي على GitHub" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+                <a href="https://www.linkedin.com/in/mohammed-alabdali-11237131a" target="_blank" rel="noopener" aria-label="محمد العبدلي على LinkedIn" title="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg></a>
+            </div>
+          </div>
+
+          <div class="member" data-reveal data-stagger>
+            <div class="member__avatar" aria-hidden="true">س</div>
+            <div class="member__name">سلمان الغنّام</div>
+            <div class="member__role">قائد الفريق · مطوّر Backend</div>
+            <div class="socials">
+                <a href="https://github.com/salman-ghannam1" target="_blank" rel="noopener" aria-label="سلمان الغنّام على GitHub" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+                <a href="https://www.linkedin.com/in/salman-almutairi-867500232" target="_blank" rel="noopener" aria-label="سلمان الغنّام على LinkedIn" title="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg></a>
+            </div>
+          </div>
+
+          <div class="member" data-reveal data-stagger>
+            <div class="member__avatar" aria-hidden="true">ع</div>
+            <div class="member__name">عبدالله الدغيّم</div>
+            <div class="member__role">مطوّر Frontend</div>
+          </div>
+
+          <div class="member" data-reveal data-stagger>
+            <div class="member__avatar" aria-hidden="true">ف</div>
+            <div class="member__name">فهد العنزي</div>
+            <div class="member__role">عضو مساهم</div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ CTA ============ -->
+    <section class="band">
+      <div class="wrap cta" data-reveal>
+        <h2>جرّبها بنفسك</h2>
+        <p>
+          التطبيق منشور ويعمل. أنشئ حسابًا، تصفّح الخدمات، وابدأ خطة زفاف مشتركة.
+        </p>
+        <div class="cta__actions">
+          <a class="btn btn--gold" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
+            افتح التطبيق المباشر
+          </a>
+          <a class="btn btn--outline" href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">
+            تصفّح الكود المصدري
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer>
+    <div class="wrap foot">
+      <p style="margin:0">© ٢٠٢٦ فرح · مشروع تخرّج في Holberton School</p>
+      <div class="foot__links">
+        <a href="https://github.com/Mohammed2254/final-project" target="_blank" rel="noopener">مستودع GitHub</a>
+        <a href="https://farah-592g.onrender.com" target="_blank" rel="noopener">التطبيق المباشر</a>
+        <a href="https://www.holbertonschool.com/" target="_blank" rel="noopener">Holberton School</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---- 1. Scroll reveal --------------------------------------------
+         Without JS (or with reduced motion) the CSS above never hides
+         anything, so the page is fully readable either way. */
+      var revealables = document.querySelectorAll('[data-reveal]');
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        revealables.forEach(function (el) { el.classList.add('is-visible'); });
+      } else {
+        // Stagger siblings so a row of cards cascades instead of popping
+        // in together.
+        var seen = new Map();
+        revealables.forEach(function (el) {
+          if (!el.hasAttribute('data-stagger')) return;
+          var parent = el.parentElement;
+          var index = seen.get(parent) || 0;
+          el.style.transitionDelay = (index * 0.09) + 's';
+          seen.set(parent, index + 1);
+        });
+
+        var revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);   // one-way, never re-hide
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        revealables.forEach(function (el) { revealObserver.observe(el); });
+      }
+
+      /* ---- 2. Count-up stats ------------------------------------------- */
+      var counters = document.querySelectorAll('[data-count]');
+
+      function runCount(el) {
+        var target = Number(el.getAttribute('data-count'));
+        var duration = 1400;
+        var started = null;
+
+        function frame(now) {
+          if (started === null) started = now;
+          var progress = Math.min((now - started) / duration, 1);
+          // easeOutExpo - fast start, gentle landing on the final number
+          var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          el.textContent = Math.round(target * eased).toLocaleString('ar-EG');
+          if (progress < 1) requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        counters.forEach(function (el) {
+          el.textContent = Number(el.getAttribute('data-count')).toLocaleString('ar-EG');
+        });
+      } else {
+        var countObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            runCount(entry.target);
+            countObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.6 });
+
+        counters.forEach(function (el) { countObserver.observe(el); });
+      }
+
+      /* ---- 3. Scroll progress + header shadow --------------------------- */
+      var progress = document.getElementById('progress');
+      var header = document.getElementById('siteHeader');
+      var ticking = false;
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+
+        requestAnimationFrame(function () {
+          var scrolled = window.scrollY;
+          var height = document.documentElement.scrollHeight - window.innerHeight;
+          progress.style.transform = 'scaleX(' + (height > 0 ? scrolled / height : 0) + ')';
+          header.classList.toggle('is-scrolled', scrolled > 8);
+          ticking = false;
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
+</body>
+</html>
