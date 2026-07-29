@@ -2,12 +2,14 @@ import { useMemo, useState } from 'react';
 
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyState';
+import { Pagination } from '@/components/common/Pagination';
 import { PhotographerCard } from '@/features/photographers/components/PhotographerCard';
 import {
   PhotographerFilters,
   type PhotographerFiltersValue,
 } from '@/features/photographers/components/PhotographerFilters';
 import { usePhotographers } from '@/features/photographers/hooks/usePhotographers';
+import { usePagination } from '@/hooks/usePagination';
 
 const EMPTY_FILTERS: PhotographerFiltersValue = { keyword: '', minPrice: '', maxPrice: '' };
 
@@ -30,6 +32,8 @@ export default function PhotographersListPage() {
   );
 
   const { photographers, isLoading, error, reload } = usePhotographers(queryParams);
+  const { page, setPage, totalPages, pageItems, rangeStart, rangeEnd, total } =
+    usePagination(photographers);
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -60,11 +64,24 @@ export default function PhotographersListPage() {
           )}
 
           {!isLoading && !error && photographers.length > 0 && (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {photographers.map((photographer) => (
-                <PhotographerCard key={photographer.id} photographer={photographer} />
-              ))}
-            </div>
+            <>
+              <p className="mb-4 text-sm text-muted-foreground" role="status">
+                عرض {rangeStart}–{rangeEnd} من {total} مصوّر
+              </p>
+
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
+                {pageItems.map((photographer) => (
+                  <PhotographerCard key={photographer.id} photographer={photographer} />
+                ))}
+              </div>
+
+              <Pagination
+                page={page}
+                totalPages={totalPages}
+                onPageChange={setPage}
+                className="mt-8"
+              />
+            </>
           )}
         </div>
       </div>

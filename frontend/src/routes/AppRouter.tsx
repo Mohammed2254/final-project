@@ -129,6 +129,13 @@ export function AppRouter() {
                 element={<ProviderDashboardPage />}
               />
             </Route>
+
+            {/* Inside MainLayout so a wrong URL still has a header, a footer,
+                and a way back - not a bare page with no navigation. */}
+            <Route
+              path="404"
+              element={<NotFoundPage />}
+            />
           </Route>
 
           {/* صفحات الزوار فقط */}
@@ -150,11 +157,6 @@ export function AppRouter() {
               />
             </Route>
           </Route>
-
-          <Route
-            path="404"
-            element={<NotFoundPage />}
-          />
 
           <Route
             path="*"
