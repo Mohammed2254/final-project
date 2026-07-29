@@ -96,12 +96,14 @@ export default function HomePage() {
             <Link to={ROUTES.HALLS} className={cn(buttonVariants({ variant: 'gold', size: 'lg' }))}>
               ابدأوا التخطيط
             </Link>
-            <Link
-              to={ROUTES.REGISTER}
-              className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
-            >
-              ابدأوا الآن
-            </Link>
+            {!isAuthenticated && (
+              <Link
+                to={ROUTES.REGISTER}
+                className={cn(buttonVariants({ variant: 'outline', size: 'lg' }))}
+              >
+                ابدأوا الآن
+              </Link>
+            )}
           </div>
         </div>
       </section>
