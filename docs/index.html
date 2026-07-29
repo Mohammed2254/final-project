@@ -187,33 +187,23 @@
 
     .feature__media {
       aspect-ratio: 16 / 10;
-      background: linear-gradient(135deg, #f6f2ea, #ece5d8);
+      background: var(--cream);
+      padding: 0.75rem;
       display: flex;
       align-items: center;
       justify-content: center;
       border-bottom: 1px solid var(--border);
     }
 
-    .feature__media img { width: 100%; height: 100%; object-fit: cover; }
-
-    /* Visible slot until a real screenshot replaces it */
-    .slot {
-      text-align: center;
-      padding: 1.5rem;
-      color: var(--gold-hover);
-      font-size: 0.85rem;
-      font-weight: 600;
-      line-height: 1.9;
-    }
-
-    .slot code {
-      display: inline-block;
-      margin-top: 0.4rem;
-      background: rgba(196, 163, 90, 0.14);
-      padding: 0.15rem 0.5rem;
-      border-radius: 0.3rem;
-      font-size: 0.78rem;
-      direction: ltr;
+    /* `contain`, not `cover`: these are real product screenshots, so cropping
+       the sides would cut off the RTL content that starts at the right edge. */
+    .feature__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      border-radius: 0.35rem;
+      border: 1px solid var(--border);
+      background: #fff;
     }
 
     .feature__body { padding: 1.5rem; flex: 1; }
@@ -421,13 +411,134 @@
       .nav__links { gap: 0.9rem; font-size: 0.8rem; }
       .nav__links .nav__cta { display: none; }
     }
+
+    /* ---------- Motion ----------
+       Everything below is wrapped in `prefers-reduced-motion: no-preference`,
+       so a visitor who has asked their OS to limit animation gets the page
+       fully rendered and static - never a blank section waiting on JS. */
+    @media (prefers-reduced-motion: no-preference) {
+
+      /* Scroll reveal. The `.is-visible` class is added by IntersectionObserver. */
+      [data-reveal] {
+        opacity: 0;
+        transform: translateY(20px);
+        transition:
+          opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1),
+          transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      [data-reveal].is-visible {
+        opacity: 1;
+        transform: none;
+      }
+
+      /* Hero content enters on load rather than on scroll - it's already
+         in view, so waiting for an intersection would never fire. */
+      .hero [data-enter] {
+        opacity: 0;
+        transform: translateY(16px);
+        animation: enter 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      .hero__img {
+        opacity: 0;
+        transform: scale(0.97);
+        animation: enterImg 1s cubic-bezier(0.22, 1, 0.36, 1) 0.15s forwards;
+      }
+
+      @keyframes enter {
+        to { opacity: 1; transform: none; }
+      }
+
+      @keyframes enterImg {
+        to { opacity: 1; transform: none; }
+      }
+
+      /* Lift interactions */
+      .feature,
+      .layer,
+      .member {
+        transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s, border-color 0.3s;
+      }
+
+      .feature:hover,
+      .layer:hover,
+      .member:hover {
+        transform: translateY(-4px);
+        border-color: rgba(196, 163, 90, 0.45);
+        box-shadow: 0 12px 28px -14px rgba(28, 28, 28, 0.28);
+      }
+
+      .btn {
+        transition:
+          background-color 0.15s, border-color 0.15s, color 0.15s,
+          transform 0.15s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.2s;
+      }
+
+      .btn--gold:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px -10px rgba(196, 163, 90, 0.85);
+      }
+
+      .btn--outline:hover { transform: translateY(-2px); }
+
+      .btn:active { transform: translateY(0); }
+
+      .stat { transition: background-color 0.25s; }
+      .stat:hover { background: var(--cream); }
+
+      .socials a { transition: color 0.15s, border-color 0.15s, transform 0.2s; }
+      .socials a:hover { transform: translateY(-2px); }
+
+      .tag { transition: border-color 0.2s, background-color 0.2s; }
+      .layer:hover .tag { border-color: rgba(196, 163, 90, 0.4); }
+
+      /* Header shrinks slightly once you start scrolling. */
+      header { transition: box-shadow 0.3s, background-color 0.3s; }
+      header.is-scrolled { box-shadow: 0 4px 20px -12px rgba(28, 28, 28, 0.35); }
+    }
+
+    /* Underline that grows out from the start edge on hover. */
+    .nav__links a:not(.btn) {
+      position: relative;
+      padding-block: 0.15rem;
+    }
+
+    .nav__links a:not(.btn)::after {
+      content: '';
+      position: absolute;
+      inset-inline-start: 0;
+      bottom: 0;
+      height: 2px;
+      width: 0;
+      background: var(--gold);
+      transition: width 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .nav__links a:not(.btn):hover::after { width: 100%; }
+
+    /* Scroll progress bar pinned under the header. */
+    .progress {
+      position: fixed;
+      inset-block-start: 0;
+      inset-inline-start: 0;
+      height: 3px;
+      width: 100%;
+      transform: scaleX(0);
+      transform-origin: right;   /* RTL: fills right to left */
+      background: var(--gold);
+      z-index: 60;
+      will-change: transform;
+    }
   </style>
 </head>
 
 <body>
 
-  <!-- ============ HEADER ============ -->
-  <header>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+
+<!-- ============ HEADER ============ -->
+  <header id="siteHeader">
     <div class="wrap nav">
       <a class="nav__logo" href="#top" aria-label="فرح — أعلى الصفحة">
         <img src="assets/logo-farah.webp" alt="فرح" />
@@ -451,13 +562,13 @@
     <section class="hero">
       <div class="wrap hero__grid">
         <div>
-          <span class="eyebrow">مشروع تخرّج · Holberton School</span>
-          <h1>خطّطوا زفافكم <span>معًا</span>، لا كلٌّ على حدة.</h1>
-          <p>
+          <span class="eyebrow" data-enter style="animation-delay:.05s">مشروع تخرّج · Holberton School</span>
+          <h1 data-enter style="animation-delay:.15s">خطّطوا زفافكم <span>معًا</span>، لا كلٌّ على حدة.</h1>
+          <p data-enter style="animation-delay:.28s">
             منصة سعودية تجمع قاعات الأفراح والمصوّرين في مكان واحد — وتتيح للعروسين
             خطة مشتركة لا تُعتمد فيها أي خدمة إلا بموافقة الطرفين.
           </p>
-          <div class="hero__actions">
+          <div class="hero__actions" data-enter style="animation-delay:.4s">
             <a class="btn btn--gold" href="https://farah-592g.onrender.com" target="_blank" rel="noopener">
               جرّب التطبيق المباشر
             </a>
@@ -480,7 +591,7 @@
     <!-- ============ FEATURES ============ -->
     <section id="features" class="band">
       <div class="wrap sec">
-        <div class="sec__head">
+        <div class="sec__head" data-reveal>
           <span class="eyebrow">المميزات</span>
           <h2>ثلاث ميزات تشكّل جوهر المنصة</h2>
           <p>
@@ -491,13 +602,9 @@
 
         <div class="features">
 
-          <article class="feature">
+          <article class="feature" data-reveal data-stagger>
             <div class="feature__media">
-              <!-- استبدل هذا السطر بـ: <img src="assets/feature-planner.webp" alt="..." /> -->
-              <p class="slot">
-                📸 لقطة «المخطط المشترك»<br />
-                <code>assets/feature-planner.webp</code>
-              </p>
+              <img src="assets/feature-planner.webp" alt="خطة زفاف مشتركة تعرض خدمة بحالة «بانتظار موافقة الشريك»" width="1400" height="388" loading="lazy" />
             </div>
             <div class="feature__body">
               <p class="feature__num">01</p>
@@ -510,13 +617,9 @@
             </div>
           </article>
 
-          <article class="feature">
+          <article class="feature" data-reveal data-stagger>
             <div class="feature__media">
-              <!-- استبدل هذا السطر بـ: <img src="assets/feature-browse.webp" alt="..." /> -->
-              <p class="slot">
-                📸 لقطة «تصفّح الخدمات»<br />
-                <code>assets/feature-browse.webp</code>
-              </p>
+              <img src="assets/feature-browse.webp" alt="صفحة تصفّح قاعات الأفراح مع فلاتر البحث والسعر" width="1400" height="603" loading="lazy" />
             </div>
             <div class="feature__body">
               <p class="feature__num">02</p>
@@ -529,13 +632,9 @@
             </div>
           </article>
 
-          <article class="feature">
+          <article class="feature" data-reveal data-stagger>
             <div class="feature__media">
-              <!-- استبدل هذا السطر بـ: <img src="assets/feature-provider.webp" alt="..." /> -->
-              <p class="slot">
-                📸 لقطة «لوحة المزوّد»<br />
-                <code>assets/feature-provider.webp</code>
-              </p>
+              <img src="assets/feature-photographers.webp" alt="صفحة تصفّح مصوّري الأفراح مع فلاتر البحث والسعر" width="1400" height="603" loading="lazy" />
             </div>
             <div class="feature__body">
               <p class="feature__num">03</p>
@@ -554,7 +653,7 @@
     <!-- ============ TECH ============ -->
     <section id="tech">
       <div class="wrap sec">
-        <div class="sec__head">
+        <div class="sec__head" data-reveal>
           <span class="eyebrow">تحت الغطاء</span>
           <h2>كيف بُنيت المنصة</h2>
           <p>
@@ -564,26 +663,26 @@
         </div>
 
         <div class="stats">
-          <div class="stat">
-            <div class="stat__num">63</div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="63">63</div>
             <div class="stat__label">نقطة API</div>
           </div>
-          <div class="stat">
-            <div class="stat__num">14</div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="14">14</div>
             <div class="stat__label">جدول في قاعدة البيانات</div>
           </div>
-          <div class="stat">
-            <div class="stat__num">47</div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="47">47</div>
             <div class="stat__label">اختبار آلي ناجح</div>
           </div>
-          <div class="stat">
-            <div class="stat__num">112</div>
+          <div class="stat" data-reveal data-stagger>
+            <div class="stat__num" data-count="112">112</div>
             <div class="stat__label">commit على main</div>
           </div>
         </div>
 
         <div class="stack">
-          <div class="layer">
+          <div class="layer" data-reveal data-stagger>
             <h3>الواجهة الأمامية</h3>
             <p>
               بنية قائمة على الميزات (Feature-Based)، مع تحميل كسول لكل صفحة
@@ -598,7 +697,7 @@
             </div>
           </div>
 
-          <div class="layer">
+          <div class="layer" data-reveal data-stagger>
             <h3>الواجهة الخلفية</h3>
             <p>
               بنية طبقية صارمة: routes ← schemas ← services ← repositories ←
@@ -613,7 +712,7 @@
             </div>
           </div>
 
-          <div class="layer">
+          <div class="layer" data-reveal data-stagger>
             <h3>البيانات والنشر</h3>
             <p>
               PostgreSQL مُدارة على Render، ونشر تلقائي مع كل دفعة إلى فرع
@@ -633,13 +732,13 @@
     <!-- ============ ABOUT ============ -->
     <section id="about" class="band">
       <div class="wrap sec">
-        <div class="sec__head">
+        <div class="sec__head" data-reveal>
           <span class="eyebrow">القصة</span>
           <h2>لماذا بنينا «فرح»</h2>
         </div>
 
         <div class="about">
-          <div class="prose">
+          <div class="prose" data-reveal>
             <p>
               بدأت الفكرة من ملاحظة تكرّرت أمامنا أكثر من مرة: تخطيط زفاف واحد في
               السعودية يعني الاتصال بأكثر من عشرة مزوّدين، ومقارنة الأسعار يدويًا،
@@ -674,23 +773,23 @@
 
           <div>
             <div class="timeline">
-              <div class="tl__item">
+              <div class="tl__item" data-reveal data-stagger>
                 <div class="tl__date">١٦ مايو ٢٠٢٦</div>
                 <div class="tl__text">تكوين الفريق، وتقييم ١٥ فكرة واختيار واحدة.</div>
               </div>
-              <div class="tl__item">
+              <div class="tl__item" data-reveal data-stagger>
                 <div class="tl__date">يونيو ٢٠٢٦</div>
                 <div class="tl__text">ميثاق المشروع، والتوثيق التقني: قصص المستخدم، مخطط قاعدة البيانات، معمارية النظام.</div>
               </div>
-              <div class="tl__item">
+              <div class="tl__item" data-reveal data-stagger>
                 <div class="tl__date">٢٧ يونيو — ١٦ يوليو</div>
                 <div class="tl__text">بناء الواجهة الخلفية والمصادقة، ثم فهرس الخدمات والحجوزات وبداية الواجهة الأمامية.</div>
               </div>
-              <div class="tl__item">
+              <div class="tl__item" data-reveal data-stagger>
                 <div class="tl__date">١٧ — ٢١ يوليو</div>
                 <div class="tl__text">إطلاق المخطط المشترك — الميزة الجوهرية للمشروع.</div>
               </div>
-              <div class="tl__item">
+              <div class="tl__item" data-reveal data-stagger>
                 <div class="tl__date">٢٢ — ٢٦ يوليو</div>
                 <div class="tl__text">تقوية أمنية، ٤٧ اختبارًا آليًا، والنشر إلى الإنتاج.</div>
               </div>
@@ -703,7 +802,7 @@
     <!-- ============ TEAM ============ -->
     <section id="team">
       <div class="wrap sec">
-        <div class="sec__head">
+        <div class="sec__head" data-reveal>
           <span class="eyebrow">الفريق</span>
           <h2>من بنى المشروع</h2>
         </div>
@@ -714,72 +813,36 @@
         -->
         <div class="team">
 
-          <div class="member">
+          <div class="member" data-reveal data-stagger>
             <div class="member__avatar" aria-hidden="true">م</div>
             <div class="member__name">محمد العبدلي</div>
             <div class="member__role">مدير المشروع · مطوّر Full-Stack</div>
             <div class="socials">
-              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على GitHub" title="GitHub">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على LinkedIn" title="LinkedIn">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="محمد العبدلي على X" title="X (Twitter)">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
-              </a>
+                <a href="https://github.com/Mohammed2254" target="_blank" rel="noopener" aria-label="محمد العبدلي على GitHub" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+                <a href="https://www.linkedin.com/in/mohammed-alabdali-11237131a" target="_blank" rel="noopener" aria-label="محمد العبدلي على LinkedIn" title="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg></a>
             </div>
           </div>
 
-          <div class="member">
+          <div class="member" data-reveal data-stagger>
             <div class="member__avatar" aria-hidden="true">س</div>
             <div class="member__name">سلمان الغنّام</div>
             <div class="member__role">قائد الفريق · مطوّر Backend</div>
             <div class="socials">
-              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على GitHub" title="GitHub">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على LinkedIn" title="LinkedIn">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="سلمان الغنّام على X" title="X (Twitter)">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
-              </a>
+                <a href="https://github.com/salman-ghannam1" target="_blank" rel="noopener" aria-label="سلمان الغنّام على GitHub" title="GitHub"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg></a>
+                <a href="https://www.linkedin.com/in/salman-almutairi-867500232" target="_blank" rel="noopener" aria-label="سلمان الغنّام على LinkedIn" title="LinkedIn"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg></a>
             </div>
           </div>
 
-          <div class="member">
+          <div class="member" data-reveal data-stagger>
             <div class="member__avatar" aria-hidden="true">ع</div>
             <div class="member__name">عبدالله الدغيّم</div>
             <div class="member__role">مطوّر Frontend</div>
-            <div class="socials">
-              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على GitHub" title="GitHub">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على LinkedIn" title="LinkedIn">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="عبدالله الدغيّم على X" title="X (Twitter)">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
-              </a>
-            </div>
           </div>
 
-          <div class="member">
+          <div class="member" data-reveal data-stagger>
             <div class="member__avatar" aria-hidden="true">ف</div>
             <div class="member__name">فهد العنزي</div>
-            <div class="member__role">عضو الفريق</div>
-            <div class="socials">
-              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على GitHub" title="GitHub">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على LinkedIn" title="LinkedIn">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.15C0 .51.53 0 1.19 0h13.62C15.47 0 16 .51 16 1.15v13.7c0 .64-.53 1.15-1.19 1.15H1.19C.53 16 0 15.49 0 14.85V1.15Zm4.94 12.22V6.17H2.54v7.2h2.4Zm-1.2-8.18c.84 0 1.36-.55 1.36-1.24-.02-.71-.52-1.25-1.34-1.25-.82 0-1.36.54-1.36 1.25 0 .69.52 1.24 1.32 1.24h.02Zm4.908 8.18V9.35c0-.21.015-.43.08-.59.174-.43.57-.88 1.235-.88.87 0 1.219.67 1.219 1.64v3.85h2.4V9.24c0-2.22-1.184-3.25-2.764-3.25-1.274 0-1.845.7-2.165 1.19v.02h-.016l.016-.02V6.17h-2.4c.03.68 0 7.2 0 7.2h2.4Z"/></svg>
-              </a>
-              <a href="#" target="_blank" rel="noopener" aria-label="فهد العنزي على X" title="X (Twitter)">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.6.75Zm-.86 13.028h1.36L4.323 2.145H2.865l8.875 11.633Z"/></svg>
-              </a>
-            </div>
+            <div class="member__role">عضو مساهم</div>
           </div>
 
         </div>
@@ -788,7 +851,7 @@
 
     <!-- ============ CTA ============ -->
     <section class="band">
-      <div class="wrap cta">
+      <div class="wrap cta" data-reveal>
         <h2>جرّبها بنفسك</h2>
         <p>
           التطبيق منشور ويعمل. أنشئ حسابًا، تصفّح الخدمات، وابدأ خطة زفاف مشتركة.
@@ -817,6 +880,101 @@
       </div>
     </div>
   </footer>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* ---- 1. Scroll reveal --------------------------------------------
+         Without JS (or with reduced motion) the CSS above never hides
+         anything, so the page is fully readable either way. */
+      var revealables = document.querySelectorAll('[data-reveal]');
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        revealables.forEach(function (el) { el.classList.add('is-visible'); });
+      } else {
+        // Stagger siblings so a row of cards cascades instead of popping
+        // in together.
+        var seen = new Map();
+        revealables.forEach(function (el) {
+          if (!el.hasAttribute('data-stagger')) return;
+          var parent = el.parentElement;
+          var index = seen.get(parent) || 0;
+          el.style.transitionDelay = (index * 0.09) + 's';
+          seen.set(parent, index + 1);
+        });
+
+        var revealObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            entry.target.classList.add('is-visible');
+            revealObserver.unobserve(entry.target);   // one-way, never re-hide
+          });
+        }, { threshold: 0.15, rootMargin: '0px 0px -60px 0px' });
+
+        revealables.forEach(function (el) { revealObserver.observe(el); });
+      }
+
+      /* ---- 2. Count-up stats ------------------------------------------- */
+      var counters = document.querySelectorAll('[data-count]');
+
+      function runCount(el) {
+        var target = Number(el.getAttribute('data-count'));
+        var duration = 1400;
+        var started = null;
+
+        function frame(now) {
+          if (started === null) started = now;
+          var progress = Math.min((now - started) / duration, 1);
+          // easeOutExpo - fast start, gentle landing on the final number
+          var eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+          el.textContent = Math.round(target * eased).toLocaleString('ar-EG');
+          if (progress < 1) requestAnimationFrame(frame);
+        }
+
+        requestAnimationFrame(frame);
+      }
+
+      if (reduced || !('IntersectionObserver' in window)) {
+        counters.forEach(function (el) {
+          el.textContent = Number(el.getAttribute('data-count')).toLocaleString('ar-EG');
+        });
+      } else {
+        var countObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            runCount(entry.target);
+            countObserver.unobserve(entry.target);
+          });
+        }, { threshold: 0.6 });
+
+        counters.forEach(function (el) { countObserver.observe(el); });
+      }
+
+      /* ---- 3. Scroll progress + header shadow --------------------------- */
+      var progress = document.getElementById('progress');
+      var header = document.getElementById('siteHeader');
+      var ticking = false;
+
+      function onScroll() {
+        if (ticking) return;
+        ticking = true;
+
+        requestAnimationFrame(function () {
+          var scrolled = window.scrollY;
+          var height = document.documentElement.scrollHeight - window.innerHeight;
+          progress.style.transform = 'scaleX(' + (height > 0 ? scrolled / height : 0) + ')';
+          header.classList.toggle('is-scrolled', scrolled > 8);
+          ticking = false;
+        });
+      }
+
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
 
 </body>
 </html>
