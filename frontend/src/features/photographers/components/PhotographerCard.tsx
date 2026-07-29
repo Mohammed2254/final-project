@@ -15,7 +15,7 @@ export function PhotographerCard({ photographer }: PhotographerCardProps) {
   return (
     <Card className="relative h-full overflow-hidden transition-colors hover:border-gold/50">
       <div className="absolute end-3 top-3 z-10 flex items-center gap-1 rounded-full bg-background/80 p-1 backdrop-blur-sm">
-        <AddToWeddingPlanButton serviceId={photographer.id} price={photographer.price} className="size-6" />
+        <AddToWeddingPlanButton serviceId={photographer.id} price={photographer.price} className="size-7" />
         <FavoriteButton serviceId={photographer.id} className="size-6" />
       </div>
       <Link to={`/photographers/${photographer.id}`} className="block">

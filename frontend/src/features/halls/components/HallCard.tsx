@@ -17,7 +17,7 @@ export function HallCard({ hall }: HallCardProps) {
       {/* Sibling of the Link below, not nested inside it - keeps these
           buttons independently clickable without triggering card navigation. */}
       <div className="absolute end-3 top-3 z-10 flex items-center gap-1 rounded-full bg-background/80 p-1 backdrop-blur-sm">
-        <AddToWeddingPlanButton serviceId={hall.id} price={hall.price} className="size-6" />
+        <AddToWeddingPlanButton serviceId={hall.id} price={hall.price} className="size-7" />
         <FavoriteButton serviceId={hall.id} className="size-6" />
       </div>
       <Link to={`/halls/${hall.id}`} className="block">

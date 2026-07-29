@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Check, ListPlus } from 'lucide-react';
+import { Check, Loader2, ListPlus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 import { cn } from '@/lib/utils';
@@ -51,24 +51,33 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
     }
   };
 
+  const label =
+    status === 'added'
+      ? 'أُضيفت إلى خطة الزفاف'
+      : status === 'error'
+        ? 'تعذّرت الإضافة، أعد المحاولة'
+        : 'إضافة إلى خطة الزفاف';
+
   return (
     <button
       type="button"
       onClick={(event) => void handleClick(event)}
       disabled={status === 'loading'}
-      aria-label="إضافة إلى خطة الزفاف"
-      title="إضافة إلى خطة الزفاف"
+      aria-label={label}
+      title={label}
       className={cn(
-        'flex items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-gold disabled:opacity-50',
-        status === 'added' && 'text-gold',
+        // Filled gold pill by default - the favorite button next to this one
+        // is a plain outline icon, so this one has to read as the primary,
+        // brand-colour action rather than a second identical bookmark.
+        'flex items-center justify-center rounded-full bg-gold text-gold-foreground shadow-sm transition-all hover:bg-gold-hover hover:scale-105 disabled:opacity-60 disabled:hover:scale-100',
+        status === 'error' && 'bg-destructive text-white hover:bg-destructive',
         className,
       )}
     >
-      {status === 'added' ? (
-        <Check size={16} aria-hidden="true" />
-      ) : (
-        <ListPlus size={16} aria-hidden="true" />
-      )}
+      {status === 'loading' && <Loader2 size={16} className="animate-spin" aria-hidden="true" />}
+      {status === 'added' && <Check size={16} aria-hidden="true" />}
+      {status === 'error' && <X size={16} aria-hidden="true" />}
+      {status === 'idle' && <ListPlus size={16} aria-hidden="true" />}
     </button>
   );
 }
