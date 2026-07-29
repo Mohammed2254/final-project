@@ -86,6 +86,10 @@ export const weddingPlanService = {
     await weddingPlanSelectionEndpoints.remove(planServiceId);
   },
 
+  async deletePlan(planId: number): Promise<void> {
+    await weddingPlanEndpoints.remove(planId);
+  },
+
   async approveService(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
     const { data } = await weddingPlanSelectionEndpoints.approve(planServiceId);
     return data.data;

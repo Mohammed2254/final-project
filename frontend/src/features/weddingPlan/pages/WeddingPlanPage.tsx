@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
@@ -193,10 +194,14 @@ export default function WeddingPlanPage() {
     rejectInvitation,
     removeService,
     reviewService,
+    deletePlan,
   } = useWeddingPlan();
 
   const [inviteEmail, setInviteEmail] = useState('');
   const [copied, setCopied] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  const isOwner = plan !== null && plan.owner_profile_id === currentProfileId;
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -236,7 +241,21 @@ export default function WeddingPlanPage() {
               <CardBody className="space-y-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h2 className="text-lg font-bold text-foreground">{plan.plan_name}</h2>
-                  <GoldBadge>{plan.status}</GoldBadge>
+                  <div className="flex items-center gap-2">
+                    <GoldBadge>{plan.status}</GoldBadge>
+                    {isOwner && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        className="text-destructive hover:text-destructive"
+                        onClick={() => setConfirmingDelete(true)}
+                      >
+                        <Trash2 size={14} aria-hidden="true" className="ms-1.5" />
+                        حذف الخطة
+                      </Button>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
@@ -246,6 +265,37 @@ export default function WeddingPlanPage() {
                 </div>
 
                 {plan.notes && <p className="text-sm text-muted-foreground">{plan.notes}</p>}
+
+                {confirmingDelete && (
+                  <div className="space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
+                    <p className="text-xs text-destructive">
+                      هذا الإجراء لا يمكن التراجع عنه — سيُحذف الخطة، ودعوة الشريك، وكل الخدمات
+                      المختارة فيها. هل أنتم متأكدون؟
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        isLoading={isMutating}
+                        onClick={async () => {
+                          const ok = await deletePlan();
+                          if (ok) setConfirmingDelete(false);
+                        }}
+                      >
+                        نعم، احذف الخطة نهائياً
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setConfirmingDelete(false)}
+                      >
+                        تراجع
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </CardBody>
             </Card>
 

@@ -160,6 +160,28 @@ export function useWeddingPlan() {
     }
   }, [selections]);
 
+  const deletePlan = useCallback(async () => {
+    if (!plan) return false;
+
+    setIsMutating(true);
+    setError(null);
+    try {
+      await weddingPlanService.deletePlan(plan.plan_id);
+      // Cascades on the backend (invitations + selections) - mirror that
+      // here so the page falls straight back to "create a plan" instead
+      // of showing stale selections for a plan that no longer exists.
+      setPlan(null);
+      setSelections([]);
+      setLastInviteCode(null);
+      return true;
+    } catch (err) {
+      setError(extractErrorMessage(err, 'تعذر حذف خطة الزفاف.'));
+      return false;
+    } finally {
+      setIsMutating(false);
+    }
+  }, [plan]);
+
   const reviewService = useCallback(
     async (planServiceId: number, decision: 'approve' | 'reject') => {
       setError(null);
@@ -198,5 +220,6 @@ export function useWeddingPlan() {
     addService,
     removeService,
     reviewService,
+    deletePlan,
   };
 }
