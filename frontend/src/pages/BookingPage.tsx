@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { CheckCircle2 } from 'lucide-react';
 
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
 import { ServiceImage } from '@/components/common/ServiceImage';
+import { SuggestedPhotographers } from '@/features/bookings/components/SuggestedPhotographers';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { useCreateBooking } from '@/features/bookings/hooks/useCreateBooking';
 import { serviceEndpoints, serviceMediaEndpoints } from '@/services/api/endpoints';
@@ -257,30 +259,35 @@ export default function BookingPage() {
         )}
 
         {successMessage ? (
-          <div
-            role="status"
-            className="rounded-md border border-border px-4 py-4"
-          >
-            <p className="font-bold text-foreground">
-              {successMessage}
-            </p>
+          <div>
+            <div
+              role="status"
+              className="rounded-lg border border-success/25 bg-success-subtle px-4 py-4"
+            >
+              <p className="flex items-center gap-2 font-bold text-success">
+                <CheckCircle2 size={18} aria-hidden="true" />
+                {successMessage}
+              </p>
 
-            <div className="mt-4 flex flex-wrap gap-3">
-              <Button
-                type="button"
-                onClick={() => navigate(ROUTES.HOME)}
-              >
-                العودة إلى الصفحة الرئيسية
-              </Button>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Button
+                  type="button"
+                  onClick={() => navigate(ROUTES.MY_BOOKINGS)}
+                >
+                  عرض حجوزاتي
+                </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => navigate(ROUTES.HALLS)}
-              >
-                تصفح قاعات أخرى
-              </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => navigate(ROUTES.WEDDING_PLANNER)}
+                >
+                  مخطط الزفاف
+                </Button>
+              </div>
             </div>
+
+            <SuggestedPhotographers />
           </div>
         ) : (
           <>

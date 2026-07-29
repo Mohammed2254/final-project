@@ -2,10 +2,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { hallService, type HallListParams } from '@/features/halls/services/hall.service';
 import { ApiException } from '@/types/api';
-import type { ServiceItem } from '@/types/service';
+import type { HallItem } from '@/types/hall';
 
 export function useHalls(params: HallListParams) {
-  const [halls, setHalls] = useState<ServiceItem[]>([]);
+  // hallService.list() already returns HallItem (service + hall_details),
+  // so typing this as ServiceItem was throwing away city/capacity.
+  const [halls, setHalls] = useState<HallItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

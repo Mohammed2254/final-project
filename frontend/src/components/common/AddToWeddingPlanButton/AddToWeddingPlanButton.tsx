@@ -69,7 +69,12 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
         // Filled gold pill by default - the favorite button next to this one
         // is a plain outline icon, so this one has to read as the primary,
         // brand-colour action rather than a second identical bookmark.
-        'flex items-center justify-center rounded-full bg-gold text-gold-foreground shadow-sm transition-all hover:bg-gold-hover hover:scale-105 disabled:opacity-60 disabled:hover:scale-100',
+        'flex items-center justify-center rounded-full shadow-sm transition-all hover:scale-105 disabled:opacity-60 disabled:hover:scale-100',
+        // Each state gets its own colour, not just its own icon - "added"
+        // used to stay gold, so at a glance it looked unchanged.
+        status === 'idle' && 'bg-gold text-gold-foreground hover:bg-gold-hover',
+        status === 'loading' && 'bg-gold text-gold-foreground',
+        status === 'added' && 'bg-success text-white hover:bg-success',
         status === 'error' && 'bg-destructive text-white hover:bg-destructive',
         className,
       )}

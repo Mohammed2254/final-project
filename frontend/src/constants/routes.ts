@@ -1,5 +1,8 @@
 export const ROUTES = {
-  HOME: '/',
+  /** Marketing page, shown to guests at the root. */
+  LANDING: '/',
+  /** The app itself - where a signed-in visitor starts. */
+  HOME: '/home',
   ABOUT: '/about',
 
   LOGIN: '/auth/login',

@@ -16,6 +16,10 @@ import PaymentsPage from '@/pages/PaymentsPage';
 import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
+const LandingPage = lazy(
+  () => import('@/features/landing/pages/LandingPage'),
+);
+
 const LoginPage = lazy(
   () => import('@/features/auth/pages/LoginPage'),
 );
@@ -69,8 +73,15 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
+          {/* Marketing page at the root, outside MainLayout - it ships its
+              own header and footer. The app itself lives under /home. */}
+          <Route index element={<LandingPage />} />
+
           <Route element={<MainLayout />}>
-            <Route index element={<HomePage />} />
+            <Route
+              path="home"
+              element={<HomePage />}
+            />
 
             <Route
               path="about"
