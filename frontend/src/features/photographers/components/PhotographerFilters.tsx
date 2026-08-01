@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
+import { SortSelect } from '@/components/common/SortSelect';
+import type { SortOption } from '@/utils/filterAndSortServices';
 
 export interface PhotographerFiltersValue {
   keyword: string;
@@ -15,13 +17,22 @@ interface PhotographerFiltersProps {
   value: PhotographerFiltersValue;
   onChange: (value: PhotographerFiltersValue) => void;
   onReset: () => void;
+  sortBy: SortOption;
+  onSortChange: (value: SortOption) => void;
 }
 
 /**
- * Keyword + price range only - matches what's actually filterable given the
- * backend has no city/style data for photographers (see photographer.service.ts).
+ * Keyword, price range, and sort are all applied client-side against the
+ * already-fetched photographer list - matches what's actually filterable
+ * given the backend has no city/style data for photographers.
  */
-export function PhotographerFilters({ value, onChange, onReset }: PhotographerFiltersProps) {
+export function PhotographerFilters({
+  value,
+  onChange,
+  onReset,
+  sortBy,
+  onSortChange,
+}: PhotographerFiltersProps) {
   return (
     <Card className="space-y-5 p-4">
       <div>
@@ -67,6 +78,8 @@ export function PhotographerFilters({ value, onChange, onReset }: PhotographerFi
           />
         </div>
       </div>
+
+      <SortSelect value={sortBy} onChange={onSortChange} />
 
       <Button type="button" variant="outline" size="sm" className="w-full" onClick={onReset}>
         إعادة تعيين الفلاتر

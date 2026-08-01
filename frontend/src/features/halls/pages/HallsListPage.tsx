@@ -7,6 +7,7 @@ import { HallCard } from '@/features/halls/components/HallCard';
 import { HallFilters, type HallFiltersValue } from '@/features/halls/components/HallFilters';
 import { useHalls } from '@/features/halls/hooks/useHalls';
 import { usePagination } from '@/hooks/usePagination';
+import { filterAndSortServices, type SortOption } from '@/utils/filterAndSortServices';
 
 const EMPTY_FILTERS: HallFiltersValue = { keyword: '', minPrice: '', maxPrice: '' };
 
@@ -18,19 +19,28 @@ function parsePrice(value: string): number | undefined {
 
 export default function HallsListPage() {
   const [filters, setFilters] = useState<HallFiltersValue>(EMPTY_FILTERS);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
 
-  const queryParams = useMemo(
-    () => ({
-      keyword: filters.keyword,
-      minPrice: parsePrice(filters.minPrice),
-      maxPrice: parsePrice(filters.maxPrice),
-    }),
-    [filters],
+  const { halls, isLoading, error, reload } = useHalls();
+
+  // Filtering and sorting run against the already-fetched list on every
+  // keystroke - no network round trip, so there's nothing to debounce.
+  const visibleHalls = useMemo(
+    () =>
+      filterAndSortServices(
+        halls,
+        {
+          keyword: filters.keyword,
+          minPrice: parsePrice(filters.minPrice),
+          maxPrice: parsePrice(filters.maxPrice),
+        },
+        sortBy,
+      ),
+    [halls, filters, sortBy],
   );
 
-  const { halls, isLoading, error, reload } = useHalls(queryParams);
   const { page, setPage, totalPages, pageItems, rangeStart, rangeEnd, total } =
-    usePagination(halls);
+    usePagination(visibleHalls);
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -45,6 +55,8 @@ export default function HallsListPage() {
             value={filters}
             onChange={setFilters}
             onReset={() => setFilters(EMPTY_FILTERS)}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
           />
         </aside>
 
@@ -53,14 +65,14 @@ export default function HallsListPage() {
 
           {!isLoading && error && <ErrorState message={error} onRetry={reload} />}
 
-          {!isLoading && !error && halls.length === 0 && (
+          {!isLoading && !error && visibleHalls.length === 0 && (
             <EmptyState
               title="لا توجد نتائج"
               description="لم نجد أي قاعات تطابق بحثكم، جرّبوا تعديل الفلاتر."
             />
           )}
 
-          {!isLoading && !error && halls.length > 0 && (
+          {!isLoading && !error && visibleHalls.length > 0 && (
             <>
               <p className="mb-4 text-sm text-muted-foreground" role="status">
                 عرض {rangeStart}–{rangeEnd} من {total} قاعة

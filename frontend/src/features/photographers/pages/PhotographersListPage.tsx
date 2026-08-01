@@ -10,6 +10,7 @@ import {
 } from '@/features/photographers/components/PhotographerFilters';
 import { usePhotographers } from '@/features/photographers/hooks/usePhotographers';
 import { usePagination } from '@/hooks/usePagination';
+import { filterAndSortServices, type SortOption } from '@/utils/filterAndSortServices';
 
 const EMPTY_FILTERS: PhotographerFiltersValue = { keyword: '', minPrice: '', maxPrice: '' };
 
@@ -21,19 +22,28 @@ function parsePrice(value: string): number | undefined {
 
 export default function PhotographersListPage() {
   const [filters, setFilters] = useState<PhotographerFiltersValue>(EMPTY_FILTERS);
+  const [sortBy, setSortBy] = useState<SortOption>('newest');
 
-  const queryParams = useMemo(
-    () => ({
-      keyword: filters.keyword,
-      minPrice: parsePrice(filters.minPrice),
-      maxPrice: parsePrice(filters.maxPrice),
-    }),
-    [filters],
+  const { photographers, isLoading, error, reload } = usePhotographers();
+
+  // Filtering and sorting run against the already-fetched list on every
+  // keystroke - no network round trip, so there's nothing to debounce.
+  const visiblePhotographers = useMemo(
+    () =>
+      filterAndSortServices(
+        photographers,
+        {
+          keyword: filters.keyword,
+          minPrice: parsePrice(filters.minPrice),
+          maxPrice: parsePrice(filters.maxPrice),
+        },
+        sortBy,
+      ),
+    [photographers, filters, sortBy],
   );
 
-  const { photographers, isLoading, error, reload } = usePhotographers(queryParams);
   const { page, setPage, totalPages, pageItems, rangeStart, rangeEnd, total } =
-    usePagination(photographers);
+    usePagination(visiblePhotographers);
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -48,6 +58,8 @@ export default function PhotographersListPage() {
             value={filters}
             onChange={setFilters}
             onReset={() => setFilters(EMPTY_FILTERS)}
+            sortBy={sortBy}
+            onSortChange={setSortBy}
           />
         </aside>
 
@@ -56,14 +68,14 @@ export default function PhotographersListPage() {
 
           {!isLoading && error && <ErrorState message={error} onRetry={reload} />}
 
-          {!isLoading && !error && photographers.length === 0 && (
+          {!isLoading && !error && visiblePhotographers.length === 0 && (
             <EmptyState
               title="لا توجد نتائج"
               description="لم نجد أي مصورين يطابقون بحثكم، جرّبوا تعديل الفلاتر."
             />
           )}
 
-          {!isLoading && !error && photographers.length > 0 && (
+          {!isLoading && !error && visiblePhotographers.length > 0 && (
             <>
               <p className="mb-4 text-sm text-muted-foreground" role="status">
                 عرض {rangeStart}–{rangeEnd} من {total} مصوّر

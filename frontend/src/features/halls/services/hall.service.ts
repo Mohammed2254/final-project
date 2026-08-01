@@ -3,30 +3,19 @@ import { toHallItem, type HallItem } from '@/features/halls/types';
 import { ApiException } from '@/types/api';
 import { withMainImage, withMainImages } from '@/utils/attachServiceImages';
 
-export interface HallListParams {
-  keyword?: string;
-  minPrice?: number;
-  maxPrice?: number;
-}
-
-function applyFilters(items: HallItem[], keyword?: string, minPrice?: number, maxPrice?: number) {
-  const term = keyword?.trim().toLowerCase();
-  return items.filter((item) => {
-    if (term && !item.name.toLowerCase().includes(term)) return false;
-    if (minPrice !== undefined && item.price < minPrice) return false;
-    if (maxPrice !== undefined && item.price > maxPrice) return false;
-    return true;
-  });
-}
-
 /**
  * Business-logic layer over the Hall resource. Same real-join pattern as
  * photographer.service.ts: start from /api/halls/ (hall_details rows only)
  * and join each out to its Service record, so services from other
  * categories (photographers, etc.) never leak into the halls list.
+ *
+ * Keyword/price/sort are applied client-side by the caller (see
+ * filterAndSortServices) against this same fetched list - not requested
+ * here, since re-running this join on every keystroke would mean an extra
+ * network round trip per hall, per character typed.
  */
 export const hallService = {
-  async list(params: HallListParams = {}): Promise<HallItem[]> {
+  async list(): Promise<HallItem[]> {
     const { data: detailsResponse } = await hallEndpoints.list();
 
     const results = await Promise.allSettled(
@@ -43,8 +32,7 @@ export const hallService = {
       .map((result) => result.value);
 
     const active = items.filter((item) => item.isActive);
-    const withImages = await withMainImages(active);
-    return applyFilters(withImages, params.keyword, params.minPrice, params.maxPrice);
+    return withMainImages(active);
   },
 
   async getById(id: number | string): Promise<HallItem> {
