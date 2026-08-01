@@ -11,9 +11,7 @@ import { Spinner } from '@/components/common/Loading';
 
 import HomePage from '@/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
-import BookingPage from '@/pages/BookingPage';
 import PaymentsPage from '@/pages/PaymentsPage';
-import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 const LandingPage = lazy(
@@ -48,8 +46,16 @@ const PhotographerDetailsPage = lazy(
   () => import('@/features/photographers/pages/PhotographerDetailsPage'),
 );
 
+const BookingPage = lazy(
+  () => import('@/features/bookings/pages/BookingPage'),
+);
+
 const MyBookingsPage = lazy(
   () => import('@/features/bookings/pages/MyBookingsPage'),
+);
+
+const ProviderDashboardPage = lazy(
+  () => import('@/features/provider/pages/ProviderDashboardPage'),
 );
 
 const FavoritesPage = lazy(
