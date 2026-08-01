@@ -10,6 +10,7 @@ import { buttonVariants } from '@/components/ui/button-variants';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 import { useHallDetails } from '@/features/halls/hooks/useHallDetails';
+import { HallMap } from '@/features/halls/components/HallMap';
 
 export default function HallDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -109,6 +110,10 @@ export default function HallDetailsPage() {
                     )}
                   </ul>
                 </Card>
+              )}
+
+              {hall.latitude && hall.longitude && (
+                <HallMap latitude={hall.latitude} longitude={hall.longitude} hallName={hall.name} />
               )}
             </section>
 
