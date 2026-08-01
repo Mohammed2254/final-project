@@ -5,7 +5,7 @@ import {
   type PhotographerListParams,
 } from '@/features/photographers/services/photographer.service';
 import { ApiException } from '@/types/api';
-import type { PhotographerItem } from '@/types/photographer';
+import type { PhotographerItem } from '@/features/photographers/types';
 
 export function usePhotographers(params: PhotographerListParams) {
   const [photographers, setPhotographers] = useState<PhotographerItem[]>([]);

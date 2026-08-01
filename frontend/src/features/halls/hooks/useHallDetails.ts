@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { hallService } from '@/features/halls/services/hall.service';
 import { ApiException } from '@/types/api';
-import type { HallItem } from '@/types/hall';
+import type { HallItem } from '@/features/halls/types';
 
 export function useHallDetails(id: string | undefined) {
   const [hall, setHall] = useState<HallItem | null>(null);

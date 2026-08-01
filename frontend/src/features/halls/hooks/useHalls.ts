@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { hallService, type HallListParams } from '@/features/halls/services/hall.service';
 import { ApiException } from '@/types/api';
-import type { HallItem } from '@/types/hall';
+import type { HallItem } from '@/features/halls/types';
 
 export function useHalls(params: HallListParams) {
   // hallService.list() already returns HallItem (service + hall_details),

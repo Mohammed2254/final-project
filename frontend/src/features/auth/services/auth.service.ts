@@ -6,7 +6,7 @@ import type {
   ProviderRegisterPayload,
   ForgotPasswordPayload,
   ResetPasswordPayload,
-} from '@/types/auth';
+} from '@/features/auth/types';
 
 export const authService = {
   async login(payload: LoginPayload) {

@@ -10,7 +10,7 @@ import type {
   WeddingPlanInvitationRecord,
   WeddingPlanRecord,
   WeddingPlanSelectionRecord,
-} from '@/types/weddingPlan';
+} from '@/features/weddingPlan/types';
 
 export interface WeddingPlanSelectionWithService {
   selection: WeddingPlanSelectionRecord;

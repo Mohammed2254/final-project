@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { authService } from '@/features/auth/services/auth.service';
 import { ApiException } from '@/types/api';
-import type { LoginPayload, LoginResponseData } from '@/types/auth';
+import type { LoginPayload, LoginResponseData } from '@/features/auth/types';
 
 export function useLogin() {
   const [isLoading, setIsLoading] = useState(false);

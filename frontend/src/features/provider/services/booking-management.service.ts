@@ -1,5 +1,5 @@
 import { bookingEndpoints } from '@/services/api/endpoints';
-import type { Booking, BookingStatus } from '@/types/booking';
+import type { Booking, BookingStatus } from '@/features/bookings/types';
 
 export const bookingManagementService = {
   async listMine(): Promise<Booking[]> {

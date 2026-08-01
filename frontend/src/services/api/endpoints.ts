@@ -25,16 +25,16 @@ import type {
   ServiceMediaUpdatePayload,
   ServiceRecord,
 } from '@/types/service';
-import type { PhotographerDetailsRecord } from '@/types/photographer';
+import type { PhotographerDetailsRecord } from '@/features/photographers/types';
 import type {
   Booking,
   BookingCreatePayload,
   BookingStatus,
-} from '@/types/booking';
+} from '@/features/bookings/types';
 import type {
   FavoriteCreatePayload,
   FavoriteRecord,
-} from '@/types/favorite';
+} from '@/features/favorites/types';
 import type {
   WeddingPlanCreatePayload,
   WeddingPlanRecord,
@@ -42,7 +42,7 @@ import type {
   WeddingPlanInvitationRecord,
   WeddingPlanSelectionCreatePayload,
   WeddingPlanSelectionRecord,
-} from '@/types/weddingPlan';
+} from '@/features/weddingPlan/types';
 
 import type {
   LoginPayload,
@@ -53,7 +53,7 @@ import type {
   LoginResponseData,
   CustomerRegisterResponseData,
   ProviderRegisterResponseData,
-} from '@/types/auth';
+} from '@/features/auth/types';
 
 /**
  * Raw HTTP calls only - no business logic, no storage side effects.

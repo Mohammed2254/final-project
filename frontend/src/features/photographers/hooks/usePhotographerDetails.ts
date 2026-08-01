@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { photographerService } from '@/features/photographers/services/photographer.service';
 import { ApiException } from '@/types/api';
-import type { PhotographerItem } from '@/types/photographer';
+import type { PhotographerItem } from '@/features/photographers/types';
 
 export function usePhotographerDetails(id: string | undefined) {
   const [photographer, setPhotographer] = useState<PhotographerItem | null>(null);

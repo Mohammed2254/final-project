@@ -6,7 +6,7 @@ import { Card } from '@/components/common/Card';
 import { FavoriteButton } from '@/components/common/FavoriteButton';
 import { ServiceImage } from '@/components/common/ServiceImage';
 import { PriceText } from '@/components/common/PriceText';
-import type { HallItem } from '@/types/hall';
+import type { HallItem } from '@/features/halls/types';
 
 interface HallCardProps {
   hall: HallItem;

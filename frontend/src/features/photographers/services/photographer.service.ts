@@ -1,5 +1,5 @@
 import { photographerEndpoints, serviceEndpoints } from '@/services/api/endpoints';
-import { toPhotographerItem, type PhotographerItem } from '@/types/photographer';
+import { toPhotographerItem, type PhotographerItem } from '@/features/photographers/types';
 import { withMainImage, withMainImages } from '@/utils/attachServiceImages';
 
 export interface PhotographerListParams {

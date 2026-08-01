@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { bookingManagementService } from '@/features/provider/services/booking-management.service';
 import { ApiException } from '@/types/api';
-import type { Booking, BookingStatus } from '@/types/booking';
+import type { Booking, BookingStatus } from '@/features/bookings/types';
 
 export function useProviderBookings() {
   const [bookings, setBookings] = useState<Booking[]>([]);

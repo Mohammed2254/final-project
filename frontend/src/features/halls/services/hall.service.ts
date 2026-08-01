@@ -1,5 +1,5 @@
 import { hallEndpoints, serviceEndpoints } from '@/services/api/endpoints';
-import { toHallItem, type HallItem } from '@/types/hall';
+import { toHallItem, type HallItem } from '@/features/halls/types';
 import { ApiException } from '@/types/api';
 import { withMainImage, withMainImages } from '@/utils/attachServiceImages';
 

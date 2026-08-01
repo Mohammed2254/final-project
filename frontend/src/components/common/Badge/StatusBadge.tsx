@@ -1,17 +1,14 @@
 import { CheckCircle2, Clock, XCircle } from 'lucide-react';
 
 import { Badge } from '@/components/common/Badge/Badge';
-import type { BookingStatus } from '@/types/booking';
-import type { WeddingPlanSelectionStatus } from '@/types/weddingPlan';
-
-type Status = BookingStatus | WeddingPlanSelectionStatus;
 
 /**
- * Single source of truth for how a PENDING/CONFIRMED/APPROVED/REJECTED value
- * is rendered. Bookings and wedding-plan selections share the same three
- * states, so they share one badge instead of each page mapping its own
- * labels (which is how `REJECTED` previously fell through untranslated).
+ * Bookings and wedding-plan selections each define their own status union
+ * (in their own feature), but both are drawn from this same set of values -
+ * spelled out locally instead of importing either feature's type, so this
+ * shared component has no dependency on either one.
  */
+type Status = 'PENDING' | 'CONFIRMED' | 'APPROVED' | 'REJECTED';
 const STATUS_MAP = {
   PENDING: { label: 'قيد الانتظار', variant: 'warning', Icon: Clock },
   CONFIRMED: { label: 'مؤكد', variant: 'success', Icon: CheckCircle2 },

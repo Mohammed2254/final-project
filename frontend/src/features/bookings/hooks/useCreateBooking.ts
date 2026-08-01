@@ -4,7 +4,7 @@ import { bookingService } from '@/features/bookings/services/booking.service';
 import type {
   Booking,
   BookingCreatePayload,
-} from '@/types/booking';
+} from '@/features/bookings/types';
 
 export function useCreateBooking() {
   const [isLoading, setIsLoading] = useState(false);

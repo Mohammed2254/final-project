@@ -7,7 +7,7 @@ import {
 } from '@/features/weddingPlan/services/weddingPlan.service';
 import { toastActions } from '@/store/toast.store';
 import { ApiException } from '@/types/api';
-import type { WeddingPlanRecord } from '@/types/weddingPlan';
+import type { WeddingPlanRecord } from '@/features/weddingPlan/types';
 
 function extractErrorMessage(error: unknown, fallback: string): string {
   return error instanceof ApiException ? error.message : fallback;
