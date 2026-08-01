@@ -2,11 +2,7 @@ import { CreditCard } from 'lucide-react';
 
 import { ComingSoon } from '@/components/common/ComingSoon';
 
-/**
- * No payment route exists on the backend yet (only unused
- * PAYMENT_GATEWAY_KEY/PAYMENT_WEBHOOK_SECRET config values) - this page
- * only exists so the URL resolves once booking links here in the future.
- */
+/** Placeholder: `payment_routes.py` is still empty. Payments are out of MVP scope. */
 export default function PaymentsPage() {
   return (
     <ComingSoon

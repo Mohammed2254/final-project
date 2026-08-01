@@ -10,17 +10,11 @@ interface ComingSoonProps {
   icon: LucideIcon;
   title: string;
   description: string;
-  /** Defaults to a "back to home" link; pass a different destination if more useful. */
   backLabel?: string;
   backTo?: string;
 }
 
-/**
- * Shared placeholder for any feature whose backend route doesn't exist
- * yet (booking_routes.py, favorite_routes.py, provider_routes.py, etc.
- * are all empty). Used instead of leaving these paths unrouted (404) or
- * building UI that calls endpoints that don't exist.
- */
+/** Placeholder for a route that should resolve but has no backend behind it yet. */
 export function ComingSoon({
   icon: Icon,
   title,

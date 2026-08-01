@@ -9,11 +9,7 @@ interface ServiceImageProps {
   className?: string;
 }
 
-/**
- * Renders the service's real main image (from service_media) when one
- * exists and loads successfully; falls back to the decorative
- * PlaceholderImage otherwise - never a browser broken-image icon.
- */
+/** Falls back to PlaceholderImage when the image is missing or fails to load. */
 export function ServiceImage({ imageUrl, label, className }: ServiceImageProps) {
   const [failed, setFailed] = useState(false);
 

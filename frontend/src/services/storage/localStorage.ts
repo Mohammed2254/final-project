@@ -1,8 +1,4 @@
-/**
- * Thin abstraction over window.localStorage so the rest of the app never
- * touches the browser API directly. Makes it trivial to swap storage
- * strategies later (e.g. secure cookies) without touching call sites.
- */
+/** Wraps window.localStorage so nothing else in the app touches it directly. */
 export const localStorageService = {
   get<T>(key: string): T | null {
     try {
@@ -25,8 +21,7 @@ export const localStorageService = {
     try {
       window.localStorage.setItem(key, JSON.stringify(value));
     } catch {
-      // Storage can fail in private mode / quota errors - fail silently,
-      // the app should keep working in-memory for the session.
+      // Private mode and quota errors throw here - the app keeps working without it.
     }
   },
 

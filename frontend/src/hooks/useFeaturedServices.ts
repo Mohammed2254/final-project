@@ -6,12 +6,8 @@ import { ApiException } from '@/types/api';
 import { withMainImages } from '@/utils/attachServiceImages';
 
 /**
- * Backs the Home page's "Featured Halls" and "Featured Services"
- * sections. The backend only exposes one generic, active-services list
- * (no category names, no "featured" flag), so both sections currently
- * read from the same fetch and are split client-side - see the Home
- * page's TODO comment for what's needed to split them properly once
- * category data is available.
+ * The backend has no "featured" flag - it exposes one generic active-services
+ * list, so both Home page sections read from this same fetch and split client-side.
  */
 export function useFeaturedServices() {
   const [services, setServices] = useState<ServiceItem[]>([]);
@@ -35,8 +31,6 @@ export function useFeaturedServices() {
   }, []);
 
   useEffect(() => {
-    // Standard fetch-on-mount: fetchServices sets loading/data/error state,
-    // which is the intended effect here (not a derived-state anti-pattern).
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchServices();
   }, [fetchServices]);

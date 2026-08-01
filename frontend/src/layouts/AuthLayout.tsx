@@ -4,11 +4,6 @@ import { ArrowLeft } from 'lucide-react';
 import logo from '@/assets/logo-farah.webp';
 import { ROUTES } from '@/constants/routes';
 
-/**
- * Reused by every authentication screen (login, register, forgot/reset
- * password). Mirrors the "02/03 - Authentication" wireframes: a simple
- * top bar with the logo + a link back home, and a centered card for the form.
- */
 export default function AuthLayout() {
   return (
     <div className="flex min-h-screen flex-col bg-background">

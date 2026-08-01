@@ -1,10 +1,4 @@
-/**
- * The backend always responds with a consistent envelope
- * (see back end/app/utils/response_helper.py):
- *
- *   Success -> { success: true,  message, data }
- *   Error   -> { success: false, message, errors }
- */
+/** Mirrors the backend envelope in `back end/app/utils/response_helper.py`. */
 
 export interface ApiSuccessResponse<T> {
   success: true;
@@ -20,10 +14,7 @@ export interface ApiErrorResponse {
 
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
-/**
- * Normalized error shape thrown by the service layer so hooks/components
- * never need to know about Axios or the raw envelope.
- */
+/** Thrown by the service layer so hooks never have to know about Axios. */
 export class ApiException extends Error {
   status?: number;
   fieldErrors?: Record<string, string[]>;

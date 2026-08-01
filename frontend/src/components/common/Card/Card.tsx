@@ -2,11 +2,7 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
-/**
- * Plain bordered surface (border + radius, no shadow) used for feature
- * cards, hall cards, category tiles, forms, etc. so none of those
- * re-implement the same wrapper.
- */
+/** Owns the app's card radius - pages should not override it per-page. */
 export function Card({ className, ...props }: React.ComponentProps<'div'>) {
   return (
     <div
