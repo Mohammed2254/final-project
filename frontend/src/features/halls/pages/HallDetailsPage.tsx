@@ -2,7 +2,7 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 import { Card } from '@/components/common/Card';
-import { ServiceImage } from '@/components/common/ServiceImage';
+import { ServiceGallery } from '@/components/common/ServiceGallery';
 import { PriceText } from '@/components/common/PriceText';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
@@ -81,8 +81,9 @@ export default function HallDetailsPage() {
         {!isLoading && !notFound && !error && hall && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.5fr_1fr]">
             <section>
-              <ServiceImage
-                imageUrl={hall.imageUrl}
+              <ServiceGallery
+                serviceId={hall.id}
+                fallbackImageUrl={hall.imageUrl}
                 className="h-72 w-full rounded-lg lg:h-96"
                 label={hall.name}
               />
