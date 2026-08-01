@@ -1,24 +1,12 @@
-import { RefreshCw } from 'lucide-react';
+import { RefreshCw, StickyNote } from 'lucide-react';
 
+import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { Card, CardBody } from '@/components/common/Card';
 import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyState';
 import { PriceText } from '@/components/common/PriceText';
 import { useProviderBookings } from '@/features/provider/hooks/useProviderBookings';
 import { formatPrice } from '@/utils/format';
-import type { BookingStatus } from '@/types/booking';
-
-const STATUS_LABEL: Record<BookingStatus, string> = {
-  PENDING: 'بانتظار الرد',
-  CONFIRMED: 'مؤكد',
-  REJECTED: 'مرفوض',
-};
-
-const STATUS_CLASS: Record<BookingStatus, string> = {
-  PENDING: 'text-muted-foreground',
-  CONFIRMED: 'text-emerald-600',
-  REJECTED: 'text-destructive',
-};
 
 export function ProviderBookingsPanel() {
   const { bookings, isLoading, updatingId, error, refresh, updateStatus } = useProviderBookings();
@@ -73,10 +61,17 @@ export function ProviderBookingsPanel() {
                     </p>
                   </div>
 
-                  <span className={`text-sm font-bold ${STATUS_CLASS[booking.status]}`}>
-                    {STATUS_LABEL[booking.status]}
-                  </span>
+                  <StatusBadge status={booking.status} />
                 </div>
+
+                {/* The customer's own note when booking - was captured on
+                    creation but never surfaced anywhere in this panel. */}
+                {booking.notes && (
+                  <div className="mt-3 flex items-start gap-2 rounded-lg border border-border bg-muted/40 p-2.5 text-xs text-muted-foreground">
+                    <StickyNote size={13} aria-hidden="true" className="mt-0.5 shrink-0" />
+                    <p>{booking.notes}</p>
+                  </div>
+                )}
 
                 <ul className="mt-3 space-y-1 border-t border-border pt-3 text-sm text-muted-foreground">
                   {booking.items.map((item) => (

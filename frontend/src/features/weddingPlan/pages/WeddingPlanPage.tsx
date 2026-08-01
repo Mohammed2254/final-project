@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Trash2 } from 'lucide-react';
 
+import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
 import { GoldBadge } from '@/components/common/GoldBadge';
@@ -10,13 +11,6 @@ import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyS
 import { PriceText } from '@/components/common/PriceText';
 import { Spinner } from '@/components/common/Loading';
 import { useWeddingPlan } from '@/features/weddingPlan/hooks/useWeddingPlan';
-import type { WeddingPlanSelectionStatus } from '@/types/weddingPlan';
-
-const SELECTION_STATUS_LABEL: Record<WeddingPlanSelectionStatus, string> = {
-  PENDING: 'بانتظار موافقة الشريك',
-  APPROVED: 'تمت الموافقة',
-  REJECTED: 'مرفوضة',
-};
 
 function CreatePlanForm({
   isMutating,
@@ -377,9 +371,10 @@ export default function WeddingPlanPage() {
                             <p className="font-bold text-foreground">
                               {service?.name ?? `خدمة #${selection.service_id}`}
                             </p>
-                            <p className="text-xs text-muted-foreground">
-                              أضافها {isAddedByMe ? 'أنتم' : 'شريككم'} · {SELECTION_STATUS_LABEL[selection.status]}
-                            </p>
+                            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
+                              <span>أضافها {isAddedByMe ? 'أنتم' : 'شريككم'}</span>
+                              <StatusBadge status={selection.status} />
+                            </div>
                           </div>
 
                           <div className="flex items-center gap-3">
