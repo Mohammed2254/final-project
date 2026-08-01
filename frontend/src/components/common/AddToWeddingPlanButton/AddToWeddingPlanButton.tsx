@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { weddingPlanService } from '@/features/weddingPlan/services/weddingPlan.service';
+import { toastActions } from '@/store/toast.store';
 import { ROUTES } from '@/constants/routes';
 
 interface AddToWeddingPlanButtonProps {
@@ -46,8 +47,18 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
 
       await weddingPlanService.addService(plan.plan_id, serviceId, String(price));
       setStatus('added');
+
+      // In a shared plan the backend parks the selection as PENDING until the
+      // partner reviews it. That is the whole point of the feature, and until
+      // now nothing on screen said it had happened.
+      toastActions.success(
+        plan.partner_profile_id
+          ? 'أُضيفت إلى الخطة — بانتظار موافقة شريككم'
+          : 'أُضيفت إلى خطة الزفاف',
+      );
     } catch {
       setStatus('error');
+      toastActions.error('تعذّرت الإضافة إلى خطة الزفاف، أعيدوا المحاولة.');
     }
   };
 

@@ -5,6 +5,7 @@ import {
   weddingPlanService,
   type WeddingPlanSelectionWithService,
 } from '@/features/weddingPlan/services/weddingPlan.service';
+import { toastActions } from '@/store/toast.store';
 import { ApiException } from '@/types/api';
 import type { WeddingPlanRecord } from '@/types/weddingPlan';
 
@@ -67,6 +68,7 @@ export function useWeddingPlan() {
         });
         setPlan(created);
         setSelections([]);
+        toastActions.success('تم إنشاء خطة الزفاف.');
         return true;
       } catch (err) {
         setError(extractErrorMessage(err, 'تعذر إنشاء خطة الزفاف.'));
@@ -107,6 +109,7 @@ export function useWeddingPlan() {
       setPlan(joinedPlan);
       const items = await weddingPlanService.listSelections(joinedPlan.plan_id);
       setSelections(items);
+      toastActions.success('انضممتم إلى خطة الزفاف.');
       return true;
     } catch (err) {
       setError(extractErrorMessage(err, 'تعذر قبول الدعوة.'));
@@ -154,6 +157,7 @@ export function useWeddingPlan() {
     setSelections((current) => current.filter((item) => item.selection.plan_service_id !== planServiceId));
     try {
       await weddingPlanService.removeService(planServiceId);
+      toastActions.success('حُذفت الخدمة من الخطة.');
     } catch (err) {
       setSelections(previous);
       setError(extractErrorMessage(err, 'تعذر حذف الخدمة من الخطة.'));
@@ -173,6 +177,7 @@ export function useWeddingPlan() {
       setPlan(null);
       setSelections([]);
       setLastInviteCode(null);
+      toastActions.success('حُذفت خطة الزفاف.');
       return true;
     } catch (err) {
       setError(extractErrorMessage(err, 'تعذر حذف خطة الزفاف.'));
@@ -195,6 +200,10 @@ export function useWeddingPlan() {
           current.map((item) =>
             item.selection.plan_service_id === planServiceId ? { ...item, selection: updated } : item,
           ),
+        );
+
+        toastActions.success(
+          decision === 'approve' ? 'تمت الموافقة على الخدمة.' : 'تم رفض الخدمة.',
         );
       } catch (err) {
         setError(extractErrorMessage(err, 'تعذر تحديث حالة الخدمة.'));
