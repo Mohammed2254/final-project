@@ -30,6 +30,7 @@ export interface Booking {
   event_date: string;
   status: BookingStatus;
   notes: string | null;
+  rejection_reason: string | null;
   total_price: string;
   created_at: string;
   items: BookingItem[];

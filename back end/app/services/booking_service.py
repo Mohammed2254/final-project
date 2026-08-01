@@ -111,11 +111,15 @@ class BookingService:
         self,
         booking_id: int,
         provider_profile_id: int,
-        new_status: str
+        new_status: str,
+        rejection_reason: str = None
     ) -> Booking:
 
         if new_status not in {"CONFIRMED", "REJECTED"}:
             raise ValueError("Status must be CONFIRMED or REJECTED.")
+
+        if new_status == "REJECTED" and not (rejection_reason and rejection_reason.strip()):
+            raise ValueError("A rejection reason is required when rejecting a booking.")
 
         booking = self.get_by_id(booking_id)
 
@@ -126,6 +130,11 @@ class BookingService:
             raise ValueError("You do not have access to this booking.")
 
         booking.status = new_status
+        # A reason only means something next to a rejection - confirming a
+        # previously-rejected booking (status can move either way, see the
+        # allowed-transitions check above) should clear it, not leave a
+        # stale reason on a booking that's now accepted.
+        booking.rejection_reason = rejection_reason if new_status == "REJECTED" else None
 
         self.repository.update()
 

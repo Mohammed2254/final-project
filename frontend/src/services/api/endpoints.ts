@@ -181,10 +181,10 @@ export const bookingEndpoints = {
       BOOKING_ENDPOINTS.PROVIDER_MINE,
     ),
 
-  updateStatus: (bookingId: number | string, status: BookingStatus) =>
+  updateStatus: (bookingId: number | string, status: BookingStatus, rejectionReason?: string) =>
     apiClient.post<ApiSuccessResponse<Booking>>(
       BOOKING_ENDPOINTS.UPDATE_STATUS(bookingId),
-      { status },
+      { status, rejection_reason: rejectionReason },
     ),
 };
 

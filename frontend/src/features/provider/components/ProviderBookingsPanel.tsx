@@ -1,4 +1,5 @@
-import { CheckCircle2, Clock, RefreshCw, StickyNote, Wallet } from 'lucide-react';
+import { useState } from 'react';
+import { CheckCircle2, Clock, RefreshCw, StickyNote, Wallet, XCircle } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
@@ -44,6 +45,25 @@ function BookingStats({ bookings }: { bookings: ReturnType<typeof useProviderBoo
 
 export function ProviderBookingsPanel() {
   const { bookings, isLoading, updatingId, error, refresh, updateStatus } = useProviderBookings();
+
+  // Only one booking's reject form is open at a time - simpler than a
+  // per-booking state map, and matches how confirmation UI works elsewhere
+  // in the app (e.g. the wedding-plan delete confirmation).
+  const [rejectingId, setRejectingId] = useState<number | null>(null);
+  const [reason, setReason] = useState('');
+
+  const startRejecting = (bookingId: number) => {
+    setRejectingId(bookingId);
+    setReason('');
+  };
+
+  const confirmRejection = async (bookingId: number) => {
+    const ok = await updateStatus(bookingId, 'REJECTED', reason);
+    if (ok) {
+      setRejectingId(null);
+      setReason('');
+    }
+  };
 
   return (
     <Card>
@@ -109,6 +129,13 @@ export function ProviderBookingsPanel() {
                   </div>
                 )}
 
+                {booking.status === 'REJECTED' && booking.rejection_reason && (
+                  <div className="mt-3 flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-2.5 text-xs text-destructive">
+                    <XCircle size={13} aria-hidden="true" className="mt-0.5 shrink-0" />
+                    <p>سبب الرفض: {booking.rejection_reason}</p>
+                  </div>
+                )}
+
                 <ul className="mt-3 space-y-1 border-t border-border pt-3 text-sm text-muted-foreground">
                   {booking.items.map((item) => (
                     <li key={item.booking_item_id} className="flex items-center justify-between">
@@ -125,7 +152,7 @@ export function ProviderBookingsPanel() {
                     الإجمالي: <PriceText price={Number(booking.total_price)} />
                   </p>
 
-                  {booking.status === 'PENDING' && (
+                  {booking.status === 'PENDING' && rejectingId !== booking.booking_id && (
                     <div className="flex gap-2">
                       <Button
                         type="button"
@@ -139,14 +166,52 @@ export function ProviderBookingsPanel() {
                         type="button"
                         size="sm"
                         variant="outline"
-                        isLoading={updatingId === booking.booking_id}
-                        onClick={() => updateStatus(booking.booking_id, 'REJECTED')}
+                        onClick={() => startRejecting(booking.booking_id)}
                       >
                         رفض
                       </Button>
                     </div>
                   )}
                 </div>
+
+                {rejectingId === booking.booking_id && (
+                  <div className="mt-3 space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
+                    <label
+                      htmlFor={`reject-reason-${booking.booking_id}`}
+                      className="text-xs font-medium text-foreground"
+                    >
+                      سبب الرفض (يظهر للعميل)
+                    </label>
+                    <textarea
+                      id={`reject-reason-${booking.booking_id}`}
+                      value={reason}
+                      onChange={(event) => setReason(event.target.value)}
+                      rows={2}
+                      placeholder="مثال: التاريخ المطلوب محجوز مسبقاً"
+                      className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                    />
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="destructive"
+                        isLoading={updatingId === booking.booking_id}
+                        disabled={!reason.trim()}
+                        onClick={() => confirmRejection(booking.booking_id)}
+                      >
+                        تأكيد الرفض
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setRejectingId(null)}
+                      >
+                        تراجع
+                      </Button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))}
           </div>

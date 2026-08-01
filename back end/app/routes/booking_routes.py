@@ -206,7 +206,8 @@ def update_booking_status(booking_id):
         booking = booking_service.update_status_by_provider(
             booking_id,
             provider_profile_id,
-            data["status"]
+            data["status"],
+            data.get("rejection_reason")
         )
 
         return ResponseHelper.success(

@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Calendar, ClipboardList, StickyNote } from 'lucide-react';
+import { Calendar, ClipboardList, StickyNote, XCircle } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Card } from '@/components/common/Card';
@@ -64,6 +64,13 @@ export default function MyBookingsPage() {
                     <div className="flex items-start gap-2 rounded-lg bg-muted/50 p-2.5 text-xs text-muted-foreground">
                       <StickyNote size={13} aria-hidden="true" className="mt-0.5 shrink-0" />
                       <p className="line-clamp-3">{booking.notes}</p>
+                    </div>
+                  )}
+
+                  {booking.status === 'REJECTED' && booking.rejection_reason && (
+                    <div className="flex items-start gap-2 rounded-lg border border-destructive/30 bg-destructive/5 p-2.5 text-xs text-destructive">
+                      <XCircle size={13} aria-hidden="true" className="mt-0.5 shrink-0" />
+                      <p className="line-clamp-3">سبب الرفض: {booking.rejection_reason}</p>
                     </div>
                   )}
 
