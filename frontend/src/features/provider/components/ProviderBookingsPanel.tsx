@@ -1,4 +1,4 @@
-import { RefreshCw, StickyNote } from 'lucide-react';
+import { CheckCircle2, Clock, RefreshCw, StickyNote, Wallet } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
@@ -7,6 +7,40 @@ import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyS
 import { PriceText } from '@/components/common/PriceText';
 import { useProviderBookings } from '@/features/provider/hooks/useProviderBookings';
 import { formatPrice } from '@/utils/format';
+
+const STAT_ICON_CLASS = 'flex size-9 items-center justify-center rounded-lg';
+
+/**
+ * Reuses the bookings this panel already has in memory - no extra request.
+ * Deliberately excludes REJECTED from revenue: it was never actually paid.
+ */
+function BookingStats({ bookings }: { bookings: ReturnType<typeof useProviderBookings>['bookings'] }) {
+  const pendingCount = bookings.filter((b) => b.status === 'PENDING').length;
+  const confirmedBookings = bookings.filter((b) => b.status === 'CONFIRMED');
+  const revenue = confirmedBookings.reduce((sum, b) => sum + Number(b.total_price), 0);
+
+  const stats = [
+    { icon: Clock, label: 'بانتظار الرد', value: pendingCount, tone: 'bg-warning-subtle text-warning' },
+    { icon: CheckCircle2, label: 'حجوزات مؤكدة', value: confirmedBookings.length, tone: 'bg-success-subtle text-success' },
+    { icon: Wallet, label: 'الإيرادات المؤكدة', value: formatPrice(revenue), tone: 'bg-gold/10 text-gold' },
+  ] as const;
+
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+      {stats.map(({ icon: Icon, label, value, tone }) => (
+        <div key={label} className="flex items-center gap-3 rounded-xl border border-border p-3">
+          <span className={`${STAT_ICON_CLASS} ${tone}`}>
+            <Icon size={17} aria-hidden="true" />
+          </span>
+          <div>
+            <p className="text-lg font-extrabold text-foreground">{value}</p>
+            <p className="text-xs text-muted-foreground">{label}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
 export function ProviderBookingsPanel() {
   const { bookings, isLoading, updatingId, error, refresh, updateStatus } = useProviderBookings();
@@ -26,6 +60,8 @@ export function ProviderBookingsPanel() {
             تحديث
           </Button>
         </div>
+
+        {!isLoading && bookings.length > 0 && <BookingStats bookings={bookings} />}
 
         {isLoading && <SkeletonGrid count={3} />}
 
