@@ -16,7 +16,7 @@ const CHIP = 'inline-flex items-center gap-1 rounded-full border border-border p
 
 export function PhotographerCard({ photographer }: PhotographerCardProps) {
   return (
-    <Card className="group relative h-full overflow-hidden rounded-2xl p-0 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-xl">
+    <Card className="group relative h-full overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-xl">
       <div className="absolute end-3 top-3 z-10 flex items-center gap-1.5">
         <AddToWeddingPlanButton
           serviceId={photographer.id}

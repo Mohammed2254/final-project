@@ -40,7 +40,7 @@ export default function MyBookingsPage() {
             {bookings.map((booking) => (
               <Card
                 key={booking.booking_id}
-                className="flex flex-col overflow-hidden rounded-2xl p-0 transition-all hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-lg"
+                className="flex flex-col overflow-hidden p-0 transition-all hover:-translate-y-0.5 hover:border-gold/40 hover:shadow-lg"
               >
                 <div className="flex items-center justify-between gap-2 border-b border-border bg-muted/40 px-4 py-3">
                   <p className="text-sm font-bold text-foreground">
