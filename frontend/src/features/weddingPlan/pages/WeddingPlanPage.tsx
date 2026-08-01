@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { CalendarDays, Trash2 } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
@@ -11,6 +11,56 @@ import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyS
 import { PriceText } from '@/components/common/PriceText';
 import { Spinner } from '@/components/common/Loading';
 import { useWeddingPlan } from '@/features/weddingPlan/hooks/useWeddingPlan';
+import {
+  daysUntil,
+  formatDaysRemaining,
+  summarizeBudget,
+  type BudgetSummary,
+} from '@/features/weddingPlan/utils/planSummary';
+
+/**
+ * Turns the plan's budget from a number nobody acts on into the running total
+ * of what the couple has actually committed to.
+ */
+function BudgetBar({ summary }: { summary: BudgetSummary }) {
+  return (
+    <div className="space-y-2 rounded-md border border-border bg-muted/30 p-3">
+      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+        <span className="text-muted-foreground">
+          المتفق عليه: <PriceText price={summary.approved} className="text-sm" />
+        </span>
+
+        {summary.pending > 0 && (
+          <span className="text-muted-foreground">
+            بانتظار الموافقة: <PriceText price={summary.pending} className="text-sm" />
+          </span>
+        )}
+
+        <span className={summary.isOverBudget ? 'font-medium text-destructive' : 'text-muted-foreground'}>
+          {summary.isOverBudget ? 'تجاوزتم الميزانية بـ ' : 'المتبقي: '}
+          <PriceText
+            price={Math.abs(summary.remaining)}
+            className={summary.isOverBudget ? 'text-sm text-destructive' : 'text-sm'}
+          />
+        </span>
+      </div>
+
+      <div
+        role="progressbar"
+        aria-valuenow={Math.round(summary.approvedPercent)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="نسبة الميزانية المستهلكة"
+        className="h-2 w-full overflow-hidden rounded-full bg-border"
+      >
+        <div
+          className={summary.isOverBudget ? 'h-full bg-destructive' : 'h-full bg-gold'}
+          style={{ width: `${summary.approvedPercent}%` }}
+        />
+      </div>
+    </div>
+  );
+}
 
 function CreatePlanForm({
   isMutating,
@@ -197,6 +247,10 @@ export default function WeddingPlanPage() {
 
   const isOwner = plan !== null && plan.owner_profile_id === currentProfileId;
 
+  // Safe to compute before we know there is a plan - with no plan there are no
+  // selections either, so every total is zero and nothing is rendered anyway.
+  const budget = summarizeBudget(selections, plan?.budget ?? '0');
+
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
       <SectionHeader
@@ -253,10 +307,18 @@ export default function WeddingPlanPage() {
                 </div>
 
                 <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
-                  <p>تاريخ المناسبة: {plan.event_date}</p>
-                  <p>الميزانية: <PriceText price={Number(plan.budget)} /></p>
+                  <p className="flex items-center gap-1.5">
+                    <CalendarDays size={14} aria-hidden="true" />
+                    {plan.event_date}
+                    <span className="font-medium text-gold">
+                      ({formatDaysRemaining(daysUntil(plan.event_date))})
+                    </span>
+                  </p>
+                  <p>الميزانية: <PriceText price={budget.budget} /></p>
                   <p>{plan.partner_profile_id ? 'الشريك: منضم' : 'بانتظار انضمام الشريك'}</p>
                 </div>
+
+                <BudgetBar summary={budget} />
 
                 {plan.notes && <p className="text-sm text-muted-foreground">{plan.notes}</p>}
 
