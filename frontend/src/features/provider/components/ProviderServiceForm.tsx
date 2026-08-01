@@ -8,7 +8,7 @@ import { Card, CardBody } from '@/components/common/Card';
 import { TextInput } from '@/components/forms/TextInput';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useServiceCategories } from '@/hooks/useServiceCategories';
+import { useServiceCategories } from '@/features/provider/hooks/useServiceCategories';
 import {
   providerServiceSchema,
   type ProviderServiceFormInput,

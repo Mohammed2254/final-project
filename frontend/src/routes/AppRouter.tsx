@@ -9,7 +9,7 @@ import AuthGuard from '@/routes/guards/AuthGuard';
 
 import { Spinner } from '@/components/common/Loading';
 
-import HomePage from '@/pages/HomePage';
+import HomePage from '@/features/home/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
 import PaymentsPage from '@/pages/PaymentsPage';
 import NotFoundPage from '@/pages/NotFoundPage';

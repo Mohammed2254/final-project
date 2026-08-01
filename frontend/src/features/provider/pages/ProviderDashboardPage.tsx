@@ -7,7 +7,7 @@ import { ProviderServicesPanel } from '@/features/provider/components/ProviderSe
 import { ProviderBookingsPanel } from '@/features/provider/components/ProviderBookingsPanel';
 import { useProviderServices } from '@/features/provider/hooks/useProviderServices';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useServiceCategories } from '@/hooks/useServiceCategories';
+import { useServiceCategories } from '@/features/provider/hooks/useServiceCategories';
 
 export default function ProviderDashboardPage() {
   const { account, providerProfile } = useAuth();

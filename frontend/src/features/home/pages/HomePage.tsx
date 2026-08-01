@@ -10,7 +10,7 @@ import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyS
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useFeaturedServices } from '@/hooks/useFeaturedServices';
+import { useFeaturedServices } from '@/features/home/hooks/useFeaturedServices';
 import type { ServiceItem } from '@/types/service';
 
 const HOW_IT_WORKS = [
