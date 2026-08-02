@@ -19,7 +19,7 @@ export function HallCard({ hall }: HallCardProps) {
       : null;
 
   return (
-    <Card className="group relative h-full overflow-hidden p-0 transition-all duration-300 hover:-translate-y-1 hover:border-gold/40 hover:shadow-xl">
+    <Card className="group relative h-full overflow-hidden p-0 transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-1 hover:border-gold/40 hover:shadow-xl">
       {/* Siblings of the Link below, not nested inside it - keeps these
           buttons independently clickable without triggering navigation. */}
       <div className="absolute end-3 top-3 z-10 flex items-center gap-1.5">

@@ -21,7 +21,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
       : `/halls/${service.id}`;
 
   return (
-    <Card className="group overflow-hidden transition-all hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-md">
+    <Card className="group overflow-hidden transition-all animate-in fade-in slide-in-from-bottom-2 hover:-translate-y-0.5 hover:border-gold/50 hover:shadow-md">
       {/* Sibling of the Link below, not nested inside it - keeps the
           favorite button's own click from also triggering navigation. */}
       <Link to={detailsPath} className="block overflow-hidden">

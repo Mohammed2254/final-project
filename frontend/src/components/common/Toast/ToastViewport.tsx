@@ -23,6 +23,7 @@ export function ToastViewport() {
             key={toast.id}
             className={cn(
               'pointer-events-auto flex w-full max-w-sm items-center gap-3 rounded-lg border px-4 py-3 text-sm shadow-lg',
+              'animate-in fade-in slide-in-from-bottom-4 duration-300',
               isError
                 ? 'border-destructive/40 bg-destructive/10 text-destructive'
                 : 'border-gold/40 bg-background text-foreground',
