@@ -32,6 +32,7 @@ export interface Booking {
   notes: string | null;
   rejection_reason: string | null;
   total_price: string;
+  is_paid: boolean;
   created_at: string;
   items: BookingItem[];
 }

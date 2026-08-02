@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Calendar, ClipboardList, StickyNote, XCircle } from 'lucide-react';
+import { Calendar, CheckCircle2, ClipboardList, StickyNote, XCircle } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Card } from '@/components/common/Card';
@@ -79,13 +79,20 @@ export default function MyBookingsPage() {
                     <PriceText price={Number(booking.total_price)} className="text-base" />
                   </div>
 
-                  {booking.status === 'CONFIRMED' && (
+                  {booking.status === 'CONFIRMED' && !booking.is_paid && (
                     <Link
                       to={ROUTES.PAYMENT(booking.booking_id)}
                       className={cn(buttonVariants({ variant: 'gold', size: 'sm' }), 'w-full')}
                     >
                       ادفع الآن
                     </Link>
+                  )}
+
+                  {booking.is_paid && (
+                    <p className="flex items-center justify-center gap-1.5 rounded-md bg-success-subtle py-2 text-xs font-bold text-success">
+                      <CheckCircle2 size={13} aria-hidden="true" />
+                      مدفوع
+                    </p>
                   )}
                 </div>
               </Card>
