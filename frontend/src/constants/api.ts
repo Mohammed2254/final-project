@@ -10,7 +10,6 @@ export const AUTH_ENDPOINTS = {
   REGISTER_CUSTOMER: '/auth/register/customer',
   REGISTER_PROVIDER: '/auth/register/provider',
 
-  // غير منفذة في الباك إند حاليًا.
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;

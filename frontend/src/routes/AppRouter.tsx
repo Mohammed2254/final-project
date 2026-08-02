@@ -30,6 +30,14 @@ const ProviderRegisterPage = lazy(
   () => import('@/features/auth/pages/ProviderRegisterPage'),
 );
 
+const ForgotPasswordPage = lazy(
+  () => import('@/features/auth/pages/ForgotPasswordPage'),
+);
+
+const ResetPasswordPage = lazy(
+  () => import('@/features/auth/pages/ResetPasswordPage'),
+);
+
 const HallsListPage = lazy(
   () => import('@/features/halls/pages/HallsListPage'),
 );
@@ -171,6 +179,16 @@ export function AppRouter() {
               <Route
                 path="auth/register/provider"
                 element={<ProviderRegisterPage />}
+              />
+
+              <Route
+                path="auth/forgot-password"
+                element={<ForgotPasswordPage />}
+              />
+
+              <Route
+                path="auth/reset-password"
+                element={<ResetPasswordPage />}
               />
             </Route>
           </Route>

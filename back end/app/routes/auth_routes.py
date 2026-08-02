@@ -4,7 +4,9 @@ from marshmallow import ValidationError
 from app.schemas.auth_schema import (
     CustomerRegisterSchema,
     ProviderRegisterSchema,
-    LoginSchema
+    LoginSchema,
+    ForgotPasswordSchema,
+    ResetPasswordSchema
 )
 
 from app.services.auth_service import AuthService
@@ -17,6 +19,8 @@ auth_service = AuthService()
 customer_register_schema = CustomerRegisterSchema()
 provider_register_schema = ProviderRegisterSchema()
 login_schema = LoginSchema()
+forgot_password_schema = ForgotPasswordSchema()
+reset_password_schema = ResetPasswordSchema()
 
 
 @auth_bp.post("/register/customer")
@@ -97,4 +101,53 @@ def login():
         return ResponseHelper.error(
             message=str(error),
             status_code=401
+        )
+
+
+@auth_bp.post("/forgot-password")
+def forgot_password():
+    try:
+        data = forgot_password_schema.load(request.get_json())
+
+        auth_service.forgot_password(data["email"])
+
+        # Same response whether or not the email exists - see
+        # AuthService.forgot_password for why.
+        return ResponseHelper.success(
+            message=(
+                "If an account with this email exists, "
+                "a reset link has been sent."
+            )
+        )
+
+    except ValidationError as error:
+        return ResponseHelper.error(
+            message="Validation error.",
+            errors=error.messages,
+            status_code=400
+        )
+
+
+@auth_bp.post("/reset-password")
+def reset_password():
+    try:
+        data = reset_password_schema.load(request.get_json())
+
+        auth_service.reset_password(data["token"], data["password"])
+
+        return ResponseHelper.success(
+            message="Password reset successfully."
+        )
+
+    except ValidationError as error:
+        return ResponseHelper.error(
+            message="Validation error.",
+            errors=error.messages,
+            status_code=400
+        )
+
+    except ValueError as error:
+        return ResponseHelper.error(
+            message=str(error),
+            status_code=400
         )
