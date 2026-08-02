@@ -1,5 +1,6 @@
 import os
 from flask import Flask, send_from_directory
+from sqlalchemy import inspect, text
 
 from app.config import DevelopmentConfig, ProductionConfig, TestingConfig
 from app.extensions import db, migrate, jwt, bcrypt,cors
@@ -10,6 +11,32 @@ from app.utils.response_helper import ResponseHelper
 FRONTEND_DIST = os.path.join(
     os.path.dirname(__file__), "..", "..", "frontend", "dist"
 )
+
+
+# Columns added to a table that already shipped. create_all() creates missing
+# tables but never alters existing ones, so without this an older database
+# keeps serving until the first query touches the new column and 500s.
+_ADDED_COLUMNS = [
+    ("bookings", "rejection_reason", "TEXT"),
+]
+
+
+def _add_missing_columns():
+    inspector = inspect(db.engine)
+    existing_tables = set(inspector.get_table_names())
+
+    for table, column, column_type in _ADDED_COLUMNS:
+        if table not in existing_tables:
+            continue
+
+        columns = {info["name"] for info in inspector.get_columns(table)}
+        if column in columns:
+            continue
+
+        db.session.execute(
+            text(f"ALTER TABLE {table} ADD COLUMN {column} {column_type}")
+        )
+        db.session.commit()
 
 
 def _seed_service_categories():
@@ -95,6 +122,7 @@ def create_app():
 
     with app.app_context():
         db.create_all()
+        _add_missing_columns()
         _seed_service_categories()
 
     app.register_blueprint(account_bp, url_prefix="/api/accounts")
