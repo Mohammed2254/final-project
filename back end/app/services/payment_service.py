@@ -1,98 +1,70 @@
-from marshmallow import Schema, fields, validate
+import json
+from datetime import datetime
+from decimal import Decimal
 
-class HallDetailsCreateSchema(Schema):
-    service_id = fields.Integer(
-        required=True
-    )
-
-    min_capacity = fields.Integer(
-        required=True,
-        validate=validate.Range(min=1)
-    )
-
-    max_capacity = fields.Integer(
-        required=True,
-        validate=validate.Range(min=1)
-    )
-
-    city = fields.String(
-        required=True,
-        validate=validate.Length(min=2, max=100)
-    )
-
-    address = fields.String(
-        required=True,
-        validate=validate.Length(min=2, max=255)
-    )
-
-    latitude = fields.Decimal(
-        required=False,
-        allow_none=True,
-        as_string=True
-    )
-
-    longitude = fields.Decimal(
-        required=False,
-        allow_none=True,
-        as_string=True
-    )
+from app.models.payment import Payment
+from app.repositories.payment_repository import PaymentRepository
+from app.services.booking_service import BookingService
+from app.utils.moyasar_helper import MoyasarHelper
 
 
-class HallDetailsUpdateSchema(Schema):
-    min_capacity = fields.Integer(
-        required=False,
-        validate=validate.Range(min=1)
-    )
+class PaymentService:
 
-    max_capacity = fields.Integer(
-        required=False,
-        validate=validate.Range(min=1)
-    )
+    def __init__(self):
+        self.repository = PaymentRepository()
+        self.booking_service = BookingService()
 
-    city = fields.String(
-        required=False,
-        validate=validate.Length(min=2, max=100)
-    )
+    def confirm_payment(
+        self,
+        gateway_payment_id: str,
+        booking_id: int,
+        paid_by_profile_id: int
+    ) -> Payment:
 
-    address = fields.String(
-        required=False,
-        validate=validate.Length(min=2, max=255)
-    )
+        booking = self.booking_service.get_by_id(booking_id)
 
-    latitude = fields.Decimal(
-        required=False,
-        allow_none=True,
-        as_string=True
-    )
+        if booking is None:
+            raise ValueError("Booking not found.")
 
-    longitude = fields.Decimal(
-        required=False,
-        allow_none=True,
-        as_string=True
-    )
+        if booking.customer_profile_id != paid_by_profile_id:
+            raise ValueError("You do not have access to this booking.")
 
+        # Confirming twice (e.g. the customer refreshes the callback page)
+        # should be a no-op, not a duplicate row or an error.
+        existing = self.repository.get_by_gateway_payment_id(
+            gateway_payment_id
+        )
+        if existing is not None:
+            return existing
 
-class HallDetailsResponseSchema(Schema):
-    hall_details_id = fields.Integer(
-        dump_only=True
-    )
+        gateway_data = MoyasarHelper.fetch_payment(gateway_payment_id)
 
-    service_id = fields.Integer()
+        if gateway_data.get("status") != "paid":
+            raise ValueError("Payment was not completed successfully.")
 
-    min_capacity = fields.Integer()
+        # The payment itself was created client-side (see
+        # services/moyasar/createPayment.ts) with an amount the browser
+        # chose - never trust that without checking it against the booking
+        # here, or a tampered client could pay 1 SAR and have it accepted
+        # against any booking total.
+        expected_amount = int(booking.total_price * 100)
+        if gateway_data.get("amount") != expected_amount:
+            raise ValueError(
+                "Payment amount does not match the booking total."
+            )
 
-    max_capacity = fields.Integer()
+        payment = Payment(
+            booking_id=booking.booking_id,
+            paid_by_profile_id=paid_by_profile_id,
+            amount=Decimal(gateway_data["amount"]) / 100,
+            currency=gateway_data.get("currency", "SAR"),
+            gateway_payment_id=gateway_data["id"],
+            status=gateway_data["status"],
+            raw_response=json.dumps(gateway_data),
+            paid_at=datetime.utcnow()
+        )
 
-    city = fields.String()
+        return self.repository.add(payment)
 
-    address = fields.String()
-
-    latitude = fields.Decimal(
-        as_string=True,
-        allow_none=True
-    )
-
-    longitude = fields.Decimal(
-        as_string=True,
-        allow_none=True
-    )
+    def get_by_booking_id(self, booking_id: int) -> list[Payment]:
+        return self.repository.get_by_booking_id(booking_id)

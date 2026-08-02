@@ -11,7 +11,6 @@ import { Spinner } from '@/components/common/Loading';
 
 import HomePage from '@/features/home/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
-import PaymentsPage from '@/pages/PaymentsPage';
 import NotFoundPage from '@/pages/NotFoundPage';
 
 const LandingPage = lazy(
@@ -74,6 +73,14 @@ const WeddingPlanPage = lazy(
   () => import('@/features/weddingPlan/pages/WeddingPlanPage'),
 );
 
+const PaymentPage = lazy(
+  () => import('@/features/payment/pages/PaymentPage'),
+);
+
+const PaymentCallbackPage = lazy(
+  () => import('@/features/payment/pages/PaymentCallbackPage'),
+);
+
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
@@ -122,16 +129,21 @@ export function AppRouter() {
               element={<PhotographerDetailsPage />}
             />
 
-            <Route
-              path="payments"
-              element={<PaymentsPage />}
-            />
-
             {/* الصفحات التي تحتاج تسجيل دخول */}
             <Route element={<AuthGuard />}>
               <Route
                 path="booking/:serviceId"
                 element={<BookingPage />}
+              />
+
+              <Route
+                path="payments/callback"
+                element={<PaymentCallbackPage />}
+              />
+
+              <Route
+                path="payments/:bookingId"
+                element={<PaymentPage />}
               />
 
               <Route

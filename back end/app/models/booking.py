@@ -59,6 +59,11 @@ class Booking(db.Model):
         back_populates="booking",
         cascade="all, delete-orphan"
     )
+
+    payments = db.relationship(
+        "Payment",
+        back_populates="booking"
+    )
     
     
     

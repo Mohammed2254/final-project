@@ -85,3 +85,8 @@ export const WEDDING_PLAN_SELECTION_ENDPOINTS = {
   APPROVE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/approve`,
   REJECT: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/reject`,
 } as const;
+
+export const PAYMENT_ENDPOINTS = {
+  CONFIRM: '/payments/confirm',
+  BY_BOOKING: (bookingId: number | string) => `/payments/booking/${bookingId}`,
+} as const;

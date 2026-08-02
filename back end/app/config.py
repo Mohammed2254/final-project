@@ -14,6 +14,7 @@ class Config:
     RESEND_API_KEY = os.getenv("RESEND_API_KEY")
     RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "onboarding@resend.dev")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    MOYASAR_SECRET_KEY = os.getenv("MOYASAR_SECRET_KEY")
 
 
 class DevelopmentConfig(Config):

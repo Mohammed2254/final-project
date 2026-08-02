@@ -20,7 +20,10 @@ export const ROUTES = {
   BOOKING: (serviceId: number | string) =>
     `/booking/${serviceId}`,
 
-  PAYMENTS: '/payments',
+  PAYMENT: (bookingId: number | string) =>
+    `/payments/${bookingId}`,
+  PAYMENT_CALLBACK: '/payments/callback',
+
   MY_BOOKINGS: '/my-bookings',
   PROVIDER_DASHBOARD: '/provider/dashboard',
 

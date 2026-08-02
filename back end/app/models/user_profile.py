@@ -59,3 +59,8 @@ class UserProfile(db.Model):
         cascade="all, delete-orphan"
     )
 
+    payments = db.relationship(
+        "Payment",
+        back_populates="paid_by"
+    )
+

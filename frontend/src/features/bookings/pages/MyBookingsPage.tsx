@@ -78,6 +78,15 @@ export default function MyBookingsPage() {
                     <span className="text-xs text-muted-foreground">الإجمالي</span>
                     <PriceText price={Number(booking.total_price)} className="text-base" />
                   </div>
+
+                  {booking.status === 'CONFIRMED' && (
+                    <Link
+                      to={ROUTES.PAYMENT(booking.booking_id)}
+                      className={cn(buttonVariants({ variant: 'gold', size: 'sm' }), 'w-full')}
+                    >
+                      ادفع الآن
+                    </Link>
+                  )}
                 </div>
               </Card>
             ))}
