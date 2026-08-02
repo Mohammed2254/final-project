@@ -53,7 +53,7 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
       // now nothing on screen said it had happened.
       toastActions.success(
         plan.partner_profile_id
-          ? 'أُضيفت إلى الخطة — بانتظار موافقة شريككم'
+          ? 'أُضيفت إلى الخطة، بانتظار موافقة شريككم'
           : 'أُضيفت إلى خطة الزفاف',
       );
     } catch {

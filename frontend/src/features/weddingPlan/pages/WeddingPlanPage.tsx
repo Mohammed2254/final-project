@@ -333,7 +333,7 @@ export default function WeddingPlanPage() {
                 {confirmingDelete && (
                   <div className="space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
                     <p className="text-xs text-destructive">
-                      هذا الإجراء لا يمكن التراجع عنه — سيُحذف الخطة، ودعوة الشريك، وكل الخدمات
+                      هذا الإجراء لا يمكن التراجع عنه، سيُحذف الخطة، ودعوة الشريك، وكل الخدمات
                       المختارة فيها. هل أنتم متأكدون؟
                     </p>
                     <div className="flex gap-2">
@@ -499,7 +499,7 @@ export default function WeddingPlanPage() {
                     </p>
                     <p className="mt-1 text-sm text-muted-foreground">
                       {approvedCount} خدمة متفق عليها بقيمة{' '}
-                      <PriceText price={budget.approved} /> — ستُحجز جميعها بتاريخ{' '}
+                      <PriceText price={budget.approved} />، ستُحجز جميعها بتاريخ{' '}
                       {plan.event_date}
                     </p>
                   </div>
