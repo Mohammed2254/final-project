@@ -5,6 +5,7 @@ import {
   weddingPlanService,
   type WeddingPlanSelectionWithService,
 } from '@/features/weddingPlan/services/weddingPlan.service';
+import { bookingService } from '@/features/bookings/services/booking.service';
 import { toastActions } from '@/store/toast.store';
 import { ApiException } from '@/types/api';
 import type { WeddingPlanRecord } from '@/features/weddingPlan/types';
@@ -212,6 +213,46 @@ export function useWeddingPlan() {
     [],
   );
 
+  /**
+   * Turns the services both partners agreed on into one real booking, using
+   * the plan's own event date. A booking already supports several items
+   * (see BookingCreateSchema), so the whole approved list becomes a single
+   * booking rather than one booking per service - which also means the
+   * customer pays once, for the total.
+   */
+  const bookApprovedServices = useCallback(async () => {
+    if (!plan) return null;
+
+    const approved = selections.filter(({ selection }) => selection.status === 'APPROVED');
+
+    if (approved.length === 0) {
+      toastActions.error('لا توجد خدمات معتمدة لحجزها بعد.');
+      return null;
+    }
+
+    setIsMutating(true);
+    setError(null);
+    try {
+      const booking = await bookingService.create({
+        event_date: plan.event_date,
+        notes: plan.notes,
+        items: approved.map(({ selection }) => ({
+          service_id: selection.service_id,
+          quantity: 1,
+          price_at_booking: selection.estimated_price,
+        })),
+      });
+
+      toastActions.success('تم إنشاء الحجز، بانتظار تأكيد المزوّد.');
+      return booking;
+    } catch (err) {
+      setError(extractErrorMessage(err, 'تعذر إنشاء الحجز.'));
+      return null;
+    } finally {
+      setIsMutating(false);
+    }
+  }, [plan, selections]);
+
   return {
     canUsePlanner,
     currentProfileId: userProfile?.user_profile_id ?? null,
@@ -230,5 +271,6 @@ export function useWeddingPlan() {
     removeService,
     reviewService,
     deletePlan,
+    bookApprovedServices,
   };
 }

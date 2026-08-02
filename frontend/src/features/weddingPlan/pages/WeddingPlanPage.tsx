@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CalendarDays, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CalendarDays, ShoppingBag, Trash2 } from 'lucide-react';
 
 import { StatusBadge } from '@/components/common/Badge';
 import { Button } from '@/components/common/Button';
@@ -17,6 +18,7 @@ import {
   summarizeBudget,
   type BudgetSummary,
 } from '@/features/weddingPlan/utils/planSummary';
+import { ROUTES } from '@/constants/routes';
 
 /**
  * Turns the plan's budget from a number nobody acts on into the running total
@@ -239,11 +241,17 @@ export default function WeddingPlanPage() {
     removeService,
     reviewService,
     deletePlan,
+    bookApprovedServices,
   } = useWeddingPlan();
 
+  const navigate = useNavigate();
   const [inviteEmail, setInviteEmail] = useState('');
   const [copied, setCopied] = useState(false);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+
+  const approvedCount = selections.filter(
+    ({ selection }) => selection.status === 'APPROVED',
+  ).length;
 
   const isOwner = plan !== null && plan.owner_profile_id === currentProfileId;
 
@@ -478,6 +486,38 @@ export default function WeddingPlanPage() {
                 </div>
               )}
             </div>
+
+            {/* Without this the plan is a dead end: partners agree on
+                services and then have no way to actually book them. */}
+            {approvedCount > 0 && (
+              <Card className="border-gold/40 bg-gold/5">
+                <CardBody className="flex flex-wrap items-center justify-between gap-4">
+                  <div>
+                    <p className="flex items-center gap-2 font-bold text-foreground">
+                      <ShoppingBag size={16} aria-hidden="true" />
+                      جاهزون للحجز
+                    </p>
+                    <p className="mt-1 text-sm text-muted-foreground">
+                      {approvedCount} خدمة متفق عليها بقيمة{' '}
+                      <PriceText price={budget.approved} /> — ستُحجز جميعها بتاريخ{' '}
+                      {plan.event_date}
+                    </p>
+                  </div>
+
+                  <GoldButton
+                    type="button"
+                    isLoading={isMutating}
+                    loadingText="جارٍ إنشاء الحجز..."
+                    onClick={async () => {
+                      const booking = await bookApprovedServices();
+                      if (booking) navigate(ROUTES.MY_BOOKINGS);
+                    }}
+                  >
+                    احجزوا الخدمات المعتمدة
+                  </GoldButton>
+                </CardBody>
+              </Card>
+            )}
           </div>
         )}
 
