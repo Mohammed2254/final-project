@@ -8,7 +8,7 @@ import {
 import type { WeddingPlanSelectionWithService } from '@/features/weddingPlan/services/weddingPlan.service';
 
 function selection(
-  status: 'APPROVED' | 'PENDING' | 'REJECTED',
+  status: 'APPROVED' | 'PENDING' | 'REJECTED' | 'BOOKED',
   estimatedPrice: string,
 ): WeddingPlanSelectionWithService {
   return {
@@ -21,6 +21,8 @@ function selection(
       status,
       notes: null,
       created_at: '2026-01-01',
+      booking_id: null,
+      booking_status: null,
     },
     service: null,
   };
@@ -35,6 +37,15 @@ describe('summarizeBudget', () => {
 
     expect(summary.approved).toBe(10000);
     expect(summary.pending).toBe(4000);
+  });
+
+  it('keeps counting a selection after it is booked', () => {
+    // Booking used to drop it out of the total, emptying the budget bar at
+    // the exact moment the money was actually committed.
+    const summary = summarizeBudget([selection('BOOKED', '10000')], '50000');
+
+    expect(summary.approved).toBe(10000);
+    expect(summary.remaining).toBe(40000);
   });
 
   it('ignores rejected selections entirely', () => {

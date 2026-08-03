@@ -18,6 +18,7 @@ FRONTEND_DIST = os.path.join(
 # keeps serving until the first query touches the new column and 500s.
 _ADDED_COLUMNS = [
     ("bookings", "rejection_reason", "TEXT"),
+    ("wedding_plan_services", "booking_id", "INTEGER"),
 ]
 
 

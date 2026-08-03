@@ -105,8 +105,11 @@ export const weddingPlanService = {
     return data.data;
   },
 
-  async markAsBooked(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
-    const { data } = await weddingPlanSelectionEndpoints.book(planServiceId);
+  async markAsBooked(
+    planServiceId: number,
+    bookingId: number,
+  ): Promise<WeddingPlanSelectionRecord> {
+    const { data } = await weddingPlanSelectionEndpoints.book(planServiceId, bookingId);
     return data.data;
   },
 };

@@ -46,6 +46,9 @@ export interface WeddingPlanSelectionRecord {
   status: WeddingPlanSelectionStatus;
   notes: string | null;
   created_at: string;
+  booking_id: number | null;
+  /** The live status of the booking this became, straight from the booking. */
+  booking_status: 'PENDING' | 'CONFIRMED' | 'REJECTED' | null;
 }
 
 export interface WeddingPlanSelectionCreatePayload {

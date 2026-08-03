@@ -22,6 +22,15 @@ export function SelectionCard({ item, currentProfileId, onReview, onRemove }: Se
   // other member's recourse is to reject it, not remove someone else's choice.
   const canRemove = isAddedByMe && selection.status !== 'BOOKED';
 
+  // Once booked, the provider's answer is the status that matters - showing
+  // "waiting for the provider" after they already replied is just stale.
+  const displayStatus =
+    selection.status === 'BOOKED' && selection.booking_status === 'CONFIRMED'
+      ? 'BOOKED_CONFIRMED'
+      : selection.status === 'BOOKED' && selection.booking_status === 'REJECTED'
+        ? 'BOOKED_REJECTED'
+        : selection.status;
+
   return (
     <Card>
       <CardBody className="flex flex-wrap items-center justify-between gap-3">
@@ -31,7 +40,7 @@ export function SelectionCard({ item, currentProfileId, onReview, onRemove }: Se
           </p>
           <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
             <span>أضافها {isAddedByMe ? 'أنتم' : 'شريككم'}</span>
-            <StatusBadge status={selection.status} />
+            <StatusBadge status={displayStatus} />
           </div>
         </div>
 

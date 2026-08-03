@@ -272,7 +272,9 @@ export function useWeddingPlan() {
       // now flagged as booked and awaiting the provider's confirmation.
       const bookedPlanServiceIds = new Set(approved.map(({ selection }) => selection.plan_service_id));
       const bookedSelections = await Promise.all(
-        approved.map(({ selection }) => weddingPlanService.markAsBooked(selection.plan_service_id)),
+        approved.map(({ selection }) =>
+          weddingPlanService.markAsBooked(selection.plan_service_id, booking.booking_id),
+        ),
       );
       setSelections((current) =>
         current.map((item) => {

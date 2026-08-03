@@ -163,7 +163,8 @@ class WeddingPlanSelectionService:
     def mark_as_booked(
         self,
         plan_service_id: int,
-        profile_id: int
+        profile_id: int,
+        booking_id: int = None
     ) -> WeddingPlanServiceModel:
         """
         Called once a booking is created from this selection. Unlike
@@ -192,6 +193,7 @@ class WeddingPlanSelectionService:
             )
 
         plan_service.status = "BOOKED"
+        plan_service.booking_id = booking_id
 
         self.repository.update()
 

@@ -14,14 +14,17 @@ export function summarizeBudget(
   selections: WeddingPlanSelectionWithService[],
   budget: string,
 ): BudgetSummary {
-  const sumOf = (status: 'APPROVED' | 'PENDING') =>
+  const sumOf = (statuses: string[]) =>
     selections
-      .filter((item) => item.selection.status === status)
+      .filter((item) => statuses.includes(item.selection.status))
       .reduce((total, item) => total + Number(item.selection.estimated_price), 0);
 
   const budgetValue = Number(budget);
-  const approved = sumOf('APPROVED');
-  const pending = sumOf('PENDING');
+  // A booked service is more committed than an approved one, not less - it
+  // used to drop out of the total the moment it was booked, so the budget
+  // bar emptied itself exactly when the couple had actually spent the money.
+  const approved = sumOf(['APPROVED', 'BOOKED']);
+  const pending = sumOf(['PENDING']);
 
   return {
     budget: budgetValue,

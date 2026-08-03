@@ -40,6 +40,15 @@ class WeddingPlanService(db.Model):
         default="PENDING"
     )
 
+    # Set once this selection is turned into a real booking. Keeping the link
+    # means the plan can show the booking's live status instead of a second
+    # copy of it that has to be kept in sync.
+    booking_id = db.Column(
+        db.Integer,
+        db.ForeignKey("bookings.booking_id"),
+        nullable=True
+    )
+
     notes = db.Column(
         db.Text,
         nullable=True
@@ -66,3 +75,5 @@ class WeddingPlanService(db.Model):
         foreign_keys=[added_by_profile_id],
         back_populates="added_wedding_plan_services"
     )
+
+    booking = db.relationship("Booking")

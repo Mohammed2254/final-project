@@ -295,10 +295,10 @@ export const weddingPlanSelectionEndpoints = {
       {},
     ),
 
-  book: (planServiceId: number | string) =>
+  book: (planServiceId: number | string, bookingId: number) =>
     apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
       WEDDING_PLAN_SELECTION_ENDPOINTS.BOOK(planServiceId),
-      {},
+      { booking_id: bookingId },
     ),
 };
 

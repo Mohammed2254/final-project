@@ -8,13 +8,23 @@ import { Badge } from '@/components/common/Badge/Badge';
  * spelled out locally instead of importing either feature's type, so this
  * shared component has no dependency on either one.
  */
-type Status = 'PENDING' | 'CONFIRMED' | 'APPROVED' | 'REJECTED' | 'BOOKED';
+type Status =
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'APPROVED'
+  | 'REJECTED'
+  | 'BOOKED'
+  | 'BOOKED_CONFIRMED'
+  | 'BOOKED_REJECTED';
+
 const STATUS_MAP = {
   PENDING: { label: 'قيد الانتظار', variant: 'warning', Icon: Clock },
   CONFIRMED: { label: 'مؤكد', variant: 'success', Icon: CheckCircle2 },
   APPROVED: { label: 'مقبول', variant: 'success', Icon: CheckCircle2 },
   REJECTED: { label: 'مرفوض', variant: 'danger', Icon: XCircle },
   BOOKED: { label: 'محجوزة، بانتظار تأكيد المزوّد', variant: 'gold', Icon: ShoppingBag },
+  BOOKED_CONFIRMED: { label: 'محجوزة ومؤكدة', variant: 'success', Icon: CheckCircle2 },
+  BOOKED_REJECTED: { label: 'رفض المزوّد الحجز', variant: 'danger', Icon: XCircle },
 } as const;
 
 export function StatusBadge({ status, className }: { status: Status; className?: string }) {

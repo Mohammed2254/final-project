@@ -22,3 +22,11 @@ class WeddingPlanSelectionResponseSchema(Schema):
     status = fields.Str()
     notes = fields.Str(allow_none=True)
     created_at = fields.DateTime()
+    booking_id = fields.Int(allow_none=True)
+    booking_status = fields.Method("get_booking_status")
+
+    def get_booking_status(self, plan_service):
+        # Read from the booking itself rather than mirrored onto the
+        # selection, so the plan can never disagree with "my bookings"
+        # about whether the provider accepted.
+        return plan_service.booking.status if plan_service.booking else None
