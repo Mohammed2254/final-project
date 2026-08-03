@@ -78,8 +78,6 @@ export default function MyBookingsPage() {
                     <span className="text-xs text-muted-foreground">الإجمالي</span>
                     <PriceText price={Number(booking.total_price)} className="text-base" />
                   </div>
-
-
                 </div>
               </Card>
             ))}
