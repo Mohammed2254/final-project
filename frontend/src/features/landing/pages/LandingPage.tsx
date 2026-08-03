@@ -18,8 +18,8 @@ const STEPS = [
 
 const STATS = [
   { value: '73', label: 'نقطة API' },
-  { value: '15', label: 'جدول بقاعدة البيانات' },
-  { value: '112', label: 'اختبار آلي ناجح' },
+  { value: '14', label: 'جدول بقاعدة البيانات' },
+  { value: '127', label: 'اختبار آلي ناجح' },
   { value: '3', label: 'أعضاء فريق' },
 ] as const;
 
