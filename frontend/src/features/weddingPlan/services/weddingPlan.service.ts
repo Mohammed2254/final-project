@@ -10,7 +10,7 @@ import type {
   WeddingPlanInvitationRecord,
   WeddingPlanRecord,
   WeddingPlanSelectionRecord,
-} from '@/types/weddingPlan';
+} from '@/features/weddingPlan/types';
 
 export interface WeddingPlanSelectionWithService {
   selection: WeddingPlanSelectionRecord;
@@ -90,6 +90,11 @@ export const weddingPlanService = {
     await weddingPlanEndpoints.remove(planId);
   },
 
+  async leavePlan(planId: number): Promise<WeddingPlanRecord> {
+    const { data } = await weddingPlanEndpoints.leave(planId);
+    return data.data;
+  },
+
   async approveService(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
     const { data } = await weddingPlanSelectionEndpoints.approve(planServiceId);
     return data.data;
@@ -97,6 +102,14 @@ export const weddingPlanService = {
 
   async rejectService(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
     const { data } = await weddingPlanSelectionEndpoints.reject(planServiceId);
+    return data.data;
+  },
+
+  async markAsBooked(
+    planServiceId: number,
+    bookingId: number,
+  ): Promise<WeddingPlanSelectionRecord> {
+    const { data } = await weddingPlanSelectionEndpoints.book(planServiceId, bookingId);
     return data.data;
   },
 };

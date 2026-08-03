@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, fields, validate, validates_schema, ValidationError
 
 
 class BookingItemSchema(Schema):
@@ -27,6 +27,20 @@ class BookingStatusUpdateSchema(Schema):
         required=True,
         validate=validate.OneOf(["CONFIRMED", "REJECTED"])
     )
+    rejection_reason = fields.Str(required=False, allow_none=True)
+
+    @validates_schema
+    def validate_rejection_reason(self, data, **kwargs):
+        if data.get("status") != "REJECTED":
+            return
+
+        reason = data.get("rejection_reason")
+
+        if not reason or not reason.strip():
+            raise ValidationError(
+                "A rejection reason is required when rejecting a booking.",
+                field_name="rejection_reason"
+            )
 
 
 class BookingItemResponseSchema(Schema):
@@ -53,6 +67,7 @@ class BookingResponseSchema(Schema):
     event_date = fields.Date()
     status = fields.Str()
     notes = fields.Str()
+    rejection_reason = fields.Str(allow_none=True)
     total_price = fields.Decimal(as_string=True)
     created_at = fields.DateTime()
 
@@ -60,6 +75,7 @@ class BookingResponseSchema(Schema):
         fields.Nested(BookingItemResponseSchema),
         attribute="booking_items"
     )
+
 
     def get_customer_name(self, booking):
         return booking.customer.full_name if booking.customer else None

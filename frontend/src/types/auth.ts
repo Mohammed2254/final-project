@@ -1,6 +1,9 @@
 /**
- * Types shared across the app for authentication & account data.
- * These mirror the backend contracts exposed under /api/auth.
+ * Session shapes read by app-wide state (store/auth.store.ts) and by
+ * anything outside the auth feature that needs to know who's logged in
+ * (Header, guards, etc.). Request/response payloads for the login and
+ * register flows live in features/auth/types.ts instead - nothing outside
+ * that feature needs them.
  */
 
 export type AccountRole = 'Customer' | 'Provider';
@@ -19,59 +22,4 @@ export interface UserProfile {
 export interface ProviderProfile {
   provider_profile_id: number;
   business_name: string;
-}
-
-export interface AuthSession {
-  accessToken: string;
-  account: Account;
-  fullName?: string;
-}
-
-export interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-export interface CustomerRegisterPayload {
-  full_name: string;
-  email: string;
-  password: string;
-}
-
-export interface ProviderRegisterPayload {
-  business_name: string;
-  description?: string | null;
-  phone_number: string;
-  logo_path?: string | null;
-  email: string;
-  password: string;
-}
-
-export interface ForgotPasswordPayload {
-  email: string;
-}
-
-export interface ResetPasswordPayload {
-  token: string;
-  password: string;
-}
-
-export interface LoginResponseData {
-  access_token: string;
-  role: AccountRole;
-  account: Account;
-  user_profile?: UserProfile;
-  provider_profile?: ProviderProfile;
-}
-
-export interface CustomerRegisterResponseData {
-  access_token: string;
-  account: Account;
-  user_profile: UserProfile;
-}
-
-export interface ProviderRegisterResponseData {
-  access_token: string;
-  account: Account;
-  provider_profile: ProviderProfile;
 }

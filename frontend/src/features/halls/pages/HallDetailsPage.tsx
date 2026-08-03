@@ -2,14 +2,16 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 import { Card } from '@/components/common/Card';
-import { ServiceImage } from '@/components/common/ServiceImage';
+import { ServiceGallery } from '@/components/common/ServiceGallery';
 import { PriceText } from '@/components/common/PriceText';
+import { AddToWeddingPlanButton } from '@/components/common/AddToWeddingPlanButton';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
 import { buttonVariants } from '@/components/ui/button-variants';
 import { cn } from '@/lib/utils';
 import { ROUTES } from '@/constants/routes';
 import { useHallDetails } from '@/features/halls/hooks/useHallDetails';
+import { HallMap } from '@/features/halls/components/HallMap';
 
 export default function HallDetailsPage() {
   const { id } = useParams<{ id: string }>();
@@ -80,8 +82,9 @@ export default function HallDetailsPage() {
         {!isLoading && !notFound && !error && hall && (
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.5fr_1fr]">
             <section>
-              <ServiceImage
-                imageUrl={hall.imageUrl}
+              <ServiceGallery
+                serviceId={hall.id}
+                fallbackImageUrl={hall.imageUrl}
                 className="h-72 w-full rounded-lg lg:h-96"
                 label={hall.name}
               />
@@ -110,6 +113,10 @@ export default function HallDetailsPage() {
                   </ul>
                 </Card>
               )}
+
+              {hall.latitude && hall.longitude && (
+                <HallMap latitude={hall.latitude} longitude={hall.longitude} hallName={hall.name} />
+              )}
             </section>
 
             <Card className="h-fit space-y-4 p-5">
@@ -134,8 +141,10 @@ export default function HallDetailsPage() {
                   'w-full',
                 )}
               >
-                احجزوا الآن
+                احجز الآن
               </Link>
+
+              <AddToWeddingPlanButton serviceId={hall.id} price={hall.price} showLabel />
             </Card>
           </div>
         )}

@@ -1,23 +1,19 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { hallService, type HallListParams } from '@/features/halls/services/hall.service';
+import { hallService } from '@/features/halls/services/hall.service';
 import { ApiException } from '@/types/api';
-import type { ServiceItem } from '@/types/service';
+import type { HallItem } from '@/features/halls/types';
 
-export function useHalls(params: HallListParams) {
-  const [halls, setHalls] = useState<ServiceItem[]>([]);
+export function useHalls() {
+  const [halls, setHalls] = useState<HallItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  // Only re-fetch when the actual filter values change, not on every
-  // render (params is a fresh object each render from the caller).
-  const { keyword, minPrice, maxPrice } = params;
 
   const fetchHalls = useCallback(async () => {
     setIsLoading(true);
     setError(null);
     try {
-      const data = await hallService.list({ keyword, minPrice, maxPrice });
+      const data = await hallService.list();
       setHalls(data);
     } catch (err) {
       setError(
@@ -26,7 +22,7 @@ export function useHalls(params: HallListParams) {
     } finally {
       setIsLoading(false);
     }
-  }, [keyword, minPrice, maxPrice]);
+  }, []);
 
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect

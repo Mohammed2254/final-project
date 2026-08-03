@@ -25,16 +25,16 @@ import type {
   ServiceMediaUpdatePayload,
   ServiceRecord,
 } from '@/types/service';
-import type { PhotographerDetailsRecord } from '@/types/photographer';
+import type { PhotographerDetailsRecord } from '@/features/photographers/types';
 import type {
   Booking,
   BookingCreatePayload,
   BookingStatus,
-} from '@/types/booking';
+} from '@/features/bookings/types';
 import type {
   FavoriteCreatePayload,
   FavoriteRecord,
-} from '@/types/favorite';
+} from '@/features/favorites/types';
 import type {
   WeddingPlanCreatePayload,
   WeddingPlanRecord,
@@ -42,7 +42,7 @@ import type {
   WeddingPlanInvitationRecord,
   WeddingPlanSelectionCreatePayload,
   WeddingPlanSelectionRecord,
-} from '@/types/weddingPlan';
+} from '@/features/weddingPlan/types';
 
 import type {
   LoginPayload,
@@ -53,7 +53,8 @@ import type {
   LoginResponseData,
   CustomerRegisterResponseData,
   ProviderRegisterResponseData,
-} from '@/types/auth';
+} from '@/features/auth/types';
+
 
 /**
  * Raw HTTP calls only - no business logic, no storage side effects.
@@ -181,10 +182,10 @@ export const bookingEndpoints = {
       BOOKING_ENDPOINTS.PROVIDER_MINE,
     ),
 
-  updateStatus: (bookingId: number | string, status: BookingStatus) =>
+  updateStatus: (bookingId: number | string, status: BookingStatus, rejectionReason?: string) =>
     apiClient.post<ApiSuccessResponse<Booking>>(
       BOOKING_ENDPOINTS.UPDATE_STATUS(bookingId),
-      { status },
+      { status, rejection_reason: rejectionReason },
     ),
 };
 
@@ -237,6 +238,12 @@ export const weddingPlanEndpoints = {
     apiClient.delete<ApiSuccessResponse<null>>(
       WEDDING_PLAN_ENDPOINTS.DELETE(planId),
     ),
+
+  leave: (planId: number | string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanRecord>>(
+      WEDDING_PLAN_ENDPOINTS.LEAVE(planId),
+      {},
+    ),
 };
 
 export const weddingPlanInvitationEndpoints = {
@@ -286,6 +293,12 @@ export const weddingPlanSelectionEndpoints = {
     apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
       WEDDING_PLAN_SELECTION_ENDPOINTS.REJECT(planServiceId),
       {},
+    ),
+
+  book: (planServiceId: number | string, bookingId: number) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.BOOK(planServiceId),
+      { booking_id: bookingId },
     ),
 };
 
@@ -338,3 +351,4 @@ export const serviceMediaEndpoints = {
       SERVICE_MEDIA_ENDPOINTS.DELETE(mediaId),
     ),
 };
+

@@ -1,10 +1,11 @@
-import { useState } from 'react';
-import { ImageOff, Star, Trash2 } from 'lucide-react';
+import { useRef, useState, type ChangeEvent } from 'react';
+import { ImageOff, Star, Trash2, Upload } from 'lucide-react';
 
 import { Button } from '@/components/common/Button';
 import { GoldBadge } from '@/components/common/GoldBadge';
 import { Spinner } from '@/components/common/Loading';
 import { useServiceMedia } from '@/features/provider/hooks/useServiceMedia';
+import { uploadImageToCloudinary } from '@/services/cloudinary/upload';
 import { cn } from '@/lib/utils';
 
 interface ServiceMediaManagerProps {
@@ -38,22 +39,33 @@ function MediaThumbnail({ url }: MediaThumbnailProps) {
 }
 
 /**
- * URL-based image gallery manager for a single service - no file-upload
- * backend exists in this project (only service_media.media_url), so images
- * are added by pasting a hosted URL, matching every other media field in
- * the app (halls/photographers/ServiceCard all render from a URL already).
+ * Image gallery manager for a single service. The file itself goes straight
+ * from the browser to Cloudinary (services/cloudinary/upload.ts) - this
+ * component only ever hands service_media.media_url a finished URL, same
+ * as every other media field in the app (halls/photographers/ServiceCard
+ * all render from a URL already).
  */
 export function ServiceMediaManager({ serviceId }: ServiceMediaManagerProps) {
   const { media, isLoading, error, addMedia, setMain, removeMedia } = useServiceMedia(serviceId);
-  const [url, setUrl] = useState('');
-  const [isAdding, setIsAdding] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAdd = async () => {
-    if (!url.trim()) return;
-    setIsAdding(true);
-    const ok = await addMedia(url.trim());
-    setIsAdding(false);
-    if (ok) setUrl('');
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setUploadError(null);
+    setIsUploading(true);
+    try {
+      const mediaUrl = await uploadImageToCloudinary(file);
+      await addMedia(mediaUrl);
+    } catch {
+      setUploadError('تعذر رفع الصورة، حاول مرة أخرى.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -104,33 +116,29 @@ export function ServiceMediaManager({ serviceId }: ServiceMediaManagerProps) {
             </div>
           )}
 
-          {error && <p className="text-xs text-destructive">{error}</p>}
+          {(error || uploadError) && (
+            <p className="text-xs text-destructive">{error ?? uploadError}</p>
+          )}
 
-          <div className="space-y-1.5">
-            <div className="flex gap-2">
-              <input
-                type="url"
-                value={url}
-                onChange={(event) => setUrl(event.target.value)}
-                placeholder="https://images.example.com/photo.jpg"
-                className="min-w-0 flex-1 rounded-md border border-border bg-background px-2.5 py-1.5 text-xs text-foreground"
-              />
-              <Button
-                type="button"
-                size="sm"
-                isLoading={isAdding}
-                disabled={!url.trim()}
-                onClick={handleAdd}
-              >
-                إضافة صورة
-              </Button>
-            </div>
-
-            <p className="text-[0.7rem] leading-relaxed text-muted-foreground">
-              الصق رابط الصورة المباشر (ينتهي عادةً بـ .jpg أو .png)، وليس رابط
-              صفحة البحث. للحصول عليه: اضغط بزر الفأرة الأيمن على الصورة ثم
-              اختر «نسخ عنوان الصورة».
-            </p>
+          <div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              isLoading={isUploading}
+              loadingText="جارٍ رفع الصورة..."
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload size={14} aria-hidden="true" className="ms-1.5" />
+              رفع صورة
+            </Button>
           </div>
         </>
       )}

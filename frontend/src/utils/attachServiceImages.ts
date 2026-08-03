@@ -1,17 +1,13 @@
 import { serviceMediaEndpoints } from '@/services/api/endpoints';
 import type { ServiceItem } from '@/types/service';
 
-/**
- * The Service API has no media field of its own (see service_schema.py) -
- * the main image lives in service_media and must be joined in separately,
- * same real-join pattern used for hall/photographer details.
- */
+/** The Service API has no media field - the main image lives in service_media. */
 export async function withMainImage<T extends ServiceItem>(item: T): Promise<T> {
   try {
     const { data } = await serviceMediaEndpoints.mainByService(item.id);
     return { ...item, imageUrl: data.data.media_url };
   } catch {
-    // No main image set for this service yet - not an error, just no image.
+    // No main image set yet - not an error.
     return item;
   }
 }

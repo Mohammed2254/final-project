@@ -32,6 +32,11 @@ class Booking(db.Model):
         nullable=True
     )
 
+    rejection_reason = db.Column(
+        db.Text,
+        nullable=True
+    )
+
     total_price = db.Column(
         db.Numeric(10, 2),
         nullable=False,
@@ -54,6 +59,7 @@ class Booking(db.Model):
         back_populates="booking",
         cascade="all, delete-orphan"
     )
+
     
     
     

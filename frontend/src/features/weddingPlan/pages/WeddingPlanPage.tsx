@@ -1,181 +1,23 @@
 import { useState } from 'react';
-import { Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { CalendarDays, LogOut, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/common/Button';
-import { GoldButton } from '@/components/common/GoldButton';
 import { GoldBadge } from '@/components/common/GoldBadge';
 import { Card, CardBody } from '@/components/common/Card';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { EmptyState, ErrorState, SkeletonGrid } from '@/components/common/EmptyState';
 import { PriceText } from '@/components/common/PriceText';
 import { Spinner } from '@/components/common/Loading';
+import { BudgetBar } from '@/features/weddingPlan/components/BudgetBar';
+import { CreatePlanForm } from '@/features/weddingPlan/components/CreatePlanForm';
+import { InviteCodeCard } from '@/features/weddingPlan/components/InviteCodeCard';
+import { InvitePartnerCard } from '@/features/weddingPlan/components/InvitePartnerCard';
+import { ReadyToBookCard } from '@/features/weddingPlan/components/ReadyToBookCard';
+import { SelectionCard } from '@/features/weddingPlan/components/SelectionCard';
 import { useWeddingPlan } from '@/features/weddingPlan/hooks/useWeddingPlan';
-import type { WeddingPlanSelectionStatus } from '@/types/weddingPlan';
-
-const SELECTION_STATUS_LABEL: Record<WeddingPlanSelectionStatus, string> = {
-  PENDING: 'بانتظار موافقة الشريك',
-  APPROVED: 'تمت الموافقة',
-  REJECTED: 'مرفوضة',
-};
-
-function CreatePlanForm({
-  isMutating,
-  onCreate,
-}: {
-  isMutating: boolean;
-  onCreate: (planName: string, eventDate: string, budget: string, notes: string | null) => Promise<boolean>;
-}) {
-  const [planName, setPlanName] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [budget, setBudget] = useState('');
-  const [notes, setNotes] = useState('');
-
-  const handleSubmit = async () => {
-    if (!planName.trim() || !eventDate || !budget.trim()) return;
-    await onCreate(planName.trim(), eventDate, budget.trim(), notes.trim() || null);
-  };
-
-  return (
-    <Card>
-      <CardBody className="space-y-4">
-        <h2 className="text-lg font-bold text-foreground">أنشئوا خطة زفافكم</h2>
-        <p className="text-sm text-muted-foreground">
-          ابدؤوا بإنشاء خطة الزفاف، ثم يمكنكم دعوة شريككم للتخطيط معاً واختيار الخدمات المناسبة.
-        </p>
-
-        <div className="space-y-2">
-          <label htmlFor="plan-name" className="text-sm font-medium text-foreground">
-            اسم الخطة
-          </label>
-          <input
-            id="plan-name"
-            value={planName}
-            onChange={(event) => setPlanName(event.target.value)}
-            placeholder="مثال: زفاف سارة وأحمد"
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-          />
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-2">
-          <div className="space-y-2">
-            <label htmlFor="plan-date" className="text-sm font-medium text-foreground">
-              تاريخ المناسبة
-            </label>
-            <input
-              id="plan-date"
-              type="date"
-              value={eventDate}
-              min={new Date().toISOString().split('T')[0]}
-              onChange={(event) => setEventDate(event.target.value)}
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <label htmlFor="plan-budget" className="text-sm font-medium text-foreground">
-              الميزانية التقديرية (ريال)
-            </label>
-            <input
-              id="plan-budget"
-              type="number"
-              min="0"
-              value={budget}
-              onChange={(event) => setBudget(event.target.value)}
-              placeholder="0"
-              className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-            />
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="plan-notes" className="text-sm font-medium text-foreground">
-            ملاحظات (اختياري)
-          </label>
-          <textarea
-            id="plan-notes"
-            rows={3}
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-          />
-        </div>
-
-        <GoldButton
-          type="button"
-          className="w-full"
-          isLoading={isMutating}
-          loadingText="جارٍ الإنشاء..."
-          onClick={handleSubmit}
-          disabled={!planName.trim() || !eventDate || !budget.trim()}
-        >
-          إنشاء الخطة
-        </GoldButton>
-      </CardBody>
-    </Card>
-  );
-}
-
-function InviteCodeCard({
-  isMutating,
-  onAccept,
-  onReject,
-}: {
-  isMutating: boolean;
-  onAccept: (code: string) => Promise<boolean>;
-  onReject: (code: string) => Promise<boolean>;
-}) {
-  const [code, setCode] = useState('');
-  const [message, setMessage] = useState<string | null>(null);
-
-  return (
-    <Card>
-      <CardBody className="space-y-3">
-        <h2 className="text-sm font-bold text-foreground">لديكم رمز دعوة؟</h2>
-        <p className="text-xs text-muted-foreground">
-          إن دعاكم شريككم للانضمام إلى خطة زفافه، أدخلوا الرمز الذي أرسله لكم هنا.
-        </p>
-
-        <input
-          value={code}
-          onChange={(event) => setCode(event.target.value)}
-          placeholder="رمز الدعوة"
-          className="w-full rounded-md border border-border bg-background px-3 py-2 text-foreground"
-        />
-
-        {message && <p className="text-xs text-muted-foreground">{message}</p>}
-
-        <div className="flex gap-2">
-          <Button
-            type="button"
-            size="sm"
-            isLoading={isMutating}
-            disabled={!code.trim()}
-            onClick={async () => {
-              setMessage(null);
-              const ok = await onAccept(code.trim());
-              setMessage(ok ? 'تم قبول الدعوة بنجاح.' : null);
-            }}
-          >
-            قبول
-          </Button>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            disabled={!code.trim()}
-            onClick={async () => {
-              setMessage(null);
-              const ok = await onReject(code.trim());
-              setMessage(ok ? 'تم رفض الدعوة.' : null);
-            }}
-          >
-            رفض
-          </Button>
-        </div>
-      </CardBody>
-    </Card>
-  );
-}
+import { daysUntil, formatDaysRemaining, summarizeBudget } from '@/features/weddingPlan/utils/planSummary';
+import { ROUTES } from '@/constants/routes';
 
 export default function WeddingPlanPage() {
   const {
@@ -195,13 +37,31 @@ export default function WeddingPlanPage() {
     removeService,
     reviewService,
     deletePlan,
+    leavePlan,
+    bookApprovedServices,
   } = useWeddingPlan();
 
-  const [inviteEmail, setInviteEmail] = useState('');
-  const [copied, setCopied] = useState(false);
+  const navigate = useNavigate();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [confirmingLeave, setConfirmingLeave] = useState(false);
+
+  const approvedCount = selections.filter(
+    ({ selection }) => selection.status === 'APPROVED',
+  ).length;
 
   const isOwner = plan !== null && plan.owner_profile_id === currentProfileId;
+  const isPartner = plan !== null && plan.partner_profile_id === currentProfileId;
+
+  // The backend refuses to delete a plan that still has a booking ahead of
+  // the wedding date - say so up front instead of on a failed click.
+  const hasLiveBooking =
+    plan !== null &&
+    new Date(plan.event_date) >= new Date(new Date().toDateString()) &&
+    selections.some(({ selection }) => selection.status === 'BOOKED');
+
+  // Safe to compute before we know there is a plan - with no plan there are no
+  // selections either, so every total is zero and nothing is rendered anyway.
+  const budget = summarizeBudget(selections, plan?.budget ?? '0');
 
   return (
     <div className="container mx-auto px-4 py-8 lg:px-8">
@@ -243,12 +103,31 @@ export default function WeddingPlanPage() {
                   <h2 className="text-lg font-bold text-foreground">{plan.plan_name}</h2>
                   <div className="flex items-center gap-2">
                     <GoldBadge>{plan.status}</GoldBadge>
+
+                    {isPartner && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setConfirmingLeave(true)}
+                      >
+                        <LogOut size={14} aria-hidden="true" className="ms-1.5" />
+                        مغادرة الخطة
+                      </Button>
+                    )}
+
                     {isOwner && (
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
                         className="text-destructive hover:text-destructive"
+                        disabled={hasLiveBooking}
+                        title={
+                          hasLiveBooking
+                            ? 'لا يمكن حذف خطة فيها حجوزات قائمة قبل انقضاء تاريخ الزفاف'
+                            : undefined
+                        }
                         onClick={() => setConfirmingDelete(true)}
                       >
                         <Trash2 size={14} aria-hidden="true" className="ms-1.5" />
@@ -259,17 +138,61 @@ export default function WeddingPlanPage() {
                 </div>
 
                 <div className="grid gap-2 text-sm text-muted-foreground sm:grid-cols-3">
-                  <p>تاريخ المناسبة: {plan.event_date}</p>
-                  <p>الميزانية: <PriceText price={Number(plan.budget)} /></p>
+                  <p className="flex items-center gap-1.5">
+                    <CalendarDays size={14} aria-hidden="true" />
+                    {plan.event_date}
+                    <span className="font-medium text-gold">
+                      ({formatDaysRemaining(daysUntil(plan.event_date))})
+                    </span>
+                  </p>
+                  <p>الميزانية: <PriceText price={budget.budget} /></p>
                   <p>{plan.partner_profile_id ? 'الشريك: منضم' : 'بانتظار انضمام الشريك'}</p>
                 </div>
 
+                <BudgetBar summary={budget} />
+
                 {plan.notes && <p className="text-sm text-muted-foreground">{plan.notes}</p>}
+
+                {isOwner && hasLiveBooking && (
+                  <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                    فيها حجوزات قائمة، فلا يمكن حذفها قبل انقضاء تاريخ الزفاف.
+                  </p>
+                )}
+
+                {confirmingLeave && (
+                  <div className="space-y-2 rounded-md border border-border bg-muted/40 p-3">
+                    <p className="text-xs text-muted-foreground">
+                      ستخرجون من هذه الخطة وتعود لصاحبها وحده. الخدمات التي أضفتموها ولم يوافق
+                      عليها بعد ستُلغى، وما اتفقتم عليه سابقاً يبقى في خطته.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        isLoading={isMutating}
+                        onClick={async () => {
+                          const ok = await leavePlan();
+                          if (ok) setConfirmingLeave(false);
+                        }}
+                      >
+                        نعم، غادروا الخطة
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setConfirmingLeave(false)}
+                      >
+                        تراجع
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {confirmingDelete && (
                   <div className="space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">
                     <p className="text-xs text-destructive">
-                      هذا الإجراء لا يمكن التراجع عنه — سيُحذف الخطة، ودعوة الشريك، وكل الخدمات
+                      هذا الإجراء لا يمكن التراجع عنه، سيُحذف الخطة، ودعوة الشريك، وكل الخدمات
                       المختارة فيها. هل أنتم متأكدون؟
                     </p>
                     <div className="flex gap-2">
@@ -300,60 +223,11 @@ export default function WeddingPlanPage() {
             </Card>
 
             {!plan.partner_profile_id && (
-              <Card>
-                <CardBody className="space-y-3">
-                  <h2 className="text-sm font-bold text-foreground">دعوة الشريك</h2>
-                  <p className="text-xs text-muted-foreground">
-                    أدخلوا البريد الإلكتروني لحساب شريككم على المنصة لإرسال دعوة انضمام إلى الخطة.
-                  </p>
-
-                  <div className="flex flex-wrap gap-2">
-                    <input
-                      type="email"
-                      value={inviteEmail}
-                      onChange={(event) => setInviteEmail(event.target.value)}
-                      placeholder="partner@example.com"
-                      className="min-w-0 flex-1 rounded-md border border-border bg-background px-3 py-2 text-foreground"
-                    />
-                    <Button
-                      type="button"
-                      isLoading={isMutating}
-                      disabled={!inviteEmail.trim()}
-                      onClick={async () => {
-                        setCopied(false);
-                        const ok = await invitePartner(inviteEmail.trim());
-                        if (ok) setInviteEmail('');
-                      }}
-                    >
-                      إرسال الدعوة
-                    </Button>
-                  </div>
-
-                  {lastInviteCode && (
-                    <div className="space-y-2 rounded-md border border-gold/40 bg-gold/5 p-3">
-                      <p className="text-xs text-muted-foreground">
-                        تم إرسال الدعوة. شاركوا هذا الرمز مع شريككم ليدخلوه في صفحة خطة الزفاف الخاصة بهم:
-                      </p>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <code className="rounded-md border border-border bg-background px-3 py-1.5 text-sm font-bold tracking-wide text-foreground">
-                          {lastInviteCode}
-                        </code>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            void navigator.clipboard.writeText(lastInviteCode);
-                            setCopied(true);
-                          }}
-                        >
-                          {copied ? 'تم النسخ' : 'نسخ الرمز'}
-                        </Button>
-                      </div>
-                    </div>
-                  )}
-                </CardBody>
-              </Card>
+              <InvitePartnerCard
+                isMutating={isMutating}
+                lastInviteCode={lastInviteCode}
+                onInvite={invitePartner}
+              />
             )}
 
             <div>
@@ -366,61 +240,31 @@ export default function WeddingPlanPage() {
                 />
               ) : (
                 <div className="space-y-3">
-                  {selections.map(({ selection, service }) => {
-                    const isAddedByMe = selection.added_by_profile_id === currentProfileId;
-                    const canReview = selection.status === 'PENDING' && !isAddedByMe;
-
-                    return (
-                      <Card key={selection.plan_service_id}>
-                        <CardBody className="flex flex-wrap items-center justify-between gap-3">
-                          <div>
-                            <p className="font-bold text-foreground">
-                              {service?.name ?? `خدمة #${selection.service_id}`}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              أضافها {isAddedByMe ? 'أنتم' : 'شريككم'} · {SELECTION_STATUS_LABEL[selection.status]}
-                            </p>
-                          </div>
-
-                          <div className="flex items-center gap-3">
-                            <PriceText price={Number(selection.estimated_price)} />
-
-                            {canReview && (
-                              <div className="flex gap-2">
-                                <Button
-                                  type="button"
-                                  size="sm"
-                                  onClick={() => reviewService(selection.plan_service_id, 'approve')}
-                                >
-                                  موافقة
-                                </Button>
-                                <Button
-                                  type="button"
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => reviewService(selection.plan_service_id, 'reject')}
-                                >
-                                  رفض
-                                </Button>
-                              </div>
-                            )}
-
-                            <Button
-                              type="button"
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => removeService(selection.plan_service_id)}
-                            >
-                              حذف
-                            </Button>
-                          </div>
-                        </CardBody>
-                      </Card>
-                    );
-                  })}
+                  {selections.map((item) => (
+                    <SelectionCard
+                      key={item.selection.plan_service_id}
+                      item={item}
+                      currentProfileId={currentProfileId}
+                      onReview={reviewService}
+                      onRemove={removeService}
+                    />
+                  ))}
                 </div>
               )}
             </div>
+
+            {approvedCount > 0 && (
+              <ReadyToBookCard
+                approvedCount={approvedCount}
+                approvedTotal={budget.approved}
+                eventDate={plan.event_date}
+                isMutating={isMutating}
+                onBook={async () => {
+                  const booking = await bookApprovedServices();
+                  if (booking) navigate(ROUTES.MY_BOOKINGS);
+                }}
+              />
+            )}
           </div>
         )}
 

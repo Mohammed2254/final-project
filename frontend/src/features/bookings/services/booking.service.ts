@@ -1,5 +1,5 @@
 import { bookingEndpoints } from '@/services/api/endpoints';
-import type { BookingCreatePayload } from '@/types/booking';
+import type { BookingCreatePayload } from '@/features/bookings/types';
 
 export const bookingService = {
   async create(payload: BookingCreatePayload) {

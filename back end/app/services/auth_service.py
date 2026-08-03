@@ -1,9 +1,13 @@
+from flask import current_app
+
 from app.models.enums import AccountRole
 from app.services.account_service import AccountService
 from app.services.user_profile_service import UserProfileService
 from app.services.provider_profile_service import ProviderProfileService
 from app.utils.password_helper import PasswordHelper
 from app.utils.jwt_helper import JwtHelper
+from app.utils.password_reset_helper import PasswordResetHelper
+from app.utils.email_helper import EmailHelper
 
 class AuthService:
 
@@ -131,3 +135,24 @@ class AuthService:
                 }
 
         return result
+
+    def forgot_password(self, email: str) -> None:
+        account = self.account_service.get_by_email(email)
+
+        # Silent on an unknown email - the caller sees the same success
+        # response either way, so no one can use this endpoint to check
+        # whether a given email has an account here.
+        if account is None:
+            return
+
+        token = PasswordResetHelper.generate_token(account.account_id)
+        reset_url = (
+            f"{current_app.config['FRONTEND_URL']}"
+            f"/auth/reset-password?token={token}"
+        )
+
+        EmailHelper.send_password_reset_email(account.email, reset_url)
+
+    def reset_password(self, token: str, new_password: str) -> None:
+        account_id = PasswordResetHelper.verify_token(token)
+        self.account_service.change_password(account_id, new_password)

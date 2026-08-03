@@ -13,11 +13,7 @@ function resolveInitialTheme(): Theme {
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 }
 
-/**
- * index.css already ships a full `.dark` palette behind
- * `@custom-variant dark (&:is(.dark *))` - all that was missing was something
- * to put the class on <html>. That's this store.
- */
+/** index.css already ships the `.dark` palette; this only puts the class on <html>. */
 function applyTheme(theme: Theme): void {
   document.documentElement.classList.toggle('dark', theme === 'dark');
 }

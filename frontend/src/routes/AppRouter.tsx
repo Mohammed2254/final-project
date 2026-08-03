@@ -9,12 +9,13 @@ import AuthGuard from '@/routes/guards/AuthGuard';
 
 import { Spinner } from '@/components/common/Loading';
 
-import HomePage from '@/pages/HomePage';
+import HomePage from '@/features/home/pages/HomePage';
 import AboutPage from '@/pages/AboutPage';
-import BookingPage from '@/pages/BookingPage';
-import PaymentsPage from '@/pages/PaymentsPage';
-import ProviderDashboardPage from '@/pages/ProviderDashboardPage';
 import NotFoundPage from '@/pages/NotFoundPage';
+
+const LandingPage = lazy(
+  () => import('@/features/landing/pages/LandingPage'),
+);
 
 const LoginPage = lazy(
   () => import('@/features/auth/pages/LoginPage'),
@@ -26,6 +27,14 @@ const RegisterPage = lazy(
 
 const ProviderRegisterPage = lazy(
   () => import('@/features/auth/pages/ProviderRegisterPage'),
+);
+
+const ForgotPasswordPage = lazy(
+  () => import('@/features/auth/pages/ForgotPasswordPage'),
+);
+
+const ResetPasswordPage = lazy(
+  () => import('@/features/auth/pages/ResetPasswordPage'),
 );
 
 const HallsListPage = lazy(
@@ -44,8 +53,16 @@ const PhotographerDetailsPage = lazy(
   () => import('@/features/photographers/pages/PhotographerDetailsPage'),
 );
 
+const BookingPage = lazy(
+  () => import('@/features/bookings/pages/BookingPage'),
+);
+
 const MyBookingsPage = lazy(
   () => import('@/features/bookings/pages/MyBookingsPage'),
+);
+
+const ProviderDashboardPage = lazy(
+  () => import('@/features/provider/pages/ProviderDashboardPage'),
 );
 
 const FavoritesPage = lazy(
@@ -69,8 +86,15 @@ export function AppRouter() {
     <BrowserRouter>
       <Suspense fallback={<RouteFallback />}>
         <Routes>
+          {/* Marketing page at the root, outside MainLayout - it ships its
+              own header and footer. The app itself lives under /home. */}
+          <Route index element={<LandingPage />} />
+
           <Route element={<MainLayout />}>
-            <Route index element={<HomePage />} />
+            <Route
+              path="home"
+              element={<HomePage />}
+            />
 
             <Route
               path="about"
@@ -95,11 +119,6 @@ export function AppRouter() {
             <Route
               path="photographers/:id"
               element={<PhotographerDetailsPage />}
-            />
-
-            <Route
-              path="payments"
-              element={<PaymentsPage />}
             />
 
             {/* الصفحات التي تحتاج تسجيل دخول */}
@@ -154,6 +173,16 @@ export function AppRouter() {
               <Route
                 path="auth/register/provider"
                 element={<ProviderRegisterPage />}
+              />
+
+              <Route
+                path="auth/forgot-password"
+                element={<ForgotPasswordPage />}
+              />
+
+              <Route
+                path="auth/reset-password"
+                element={<ResetPasswordPage />}
               />
             </Route>
           </Route>

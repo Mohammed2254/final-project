@@ -50,7 +50,7 @@ export function LoginForm() {
         {...register('email')}
       />
 
-      <div>
+      <div className="space-y-1.5">
         <PasswordInput
           label="كلمة المرور"
           autoComplete="current-password"
@@ -58,9 +58,12 @@ export function LoginForm() {
           error={errors.password?.message}
           {...register('password')}
         />
-        {/* TODO: re-add once password reset actually exists - the page and
-            route were removed, they had no backend behind them (no email
-            sending anywhere in the project), so the link led to a 404. */}
+        <Link
+          to={ROUTES.FORGOT_PASSWORD}
+          className="block text-end text-xs font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          نسيت كلمة المرور؟
+        </Link>
       </div>
 
       <GoldButton type="submit" className="w-full" isLoading={isLoading} loadingText="جارٍ تسجيل الدخول...">

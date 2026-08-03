@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { authService } from '@/features/auth/services/auth.service';
-import type { ProviderRegisterPayload } from '@/types/auth';
+import type { ProviderRegisterPayload } from '@/features/auth/types';
 
 export function useRegisterProvider() {
   const [isLoading, setIsLoading] = useState(false);

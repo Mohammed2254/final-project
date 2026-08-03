@@ -48,11 +48,11 @@ export function ProviderServicesPanel({
 
         {!isLoading && services.length > 0 && (
           <div className="overflow-hidden rounded-md border border-border">
-            <div className="grid grid-cols-[1fr_120px_110px_40px] gap-3 bg-muted px-4 py-3 text-xs font-bold text-muted-foreground">
+            <div className="grid grid-cols-[1fr_120px_110px_130px] gap-3 bg-muted px-4 py-3 text-xs font-bold text-muted-foreground">
               <span>الخدمة</span>
               <span>السعر</span>
               <span>الحالة</span>
-              <span />
+              <span>الصور</span>
             </div>
             <div className="divide-y divide-border">
               {services.map((service) => {
@@ -60,7 +60,7 @@ export function ProviderServicesPanel({
 
                 return (
                   <div key={service.id}>
-                    <div className="grid grid-cols-[1fr_120px_110px_40px] items-center gap-3 px-4 py-3 text-sm">
+                    <div className="grid grid-cols-[1fr_120px_110px_130px] items-center gap-3 px-4 py-3 text-sm">
                       <div className="min-w-0">
                         <p className="truncate font-semibold text-foreground">{service.name}</p>
                         <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
@@ -77,14 +77,21 @@ export function ProviderServicesPanel({
                       >
                         {service.isActive ? 'نشطة' : 'غير نشطة'}
                       </span>
-                      <button
+                      {/* Was an unlabelled icon button - easy to miss entirely,
+                          which made the whole image manager feel absent. */}
+                      <Button
                         type="button"
-                        title="إدارة الصور"
+                        size="sm"
+                        variant="outline"
                         onClick={() => setExpandedServiceId(isExpanded ? null : service.id)}
-                        className="flex size-7 items-center justify-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground"
                       >
-                        {isExpanded ? <ChevronUp size={16} /> : <ImageIcon size={16} />}
-                      </button>
+                        {isExpanded ? (
+                          <ChevronUp size={14} aria-hidden="true" className="ms-1.5" />
+                        ) : (
+                          <ImageIcon size={14} aria-hidden="true" className="ms-1.5" />
+                        )}
+                        {isExpanded ? 'إخفاء' : 'الصور'}
+                      </Button>
                     </div>
 
                     {isExpanded && (

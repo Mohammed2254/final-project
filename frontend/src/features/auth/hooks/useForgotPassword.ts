@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { authService } from '@/features/auth/services/auth.service';
 import { ApiException } from '@/types/api';
-import type { ForgotPasswordPayload } from '@/types/auth';
+import type { ForgotPasswordPayload } from '@/features/auth/types';
 
 export function useForgotPassword() {
   const [isLoading, setIsLoading] = useState(false);

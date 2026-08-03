@@ -39,7 +39,7 @@ export function Footer() {
           <div className="col-span-2 sm:col-span-1">
             <img src={logo} alt="فرح" className="h-7 w-auto" />
             <p className="mt-3 max-w-xs text-xs leading-relaxed text-muted-foreground">
-              منصة التخطيط المشترك لحفلات الزفاف — اكتشفوا القاعات وخدمات التصوير في مكان واحد.
+              منصة التخطيط المشترك لحفلات الزفاف، اكتشفوا القاعات وخدمات التصوير في مكان واحد.
             </p>
 
             <div className="mt-4 flex items-center gap-2">
@@ -83,7 +83,7 @@ export function Footer() {
 
         <div className="mt-8 flex flex-col gap-2 border-t border-border pt-6 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} فرح. جميع الحقوق محفوظة.</p>
-          <p>مشروع تخرّج — Holberton School</p>
+          <p>مشروع تخرّج، Holberton School</p>
         </div>
       </div>
     </footer>

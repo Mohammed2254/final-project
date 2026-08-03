@@ -4,6 +4,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/common/Button';
 import { Card } from '@/components/common/Card';
+import { SortSelect } from '@/components/common/SortSelect';
+import type { SortOption } from '@/utils/filterAndSortServices';
 
 export interface HallFiltersValue {
   keyword: string;
@@ -15,16 +17,17 @@ interface HallFiltersProps {
   value: HallFiltersValue;
   onChange: (value: HallFiltersValue) => void;
   onReset: () => void;
+  sortBy: SortOption;
+  onSortChange: (value: SortOption) => void;
 }
 
 /**
- * Search goes straight to the backend's /services/search. Price range
- * has no backend support (see hall.service.ts), so it's applied
- * client-side after the fetch. There's no capacity/city/category filter
- * here because the Service API has no such fields and no
- * categories-list endpoint to build a category dropdown from.
+ * Keyword, price range, and sort are all applied client-side against the
+ * already-fetched hall list (see hall.service.ts) - there's no
+ * capacity/city/category filter here because the Service API has no such
+ * fields and no categories-list endpoint to build a category dropdown from.
  */
-export function HallFilters({ value, onChange, onReset }: HallFiltersProps) {
+export function HallFilters({ value, onChange, onReset, sortBy, onSortChange }: HallFiltersProps) {
   return (
     <Card className="space-y-5 p-4">
       <div>
@@ -70,6 +73,8 @@ export function HallFilters({ value, onChange, onReset }: HallFiltersProps) {
           />
         </div>
       </div>
+
+      <SortSelect value={sortBy} onChange={onSortChange} />
 
       <Button type="button" variant="outline" size="sm" className="w-full" onClick={onReset}>
         إعادة تعيين الفلاتر

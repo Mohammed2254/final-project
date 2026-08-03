@@ -1,3 +1,5 @@
+from datetime import date
+
 from app.models.wedding_plan import WeddingPlan
 from app.repositories.wedding_plan_repository import WeddingPlanRepository
 
@@ -100,6 +102,48 @@ class WeddingPlanService:
 
         return plan
 
+    def leave_plan(self, plan_id: int, profile_id: int) -> WeddingPlan:
+        """
+        The partner steps out and the plan carries on as the owner's own.
+        Their pending choices go with them; anything already approved or
+        booked was a joint decision, so it stays.
+        """
+
+        plan = self.get_by_id(plan_id)
+
+        if plan is None:
+            raise ValueError("Wedding plan not found.")
+
+        if plan.partner_profile_id != profile_id:
+            raise ValueError("Only the partner can leave this wedding plan.")
+
+        for selection in plan.plan_services:
+            if (
+                selection.added_by_profile_id == profile_id
+                and selection.status == "PENDING"
+            ):
+                selection.status = "REJECTED"
+
+        plan.partner_profile_id = None
+
+        self.repository.update()
+
+        return plan
+
+    def _has_live_booking(self, plan: WeddingPlan) -> bool:
+        """
+        A booked service the couple is still counting on. Once the wedding
+        day has passed there is nothing left to protect.
+        """
+
+        if plan.event_date < date.today():
+            return False
+
+        return any(
+            selection.status == "BOOKED"
+            for selection in plan.plan_services
+        )
+
     def delete_plan(self, plan_id: int, profile_id: int) -> bool:
 
         plan = self.get_by_id(plan_id)
@@ -109,6 +153,15 @@ class WeddingPlanService:
 
         if plan.owner_profile_id != profile_id:
             raise ValueError("Only the plan owner can delete this wedding plan.")
+
+        # Deleting would drop the record of what was agreed on while the
+        # provider is still holding the date - the bookings themselves live
+        # on regardless, so this only ever hides them from the couple.
+        if self._has_live_booking(plan):
+            raise ValueError(
+                "This plan has confirmed bookings. It can be deleted after "
+                "the wedding date has passed."
+            )
 
         self.repository.delete(plan)
 

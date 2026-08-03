@@ -160,6 +160,45 @@ class WeddingPlanSelectionService:
 
         return self._set_status(plan_service_id, profile_id, "REJECTED")
 
+    def mark_as_booked(
+        self,
+        plan_service_id: int,
+        profile_id: int,
+        booking_id: int = None
+    ) -> WeddingPlanServiceModel:
+        """
+        Called once a booking is created from this selection. Unlike
+        approve/reject this is not a review, so either member can trigger
+        it (whoever pressed "book now"), including the one who added it.
+        """
+
+        plan_service = self.get_by_id(plan_service_id)
+
+        if plan_service is None:
+            raise ValueError("Wedding plan service not found.")
+
+        plan = self.plan_service.get_by_id(plan_service.plan_id)
+
+        if profile_id not in {
+            plan.owner_profile_id,
+            plan.partner_profile_id
+        }:
+            raise ValueError(
+                "Only wedding plan members can book services."
+            )
+
+        if plan_service.status != "APPROVED":
+            raise ValueError(
+                "Only approved services can be booked."
+            )
+
+        plan_service.status = "BOOKED"
+        plan_service.booking_id = booking_id
+
+        self.repository.update()
+
+        return plan_service
+
     def remove_service_from_plan(
         self,
         plan_service_id: int,
@@ -179,6 +218,15 @@ class WeddingPlanSelectionService:
         }:
             raise ValueError(
                 "Only wedding plan members can remove services."
+            )
+
+        # Only the member who added it can delete it outright - the whole
+        # point of a shared plan is that the other member reviews it
+        # (approve/reject), not silently removes what they disagree with.
+        if profile_id != plan_service.added_by_profile_id:
+            raise ValueError(
+                "Only the member who added this service can remove it. "
+                "Reviewers should approve or reject it instead."
             )
 
         self.repository.delete(plan_service)

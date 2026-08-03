@@ -1,5 +1,8 @@
 export const ROUTES = {
-  HOME: '/',
+  /** Marketing page, shown to guests at the root. */
+  LANDING: '/',
+  /** The app itself - where a signed-in visitor starts. */
+  HOME: '/home',
   ABOUT: '/about',
 
   LOGIN: '/auth/login',
@@ -17,7 +20,7 @@ export const ROUTES = {
   BOOKING: (serviceId: number | string) =>
     `/booking/${serviceId}`,
 
-  PAYMENTS: '/payments',
+
   MY_BOOKINGS: '/my-bookings',
   PROVIDER_DASHBOARD: '/provider/dashboard',
 

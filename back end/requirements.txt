@@ -13,3 +13,6 @@ bcrypt==4.3.0
 python-dotenv==1.1.1
 gunicorn==23.0.0
 pytest==8.4.1
+itsdangerous==2.2.0
+resend==2.35.0
+requests==2.34.2

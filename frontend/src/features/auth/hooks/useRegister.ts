@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import { authService } from '@/features/auth/services/auth.service';
 import { ApiException } from '@/types/api';
-import type { CustomerRegisterPayload } from '@/types/auth';
+import type { CustomerRegisterPayload } from '@/features/auth/types';
 
 export function useRegister() {
   const [isLoading, setIsLoading] = useState(false);

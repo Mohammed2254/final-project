@@ -5,12 +5,15 @@ import { useNavigate } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { weddingPlanService } from '@/features/weddingPlan/services/weddingPlan.service';
+import { toastActions } from '@/store/toast.store';
 import { ROUTES } from '@/constants/routes';
 
 interface AddToWeddingPlanButtonProps {
   serviceId: number;
   price: number;
   className?: string;
+  /** Cards want an icon only; a details page has room to say what it does. */
+  showLabel?: boolean;
 }
 
 /**
@@ -19,7 +22,12 @@ interface AddToWeddingPlanButtonProps {
  * list on every card) - it just adds the service to the customer's plan and
  * shows a brief success mark, or routes to /planner when there is no plan yet.
  */
-export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWeddingPlanButtonProps) {
+export function AddToWeddingPlanButton({
+  serviceId,
+  price,
+  className,
+  showLabel = false,
+}: AddToWeddingPlanButtonProps) {
   const { isAuthenticated, account } = useAuth();
   const navigate = useNavigate();
   const canUsePlanner = isAuthenticated && account?.role === 'Customer';
@@ -46,8 +54,18 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
 
       await weddingPlanService.addService(plan.plan_id, serviceId, String(price));
       setStatus('added');
+
+      // In a shared plan the backend parks the selection as PENDING until the
+      // partner reviews it. That is the whole point of the feature, and until
+      // now nothing on screen said it had happened.
+      toastActions.success(
+        plan.partner_profile_id
+          ? 'أُضيفت إلى الخطة، بانتظار موافقة شريككم'
+          : 'أُضيفت إلى خطة الزفاف',
+      );
     } catch {
       setStatus('error');
+      toastActions.error('تعذّرت الإضافة إلى خطة الزفاف، أعيدوا المحاولة.');
     }
   };
 
@@ -69,7 +87,15 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
         // Filled gold pill by default - the favorite button next to this one
         // is a plain outline icon, so this one has to read as the primary,
         // brand-colour action rather than a second identical bookmark.
-        'flex items-center justify-center rounded-full bg-gold text-gold-foreground shadow-sm transition-all hover:bg-gold-hover hover:scale-105 disabled:opacity-60 disabled:hover:scale-100',
+        'flex items-center justify-center gap-2 shadow-sm transition-all disabled:opacity-60',
+        showLabel
+          ? 'w-full rounded-md px-4 py-2.5 text-sm font-medium hover:brightness-95'
+          : 'rounded-full hover:scale-105 disabled:hover:scale-100',
+        // Each state gets its own colour, not just its own icon - "added"
+        // used to stay gold, so at a glance it looked unchanged.
+        status === 'idle' && 'bg-gold text-gold-foreground hover:bg-gold-hover',
+        status === 'loading' && 'bg-gold text-gold-foreground',
+        status === 'added' && 'bg-success text-white hover:bg-success',
         status === 'error' && 'bg-destructive text-white hover:bg-destructive',
         className,
       )}
@@ -78,6 +104,7 @@ export function AddToWeddingPlanButton({ serviceId, price, className }: AddToWed
       {status === 'added' && <Check size={16} aria-hidden="true" />}
       {status === 'error' && <X size={16} aria-hidden="true" />}
       {status === 'idle' && <ListPlus size={16} aria-hidden="true" />}
+      {showLabel && <span>{label}</span>}
     </button>
   );
 }

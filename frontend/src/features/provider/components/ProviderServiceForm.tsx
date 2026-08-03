@@ -1,19 +1,126 @@
+import { useRef, useState, type ChangeEvent } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ImagePlus, Plus, Trash2 } from 'lucide-react';
-import { useFieldArray, useForm } from 'react-hook-form';
+import { ImageOff, ImagePlus, Plus, Trash2, Upload } from 'lucide-react';
+import {
+  useFieldArray,
+  useForm,
+  useWatch,
+  type Control,
+  type UseFormSetValue,
+} from 'react-hook-form';
 
 import { Button } from '@/components/common/Button';
 import { GoldButton } from '@/components/common/GoldButton';
 import { Card, CardBody } from '@/components/common/Card';
-import { TextInput } from '@/components/forms/TextInput';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useServiceCategories } from '@/hooks/useServiceCategories';
+import { Input } from '@/components/ui/input';
+import { TextInput } from '@/components/forms/TextInput';
+import { uploadImageToCloudinary } from '@/services/cloudinary/upload';
+import { useServiceCategories } from '@/features/provider/hooks/useServiceCategories';
 import {
   providerServiceSchema,
   type ProviderServiceFormInput,
   type ProviderServiceFormValues,
 } from '@/features/provider/schemas/provider-service.schema';
+
+interface MediaUploadSlotProps {
+  index: number;
+  control: Control<ProviderServiceFormInput>;
+  setValue: UseFormSetValue<ProviderServiceFormInput>;
+  onRemoveSlot?: () => void;
+}
+
+/**
+ * One image slot on the create-service form. Same upload path as
+ * ServiceMediaManager (browser -> Cloudinary -> URL) - the difference is
+ * this form has no service_id yet, so the URL is just held in the field
+ * array and posted to /service-media/ after the service itself is created
+ * (see provider-dashboard.service.ts createService).
+ */
+function MediaUploadSlot({ index, control, setValue, onRemoveSlot }: MediaUploadSlotProps) {
+  // Subscribes to this one field rather than the parent calling watch(),
+  // which would opt the whole form out of React Compiler memoization.
+  const url = useWatch({ control, name: `media_urls.${index}.value` }) ?? '';
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [failedPreview, setFailedPreview] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    event.target.value = '';
+    if (!file) return;
+
+    setError(null);
+    setIsUploading(true);
+    try {
+      const mediaUrl = await uploadImageToCloudinary(file);
+      setFailedPreview(false);
+      setValue(`media_urls.${index}.value`, mediaUrl, { shouldValidate: true });
+    } catch {
+      setError('تعذر رفع الصورة، حاول مرة أخرى.');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <div className="flex items-start gap-2">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+
+      {url && !failedPreview ? (
+        <div className="group relative h-24 w-24 shrink-0 overflow-hidden rounded-md border border-border">
+          <img
+            src={url}
+            alt={`صورة الخدمة ${index + 1}`}
+            className="h-full w-full object-cover"
+            onError={() => setFailedPreview(true)}
+          />
+          <button
+            type="button"
+            title="استبدال الصورة"
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute inset-0 flex items-center justify-center bg-background/80 opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100"
+          >
+            <Upload size={18} aria-hidden="true" />
+          </button>
+        </div>
+      ) : (
+        <Button
+          type="button"
+          variant="outline"
+          className="h-24 w-24 shrink-0 flex-col gap-1"
+          isLoading={isUploading}
+          onClick={() => fileInputRef.current?.click()}
+        >
+          {!isUploading && (
+            <>
+              {failedPreview ? <ImageOff size={18} aria-hidden="true" /> : <Upload size={18} aria-hidden="true" />}
+              <span className="text-xs">رفع صورة</span>
+            </>
+          )}
+        </Button>
+      )}
+
+      <div className="flex-1 pt-1">
+        {index === 0 && <p className="text-xs text-muted-foreground">الصورة الأولى تُحفظ كصورة رئيسية</p>}
+        {error && <p className="text-xs text-destructive">{error}</p>}
+      </div>
+
+      {onRemoveSlot && (
+        <Button type="button" variant="ghost" size="icon" onClick={onRemoveSlot} aria-label="حذف الصورة">
+          <Trash2 size={16} />
+        </Button>
+      )}
+    </div>
+  );
+}
 
 interface ProviderServiceFormProps {
   isLoading: boolean;
@@ -46,7 +153,7 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
   const {
     register,
     reset,
-    watch,
+    setValue,
     control,
     handleSubmit,
     formState: { errors },
@@ -55,7 +162,7 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
     defaultValues: DEFAULT_VALUES,
   });
 
-  const serviceType = watch('serviceType');
+  const serviceType = useWatch({ control, name: 'serviceType' });
 
   const { fields: mediaFields, append: appendMedia, remove: removeMedia } = useFieldArray({
     control,
@@ -222,33 +329,23 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
           <div className="space-y-3 border-t border-border pt-5">
             <Label>صور الخدمة</Label>
             <p className="text-xs text-muted-foreground">
-              أضف رابط صورة واحدة أو أكثر. أول صورة تُحفظ ستكون الصورة الرئيسية، ويمكن تغييرها لاحقاً من لوحة الخدمات.
+              ارفعوا صورة واحدة أو أكثر. أول صورة تُحفظ ستكون الصورة الرئيسية، ويمكن تغييرها لاحقاً من لوحة الخدمات.
             </p>
 
             {mediaFields.map((field, index) => (
-              <div key={field.id} className="flex items-start gap-2">
-                <div className="flex-1">
-                  <TextInput
-                    label={`رابط الصورة ${index + 1}`}
-                    type="url"
-                    placeholder="https://example.com/image.jpg"
-                    error={errors.media_urls?.[index]?.value?.message}
-                    {...register(`media_urls.${index}.value` as const)}
-                  />
-                </div>
-                {mediaFields.length > 1 && (
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => removeMedia(index)}
-                    aria-label="حذف الرابط"
-                  >
-                    <Trash2 size={16} />
-                  </Button>
-                )}
-              </div>
+              <MediaUploadSlot
+                key={field.id}
+                index={index}
+                control={control}
+                setValue={setValue}
+                onRemoveSlot={mediaFields.length > 1 ? () => removeMedia(index) : undefined}
+              />
             ))}
+            {errors.media_urls?.root?.message && (
+              <p role="alert" className="text-xs font-medium text-destructive">
+                {errors.media_urls.root.message}
+              </p>
+            )}
 
             <Button
               type="button"
@@ -257,7 +354,7 @@ export function ProviderServiceForm({ isLoading, onSubmit }: ProviderServiceForm
               onClick={() => appendMedia({ value: '' })}
             >
               <Plus size={14} />
-              إضافة رابط صورة آخر
+              إضافة صورة أخرى
             </Button>
           </div>
 

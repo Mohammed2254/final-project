@@ -2,6 +2,19 @@
 <html lang="ar" dir="rtl">
   <head>
     <meta charset="UTF-8" />
+    <!--
+      Runs before the stylesheet paints anything. The module script in body
+      (src/store/theme.store.ts) applies the same class again once it loads,
+      but by then a dark-mode visitor would already have seen one light-mode
+      frame flash by - this removes that flash entirely.
+    -->
+    <script>
+      (function () {
+        var saved = localStorage.getItem('farah.theme');
+        var isDark = saved === 'dark' || (saved !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        if (isDark) document.documentElement.classList.add('dark');
+      })();
+    </script>
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />

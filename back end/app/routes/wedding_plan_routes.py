@@ -154,6 +154,26 @@ def update_wedding_plan(plan_id):
         )
 
 
+@wedding_plan_bp.post("/<int:plan_id>/leave")
+@jwt_required()
+def leave_wedding_plan(plan_id):
+    try:
+        profile_id = _get_current_user_profile_id()
+
+        plan = wedding_plan_service.leave_plan(plan_id, profile_id)
+
+        return ResponseHelper.success(
+            message="You have left the wedding plan.",
+            data=response_schema.dump(plan)
+        )
+
+    except ValueError as error:
+        return ResponseHelper.error(
+            message=str(error),
+            status_code=400
+        )
+
+
 @wedding_plan_bp.delete("/<int:plan_id>")
 @jwt_required()
 def delete_wedding_plan(plan_id):
@@ -169,5 +189,5 @@ def delete_wedding_plan(plan_id):
     except ValueError as error:
         return ResponseHelper.error(
             message=str(error),
-            status_code=404
+            status_code=400
         )

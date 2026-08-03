@@ -22,6 +22,25 @@ services:
           name: farah-db
           property: connectionString
 
+      # Secrets, set in the Render dashboard rather than committed here.
+      # Declaring them with sync: false makes Render ask for a value at
+      # deploy time instead of building a service that is quietly missing them.
+      - key: RESEND_API_KEY
+        sync: false
+      - key: RESEND_FROM_EMAIL
+        sync: false
+      # Password-reset links point back here - set it to this service's URL.
+      - key: FRONTEND_URL
+        sync: false
+
+      # Read by Vite during buildCommand and baked into the bundle. A
+      # missing value does not fail the build, it ships a frontend where
+      # image upload silently does nothing, so it belongs here too.
+      - key: VITE_CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: VITE_CLOUDINARY_UPLOAD_PRESET
+        sync: false
+
 databases:
   - name: farah-db
     plan: free

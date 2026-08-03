@@ -59,3 +59,4 @@ class UserProfile(db.Model):
         cascade="all, delete-orphan"
     )
 
+

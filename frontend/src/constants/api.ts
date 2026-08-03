@@ -10,7 +10,6 @@ export const AUTH_ENDPOINTS = {
   REGISTER_CUSTOMER: '/auth/register/customer',
   REGISTER_PROVIDER: '/auth/register/provider',
 
-  // غير منفذة في الباك إند حاليًا.
   FORGOT_PASSWORD: '/auth/forgot-password',
   RESET_PASSWORD: '/auth/reset-password',
 } as const;
@@ -71,6 +70,7 @@ export const WEDDING_PLAN_ENDPOINTS = {
   MINE: '/wedding-plans/me',
   DETAILS: (planId: number | string) => `/wedding-plans/${planId}`,
   DELETE: (planId: number | string) => `/wedding-plans/${planId}`,
+  LEAVE: (planId: number | string) => `/wedding-plans/${planId}/leave`,
 } as const;
 
 export const WEDDING_PLAN_INVITATION_ENDPOINTS = {
@@ -85,4 +85,6 @@ export const WEDDING_PLAN_SELECTION_ENDPOINTS = {
   DELETE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}`,
   APPROVE: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/approve`,
   REJECT: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/reject`,
+  BOOK: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/book`,
 } as const;
+
