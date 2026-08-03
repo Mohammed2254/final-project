@@ -90,6 +90,11 @@ export const weddingPlanService = {
     await weddingPlanEndpoints.remove(planId);
   },
 
+  async leavePlan(planId: number): Promise<WeddingPlanRecord> {
+    const { data } = await weddingPlanEndpoints.leave(planId);
+    return data.data;
+  },
+
   async approveService(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
     const { data } = await weddingPlanSelectionEndpoints.approve(planServiceId);
     return data.data;

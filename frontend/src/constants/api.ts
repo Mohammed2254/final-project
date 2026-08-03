@@ -70,6 +70,7 @@ export const WEDDING_PLAN_ENDPOINTS = {
   MINE: '/wedding-plans/me',
   DETAILS: (planId: number | string) => `/wedding-plans/${planId}`,
   DELETE: (planId: number | string) => `/wedding-plans/${planId}`,
+  LEAVE: (planId: number | string) => `/wedding-plans/${planId}/leave`,
 } as const;
 
 export const WEDDING_PLAN_INVITATION_ENDPOINTS = {

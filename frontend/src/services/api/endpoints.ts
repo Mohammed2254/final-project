@@ -238,6 +238,12 @@ export const weddingPlanEndpoints = {
     apiClient.delete<ApiSuccessResponse<null>>(
       WEDDING_PLAN_ENDPOINTS.DELETE(planId),
     ),
+
+  leave: (planId: number | string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanRecord>>(
+      WEDDING_PLAN_ENDPOINTS.LEAVE(planId),
+      {},
+    ),
 };
 
 export const weddingPlanInvitationEndpoints = {

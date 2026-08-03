@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CalendarDays, Trash2 } from 'lucide-react';
+import { CalendarDays, LogOut, Trash2 } from 'lucide-react';
 
 import { Button } from '@/components/common/Button';
 import { GoldBadge } from '@/components/common/GoldBadge';
@@ -37,17 +37,27 @@ export default function WeddingPlanPage() {
     removeService,
     reviewService,
     deletePlan,
+    leavePlan,
     bookApprovedServices,
   } = useWeddingPlan();
 
   const navigate = useNavigate();
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  const [confirmingLeave, setConfirmingLeave] = useState(false);
 
   const approvedCount = selections.filter(
     ({ selection }) => selection.status === 'APPROVED',
   ).length;
 
   const isOwner = plan !== null && plan.owner_profile_id === currentProfileId;
+  const isPartner = plan !== null && plan.partner_profile_id === currentProfileId;
+
+  // The backend refuses to delete a plan that still has a booking ahead of
+  // the wedding date - say so up front instead of on a failed click.
+  const hasLiveBooking =
+    plan !== null &&
+    new Date(plan.event_date) >= new Date(new Date().toDateString()) &&
+    selections.some(({ selection }) => selection.status === 'BOOKED');
 
   // Safe to compute before we know there is a plan - with no plan there are no
   // selections either, so every total is zero and nothing is rendered anyway.
@@ -93,12 +103,31 @@ export default function WeddingPlanPage() {
                   <h2 className="text-lg font-bold text-foreground">{plan.plan_name}</h2>
                   <div className="flex items-center gap-2">
                     <GoldBadge>{plan.status}</GoldBadge>
+
+                    {isPartner && (
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => setConfirmingLeave(true)}
+                      >
+                        <LogOut size={14} aria-hidden="true" className="ms-1.5" />
+                        مغادرة الخطة
+                      </Button>
+                    )}
+
                     {isOwner && (
                       <Button
                         type="button"
                         size="sm"
                         variant="ghost"
                         className="text-destructive hover:text-destructive"
+                        disabled={hasLiveBooking}
+                        title={
+                          hasLiveBooking
+                            ? 'لا يمكن حذف خطة فيها حجوزات قائمة قبل انقضاء تاريخ الزفاف'
+                            : undefined
+                        }
                         onClick={() => setConfirmingDelete(true)}
                       >
                         <Trash2 size={14} aria-hidden="true" className="ms-1.5" />
@@ -123,6 +152,42 @@ export default function WeddingPlanPage() {
                 <BudgetBar summary={budget} />
 
                 {plan.notes && <p className="text-sm text-muted-foreground">{plan.notes}</p>}
+
+                {isOwner && hasLiveBooking && (
+                  <p className="rounded-md border border-border bg-muted/40 px-3 py-2 text-xs text-muted-foreground">
+                    فيها حجوزات قائمة، فلا يمكن حذفها قبل انقضاء تاريخ الزفاف.
+                  </p>
+                )}
+
+                {confirmingLeave && (
+                  <div className="space-y-2 rounded-md border border-border bg-muted/40 p-3">
+                    <p className="text-xs text-muted-foreground">
+                      ستخرجون من هذه الخطة وتعود لصاحبها وحده. الخدمات التي أضفتموها ولم يوافق
+                      عليها بعد ستُلغى، وما اتفقتم عليه سابقاً يبقى في خطته.
+                    </p>
+                    <div className="flex gap-2">
+                      <Button
+                        type="button"
+                        size="sm"
+                        isLoading={isMutating}
+                        onClick={async () => {
+                          const ok = await leavePlan();
+                          if (ok) setConfirmingLeave(false);
+                        }}
+                      >
+                        نعم، غادروا الخطة
+                      </Button>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={() => setConfirmingLeave(false)}
+                      >
+                        تراجع
+                      </Button>
+                    </div>
+                  </div>
+                )}
 
                 {confirmingDelete && (
                   <div className="space-y-2 rounded-md border border-destructive/40 bg-destructive/5 p-3">

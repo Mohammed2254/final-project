@@ -188,6 +188,28 @@ export function useWeddingPlan() {
     }
   }, [plan]);
 
+  const leavePlan = useCallback(async () => {
+    if (!plan) return false;
+
+    setIsMutating(true);
+    setError(null);
+    try {
+      await weddingPlanService.leavePlan(plan.plan_id);
+      // The plan stays alive under its owner, so this member simply has no
+      // plan of their own again - same screen a brand new customer sees.
+      setPlan(null);
+      setSelections([]);
+      setLastInviteCode(null);
+      toastActions.success('غادرتم خطة الزفاف.');
+      return true;
+    } catch (err) {
+      setError(extractErrorMessage(err, 'تعذر مغادرة خطة الزفاف.'));
+      return false;
+    } finally {
+      setIsMutating(false);
+    }
+  }, [plan]);
+
   const reviewService = useCallback(
     async (planServiceId: number, decision: 'approve' | 'reject') => {
       setError(null);
@@ -290,6 +312,7 @@ export function useWeddingPlan() {
     removeService,
     reviewService,
     deletePlan,
+    leavePlan,
     bookApprovedServices,
   };
 }
