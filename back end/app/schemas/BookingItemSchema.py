@@ -3,8 +3,16 @@ from marshmallow import Schema, fields, validate, validates_schema, ValidationEr
 
 class BookingItemSchema(Schema):
     service_id = fields.Int(required=True)
-    quantity = fields.Int(required=False, load_default=1)
-    price_at_booking = fields.Decimal(required=True, as_string=True)
+    quantity = fields.Int(
+        required=False,
+        load_default=1,
+        validate=validate.Range(min=1, max=100)
+    )
+    price_at_booking = fields.Decimal(
+        required=True,
+        as_string=True,
+        validate=validate.Range(min=0, max=10_000_000)
+    )
     notes = fields.Str(required=False, allow_none=True)
 
 

@@ -25,7 +25,8 @@ class ServiceCreateSchema(Schema):
 
     price = fields.Decimal(
         required=True,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=1, max=10_000_000)
     )
 
 
@@ -47,7 +48,8 @@ class ServiceUpdateSchema(Schema):
 
     price = fields.Decimal(
         required=False,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=1, max=10_000_000)
     )
 
 

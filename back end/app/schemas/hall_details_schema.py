@@ -28,13 +28,15 @@ class HallDetailsCreateSchema(Schema):
     latitude = fields.Decimal(
         required=False,
         allow_none=True,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=-90, max=90)
     )
 
     longitude = fields.Decimal(
         required=False,
         allow_none=True,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=-180, max=180)
     )
 
 
@@ -62,13 +64,15 @@ class HallDetailsUpdateSchema(Schema):
     latitude = fields.Decimal(
         required=False,
         allow_none=True,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=-90, max=90)
     )
 
     longitude = fields.Decimal(
         required=False,
         allow_none=True,
-        as_string=True
+        as_string=True,
+        validate=validate.Range(min=-180, max=180)
     )
 
 

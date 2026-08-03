@@ -1,15 +1,23 @@
-from marshmallow import Schema, fields
+from marshmallow import Schema, fields, validate
 
 
 class WeddingPlanSelectionCreateSchema(Schema):
     plan_id = fields.Int(required=True)
     service_id = fields.Int(required=True)
-    estimated_price = fields.Decimal(required=True, as_string=True)
+    estimated_price = fields.Decimal(
+        required=True,
+        as_string=True,
+        validate=validate.Range(min=1, max=10_000_000)
+    )
     notes = fields.Str(required=False, allow_none=True)
 
 
 class WeddingPlanSelectionUpdateSchema(Schema):
-    estimated_price = fields.Decimal(required=False, as_string=True)
+    estimated_price = fields.Decimal(
+        required=False,
+        as_string=True,
+        validate=validate.Range(min=1, max=10_000_000)
+    )
     notes = fields.Str(required=False, allow_none=True)
 
 
