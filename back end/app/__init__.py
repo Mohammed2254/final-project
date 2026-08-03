@@ -118,7 +118,6 @@ def create_app():
     from app.routes.wedding_plan_routes import (wedding_plan_bp)
     from app.routes.wedding_plan_invitation_routes import (wedding_plan_invitation_bp)
     from app.routes.wedding_plan_selection_routes import (wedding_plan_selection_bp)
-    from app.routes.payment_routes import payment_bp
 
     with app.app_context():
         db.create_all()
@@ -137,7 +136,6 @@ def create_app():
     app.register_blueprint(wedding_plan_bp,url_prefix="/api/wedding-plans")
     app.register_blueprint(wedding_plan_invitation_bp,url_prefix="/api/wedding-plan-invitations")
     app.register_blueprint(wedding_plan_selection_bp,url_prefix="/api/wedding-plan-selections")
-    app.register_blueprint(payment_bp,url_prefix="/api/payments")
 
     # serve the React app for any non-api path (React Router handles the rest)
     @app.route("/", defaults={"path": ""})

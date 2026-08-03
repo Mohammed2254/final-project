@@ -11,7 +11,6 @@ import {
   WEDDING_PLAN_ENDPOINTS,
   WEDDING_PLAN_INVITATION_ENDPOINTS,
   WEDDING_PLAN_SELECTION_ENDPOINTS,
-  PAYMENT_ENDPOINTS,
 } from '@/constants/api';
 
 import type { ApiSuccessResponse } from '@/types/api';
@@ -56,7 +55,6 @@ import type {
   ProviderRegisterResponseData,
 } from '@/features/auth/types';
 
-import type { PaymentConfirmPayload, PaymentRecord } from '@/features/payment/types';
 
 /**
  * Raw HTTP calls only - no business logic, no storage side effects.
@@ -348,21 +346,3 @@ export const serviceMediaEndpoints = {
     ),
 };
 
-/**
- * Raw HTTP calls for payments. The payment itself is created client-side
- * directly against Moyasar (see services/moyasar/createPayment.ts) - this
- * is only for confirming it with our own backend afterward, which re-checks
- * the real status and amount server-side rather than trusting the browser.
- */
-export const paymentEndpoints = {
-  confirm: (payload: PaymentConfirmPayload) =>
-    apiClient.post<ApiSuccessResponse<PaymentRecord>>(
-      PAYMENT_ENDPOINTS.CONFIRM,
-      payload,
-    ),
-
-  byBooking: (bookingId: number | string) =>
-    apiClient.get<ApiSuccessResponse<PaymentRecord[]>>(
-      PAYMENT_ENDPOINTS.BY_BOOKING(bookingId),
-    ),
-};

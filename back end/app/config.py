@@ -14,13 +14,7 @@ class Config:
     RESEND_API_KEY = os.getenv("RESEND_API_KEY")
     RESEND_FROM_EMAIL = os.getenv("RESEND_FROM_EMAIL", "onboarding@resend.dev")
     FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:5173")
-    MOYASAR_SECRET_KEY = os.getenv("MOYASAR_SECRET_KEY")
 
-    # Lets the demo complete a payment without a live Moyasar charge, because
-    # Moyasar's test keys reject real cards and its test card always goes
-    # through a 3D Secure page we can't rely on during a presentation.
-    # Defaults to off: with this on, anyone can mark a booking paid.
-    PAYMENT_DEMO_MODE = os.getenv("PAYMENT_DEMO_MODE", "false").lower() == "true"
 
 
 class DevelopmentConfig(Config):

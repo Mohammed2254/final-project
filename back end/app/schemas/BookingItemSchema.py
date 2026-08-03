@@ -69,7 +69,6 @@ class BookingResponseSchema(Schema):
     notes = fields.Str()
     rejection_reason = fields.Str(allow_none=True)
     total_price = fields.Decimal(as_string=True)
-    is_paid = fields.Method("get_is_paid")
     created_at = fields.DateTime()
 
     items = fields.List(
@@ -77,13 +76,6 @@ class BookingResponseSchema(Schema):
         attribute="booking_items"
     )
 
-    def get_is_paid(self, booking):
-        # Derived from the payments relationship rather than stored on the
-        # booking, so there's no second copy of the truth to keep in sync.
-        return any(
-            payment.status == "paid"
-            for payment in booking.payments
-        )
 
     def get_customer_name(self, booking):
         return booking.customer.full_name if booking.customer else None

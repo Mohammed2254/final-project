@@ -60,10 +60,6 @@ class Booking(db.Model):
         cascade="all, delete-orphan"
     )
 
-    payments = db.relationship(
-        "Payment",
-        back_populates="booking"
-    )
     
     
     

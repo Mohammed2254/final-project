@@ -87,7 +87,3 @@ export const WEDDING_PLAN_SELECTION_ENDPOINTS = {
   BOOK: (planServiceId: number | string) => `/wedding-plan-selections/${planServiceId}/book`,
 } as const;
 
-export const PAYMENT_ENDPOINTS = {
-  CONFIRM: '/payments/confirm',
-  BY_BOOKING: (bookingId: number | string) => `/payments/booking/${bookingId}`,
-} as const;

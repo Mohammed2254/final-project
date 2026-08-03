@@ -73,14 +73,6 @@ const WeddingPlanPage = lazy(
   () => import('@/features/weddingPlan/pages/WeddingPlanPage'),
 );
 
-const PaymentPage = lazy(
-  () => import('@/features/payment/pages/PaymentPage'),
-);
-
-const PaymentCallbackPage = lazy(
-  () => import('@/features/payment/pages/PaymentCallbackPage'),
-);
-
 function RouteFallback() {
   return (
     <div className="flex min-h-[40vh] items-center justify-center">
@@ -134,16 +126,6 @@ export function AppRouter() {
               <Route
                 path="booking/:serviceId"
                 element={<BookingPage />}
-              />
-
-              <Route
-                path="payments/callback/:bookingId"
-                element={<PaymentCallbackPage />}
-              />
-
-              <Route
-                path="payments/:bookingId"
-                element={<PaymentPage />}
               />
 
               <Route
