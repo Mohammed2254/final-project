@@ -290,6 +290,12 @@ export const weddingPlanSelectionEndpoints = {
       WEDDING_PLAN_SELECTION_ENDPOINTS.REJECT(planServiceId),
       {},
     ),
+
+  book: (planServiceId: number | string) =>
+    apiClient.post<ApiSuccessResponse<WeddingPlanSelectionRecord>>(
+      WEDDING_PLAN_SELECTION_ENDPOINTS.BOOK(planServiceId),
+      {},
+    ),
 };
 
 /**

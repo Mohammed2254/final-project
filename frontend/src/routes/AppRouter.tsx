@@ -137,7 +137,7 @@ export function AppRouter() {
               />
 
               <Route
-                path="payments/callback"
+                path="payments/callback/:bookingId"
                 element={<PaymentCallbackPage />}
               />
 

@@ -41,7 +41,8 @@ export function InvitePartnerCard({ isMutating, lastInviteCode, onInvite }: Invi
         <form onSubmit={onSubmit} noValidate className="space-y-3">
           <h2 className="text-sm font-bold text-foreground">دعوة الشريك</h2>
           <p className="text-xs text-muted-foreground">
-            أدخلوا البريد الإلكتروني لحساب شريككم على المنصة لإرسال دعوة انضمام إلى الخطة.
+            أدخلوا البريد الإلكتروني لحساب شريككم على المنصة. لا نُرسل أي إيميل - سنولّد لكم رمزًا
+            تشاركونه معه بأنفسكم، ولن يقدر يستخدمه إلا حساب مسجّل بهذا البريد تحديدًا.
           </p>
 
           <div className="flex flex-wrap items-start gap-2">
@@ -56,14 +57,15 @@ export function InvitePartnerCard({ isMutating, lastInviteCode, onInvite }: Invi
               />
             </div>
             <Button type="submit" className="mt-6" isLoading={isMutating}>
-              إرسال الدعوة
+              توليد رمز الدعوة
             </Button>
           </div>
 
           {lastInviteCode && (
             <div className="space-y-2 rounded-md border border-gold/40 bg-gold/5 p-3">
               <p className="text-xs text-muted-foreground">
-                تم إرسال الدعوة. شاركوا هذا الرمز مع شريككم ليدخلوه في صفحة خطة الزفاف الخاصة بهم:
+                تم توليد رمز الدعوة. انسخوه وشاركوه مع شريككم بأي وسيلة تناسبكم (رسالة، واتساب...) -
+                يدخله من صفحة خطة الزفاف الخاصة به:
               </p>
               <div className="flex flex-wrap items-center gap-2">
                 <code className="rounded-md border border-border bg-background px-3 py-1.5 text-sm font-bold tracking-wide text-foreground">

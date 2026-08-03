@@ -11,9 +11,16 @@ import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
 import { SectionHeader } from '@/components/common/SectionHeader';
 import { TextInput } from '@/components/forms/TextInput';
+import { Button } from '@/components/common/Button';
 import { bookingService } from '@/features/bookings/services/booking.service';
 import { usePayBooking } from '@/features/payment/hooks/usePayBooking';
-import { cardSchema, digitsOnly, type CardFormValues } from '@/features/payment/schemas/card.schema';
+import { PAYMENT_DEMO_MODE } from '@/features/payment/constants';
+import {
+  cardSchema,
+  digitsOnly,
+  toFourDigitYear,
+  type CardFormValues,
+} from '@/features/payment/schemas/card.schema';
 import { ApiException } from '@/types/api';
 import type { Booking } from '@/features/bookings/types';
 
@@ -33,7 +40,7 @@ export default function PaymentPage() {
     defaultValues: { name: '', number: '', month: '', year: '', cvc: '' },
   });
 
-  const { payNow, isSubmitting, error: payError } = usePayBooking(Number(bookingId));
+  const { payNow, payAsDemo, isSubmitting, error: payError } = usePayBooking(Number(bookingId));
 
   useEffect(() => {
     if (!bookingId) return;
@@ -64,7 +71,7 @@ export default function PaymentPage() {
       name: values.name.trim(),
       number: digitsOnly(values.number),
       month: digitsOnly(values.month),
-      year: digitsOnly(values.year),
+      year: toFourDigitYear(values.year),
       cvc: digitsOnly(values.cvc),
     });
   });
@@ -123,8 +130,8 @@ export default function PaymentPage() {
                     label="السنة"
                     inputMode="numeric"
                     autoComplete="cc-exp-year"
-                    placeholder="YYYY"
-                    maxLength={4}
+                    placeholder="YY"
+                    maxLength={2}
                     error={errors.year?.message}
                     {...register('year')}
                   />
@@ -159,6 +166,24 @@ export default function PaymentPage() {
                   الدفع مؤمّن عبر ميسر، بيانات بطاقتكم لا تصل خوادمنا
                 </p>
               </form>
+
+              {PAYMENT_DEMO_MODE && (
+                <div className="space-y-2 rounded-md border border-dashed border-border bg-muted/40 p-3">
+                  <p className="text-xs text-muted-foreground">
+                    وضع العرض التجريبي مفعّل. مفاتيح ميسر التجريبية ترفض البطاقات الحقيقية، لذا
+                    يكمل هذا الزر العملية بنفس المسار دون تحصيل فعلي.
+                  </p>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full"
+                    isLoading={isSubmitting}
+                    onClick={payAsDemo}
+                  >
+                    إتمام الدفع (عرض تجريبي)
+                  </Button>
+                </div>
+              )}
             </CardBody>
           </Card>
         )}

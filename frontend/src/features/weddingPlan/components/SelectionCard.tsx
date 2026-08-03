@@ -18,6 +18,9 @@ export function SelectionCard({ item, currentProfileId, onReview, onRemove }: Se
   // The backend rejects self-review outright, so the buttons only exist for
   // the partner who did not add this service.
   const canReview = selection.status === 'PENDING' && !isAddedByMe;
+  // The backend only lets the member who added a selection delete it - the
+  // other member's recourse is to reject it, not remove someone else's choice.
+  const canRemove = isAddedByMe && selection.status !== 'BOOKED';
 
   return (
     <Card>
@@ -55,14 +58,16 @@ export function SelectionCard({ item, currentProfileId, onReview, onRemove }: Se
             </div>
           )}
 
-          <Button
-            type="button"
-            size="sm"
-            variant="ghost"
-            onClick={() => onRemove(selection.plan_service_id)}
-          >
-            حذف
-          </Button>
+          {canRemove && (
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              onClick={() => onRemove(selection.plan_service_id)}
+            >
+              حذف
+            </Button>
+          )}
         </div>
       </CardBody>
     </Card>

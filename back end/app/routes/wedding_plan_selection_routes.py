@@ -204,6 +204,31 @@ def reject_plan_service(plan_service_id):
         )
 
 
+@wedding_plan_selection_bp.post(
+    "/<int:plan_service_id>/book"
+)
+@jwt_required()
+def book_plan_service(plan_service_id):
+    try:
+        profile_id = _get_current_user_profile_id()
+
+        plan_service = selection_service.mark_as_booked(
+            plan_service_id=plan_service_id,
+            profile_id=profile_id
+        )
+
+        return ResponseHelper.success(
+            message="Service marked as booked successfully.",
+            data=response_schema.dump(plan_service)
+        )
+
+    except ValueError as error:
+        return ResponseHelper.error(
+            message=str(error),
+            status_code=400
+        )
+
+
 @wedding_plan_selection_bp.delete(
     "/<int:plan_service_id>"
 )

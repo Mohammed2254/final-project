@@ -1,14 +1,14 @@
 import { describe, it, expect } from 'vitest';
 
-import { cardSchema } from '@/features/payment/schemas/card.schema';
+import { cardSchema, toFourDigitYear } from '@/features/payment/schemas/card.schema';
 
-const nextYear = String(new Date().getFullYear() + 1);
+const nextTwoDigitYear = String((new Date().getFullYear() + 1) % 100).padStart(2, '0');
 
 const validCard = {
   name: 'Mohammed Alabdali',
   number: '4111 1111 1111 1111',
   month: '12',
-  year: nextYear,
+  year: nextTwoDigitYear,
   cvc: '123',
 };
 
@@ -33,7 +33,7 @@ describe('cardSchema', () => {
   });
 
   it('rejects an expired card and points at the year field', () => {
-    const result = cardSchema.safeParse({ ...validCard, year: '2020' });
+    const result = cardSchema.safeParse({ ...validCard, year: '20' });
 
     expect(result.success).toBe(false);
     if (!result.success) {
@@ -41,7 +41,17 @@ describe('cardSchema', () => {
     }
   });
 
+  it('rejects a 4-digit year - only two digits are accepted, like on the card', () => {
+    expect(cardSchema.safeParse({ ...validCard, year: `20${validCard.year}` }).success).toBe(false);
+  });
+
   it('rejects a CVC that is too short', () => {
     expect(cardSchema.safeParse({ ...validCard, cvc: '12' }).success).toBe(false);
+  });
+});
+
+describe('toFourDigitYear', () => {
+  it('prefixes a two-digit year with 20, for Moyasar', () => {
+    expect(toFourDigitYear('27')).toBe('2027');
   });
 });

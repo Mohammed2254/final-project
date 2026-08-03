@@ -35,7 +35,7 @@ export interface WeddingPlanInvitationCreatePayload {
   invited_email: string;
 }
 
-export type WeddingPlanSelectionStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+export type WeddingPlanSelectionStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'BOOKED';
 
 export interface WeddingPlanSelectionRecord {
   plan_service_id: number;

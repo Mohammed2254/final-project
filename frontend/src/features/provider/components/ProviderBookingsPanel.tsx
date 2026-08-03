@@ -117,7 +117,13 @@ export function ProviderBookingsPanel() {
                     </p>
                   </div>
 
-                  <StatusBadge status={booking.status} />
+                  <StatusBadge
+                    status={
+                      booking.status === 'CONFIRMED' && !booking.is_paid
+                        ? 'AWAITING_PAYMENT'
+                        : booking.status
+                    }
+                  />
                 </div>
 
                 {/* The customer's own note when booking - was captured on

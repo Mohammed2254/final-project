@@ -170,3 +170,66 @@ def test_a_plan_cannot_have_two_partners(app):
 
     with pytest.raises(ValueError, match="already has a partner"):
         plan_service.set_partner(plan.plan_id, owner_id)
+
+
+def test_only_the_adder_can_remove_a_selection(app):
+    owner_id, partner_id, service_id = _seed(app)
+    plan = _create_plan(owner_id)
+    WeddingPlanService().set_partner(plan.plan_id, partner_id)
+
+    selection_service = WeddingPlanSelectionService()
+    selection = selection_service.add_service_to_plan(
+        plan_id=plan.plan_id,
+        service_id=service_id,
+        added_by_profile_id=owner_id,
+        estimated_price=Decimal("5000.00"),
+    )
+
+    # The partner disagrees - they must reject it, not delete owner's choice.
+    with pytest.raises(ValueError, match="Only the member who added"):
+        selection_service.remove_service_from_plan(
+            selection.plan_service_id, partner_id
+        )
+
+    # The one who added it can still remove it themselves.
+    assert selection_service.remove_service_from_plan(
+        selection.plan_service_id, owner_id
+    ) is True
+
+
+def test_either_member_can_mark_an_approved_selection_as_booked(app):
+    owner_id, partner_id, service_id = _seed(app)
+    plan = _create_plan(owner_id)
+    WeddingPlanService().set_partner(plan.plan_id, partner_id)
+
+    selection_service = WeddingPlanSelectionService()
+    selection = selection_service.add_service_to_plan(
+        plan_id=plan.plan_id,
+        service_id=service_id,
+        added_by_profile_id=owner_id,
+        estimated_price=Decimal("5000.00"),
+    )
+    selection_service.approve_selection(selection.plan_service_id, partner_id)
+
+    # Booking is a consequence of the agreement, not a review - the adder
+    # (owner_id) can trigger it too, unlike approve/reject.
+    booked = selection_service.mark_as_booked(selection.plan_service_id, owner_id)
+
+    assert booked.status == "BOOKED"
+
+
+def test_a_pending_selection_cannot_be_booked(app):
+    owner_id, partner_id, service_id = _seed(app)
+    plan = _create_plan(owner_id)
+    WeddingPlanService().set_partner(plan.plan_id, partner_id)
+
+    selection_service = WeddingPlanSelectionService()
+    selection = selection_service.add_service_to_plan(
+        plan_id=plan.plan_id,
+        service_id=service_id,
+        added_by_profile_id=owner_id,
+        estimated_price=Decimal("5000.00"),
+    )
+
+    with pytest.raises(ValueError, match="Only approved services can be booked"):
+        selection_service.mark_as_booked(selection.plan_service_id, owner_id)

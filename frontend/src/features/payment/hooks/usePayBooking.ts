@@ -1,7 +1,10 @@
 import { useCallback, useState } from 'react';
 
 import { createMoyasarPayment, type CardDetails } from '@/services/moyasar/createPayment';
-import { PENDING_PAYMENT_BOOKING_ID_KEY } from '@/features/payment/constants';
+import {
+  DEMO_PAYMENT_PREFIX,
+  PENDING_PAYMENT_BOOKING_ID_KEY,
+} from '@/features/payment/constants';
 import { ROUTES } from '@/constants/routes';
 
 export function usePayBooking(bookingId: number) {
@@ -14,8 +17,8 @@ export function usePayBooking(bookingId: number) {
       setIsSubmitting(true);
       try {
         const amountInHalalas = Math.round(amount * 100);
-        const callbackUrl =
-          `${window.location.origin}${ROUTES.PAYMENT_CALLBACK}?booking_id=${bookingId}`;
+        const callbackPath = ROUTES.PAYMENT_CALLBACK(bookingId);
+        const callbackUrl = `${window.location.origin}${callbackPath}`;
 
         sessionStorage.setItem(PENDING_PAYMENT_BOOKING_ID_KEY, String(bookingId));
 
@@ -28,8 +31,7 @@ export function usePayBooking(bookingId: number) {
 
         // No 3D Secure challenge needed - go straight to the callback page
         // with what we already have.
-        window.location.href =
-          `${ROUTES.PAYMENT_CALLBACK}?booking_id=${bookingId}&id=${payment.id}&status=${payment.status}`;
+        window.location.href = `${callbackPath}?id=${payment.id}&status=${payment.status}`;
       } catch (err) {
         setError(err instanceof Error ? err.message : 'تعذر بدء عملية الدفع.');
         setIsSubmitting(false);
@@ -38,5 +40,21 @@ export function usePayBooking(bookingId: number) {
     [bookingId],
   );
 
-  return { payNow, isSubmitting, error };
+  /**
+   * Skips the gateway entirely and lands on the same callback page a real
+   * payment would. The backend still decides whether to accept it (it only
+   * does when PAYMENT_DEMO_MODE is on), and it takes the amount from the
+   * booking, not from here.
+   */
+  const payAsDemo = useCallback(() => {
+    setError(null);
+    setIsSubmitting(true);
+    sessionStorage.setItem(PENDING_PAYMENT_BOOKING_ID_KEY, String(bookingId));
+
+    const demoPaymentId = `${DEMO_PAYMENT_PREFIX}${bookingId}_${Date.now()}`;
+    window.location.href =
+      `${ROUTES.PAYMENT_CALLBACK(bookingId)}?id=${demoPaymentId}&status=paid`;
+  }, [bookingId]);
+
+  return { payNow, payAsDemo, isSubmitting, error };
 }

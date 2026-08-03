@@ -4,6 +4,7 @@ import { ArrowRight } from 'lucide-react';
 import { Card } from '@/components/common/Card';
 import { ServiceGallery } from '@/components/common/ServiceGallery';
 import { PriceText } from '@/components/common/PriceText';
+import { AddToWeddingPlanButton } from '@/components/common/AddToWeddingPlanButton';
 import { ErrorState } from '@/components/common/EmptyState';
 import { Spinner } from '@/components/common/Loading';
 import { buttonVariants } from '@/components/ui/button-variants';
@@ -116,8 +117,10 @@ export default function PhotographerDetailsPage() {
                 to={ROUTES.BOOKING(photographer.id)}
                 className={cn(buttonVariants({ variant: 'gold', size: 'default' }), 'w-full')}
               >
-                احجزوا الآن
+                احجز الآن
               </Link>
+
+              <AddToWeddingPlanButton serviceId={photographer.id} price={photographer.price} showLabel />
             </Card>
           </div>
         )}

@@ -99,4 +99,9 @@ export const weddingPlanService = {
     const { data } = await weddingPlanSelectionEndpoints.reject(planServiceId);
     return data.data;
   },
+
+  async markAsBooked(planServiceId: number): Promise<WeddingPlanSelectionRecord> {
+    const { data } = await weddingPlanSelectionEndpoints.book(planServiceId);
+    return data.data;
+  },
 };

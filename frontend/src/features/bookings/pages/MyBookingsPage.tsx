@@ -46,7 +46,13 @@ export default function MyBookingsPage() {
                   <p className="text-sm font-bold text-foreground">
                     حجز #{booking.booking_id}
                   </p>
-                  <StatusBadge status={booking.status} />
+                  <StatusBadge
+                    status={
+                      booking.status === 'CONFIRMED' && !booking.is_paid
+                        ? 'AWAITING_PAYMENT'
+                        : booking.status
+                    }
+                  />
                 </div>
 
                 <div className="flex flex-1 flex-col gap-3 p-4">

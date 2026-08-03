@@ -127,3 +127,49 @@ def test_confirm_payment_rejects_a_payment_that_never_completed(mock_fetch, app)
 
     with pytest.raises(ValueError):
         PaymentService().confirm_payment("pay_123", booking_id, profile_id)
+
+
+@patch("app.services.payment_service.MoyasarHelper.fetch_payment")
+def test_a_demo_payment_is_rejected_when_demo_mode_is_off(mock_fetch, app):
+    """The default. A demo id must not be a way past the gateway."""
+    booking_id, profile_id = _seed_booking(app, Decimal("100.00"))
+    app.config["PAYMENT_DEMO_MODE"] = False
+    mock_fetch.side_effect = ValueError("Payment not found at the gateway.")
+
+    with pytest.raises(ValueError):
+        PaymentService().confirm_payment(
+            "demo_1_123", booking_id, profile_id
+        )
+
+
+def test_a_demo_payment_is_accepted_for_the_booking_total_when_demo_mode_is_on(app):
+    booking_id, profile_id = _seed_booking(app, Decimal("100.00"))
+    app.config["PAYMENT_DEMO_MODE"] = True
+
+    # No fetch_payment patch here on purpose: if the demo path ever stopped
+    # short-circuiting, this test would try to reach Moyasar and fail loudly.
+    payment = PaymentService().confirm_payment(
+        "demo_1_123", booking_id, profile_id
+    )
+
+    # The amount comes from the booking, never from the caller.
+    assert payment.amount == Decimal("100.00")
+    assert payment.status == "paid"
+
+
+def test_demo_mode_does_not_let_a_normal_gateway_id_skip_verification(app):
+    """Only the demo_ prefix takes the bypass, even with demo mode on."""
+    booking_id, profile_id = _seed_booking(app, Decimal("100.00"))
+    app.config["PAYMENT_DEMO_MODE"] = True
+
+    with patch(
+        "app.services.payment_service.MoyasarHelper.fetch_payment"
+    ) as mock_fetch:
+        mock_fetch.side_effect = ValueError("Payment not found at the gateway.")
+
+        with pytest.raises(ValueError):
+            PaymentService().confirm_payment(
+                "pay_not_a_demo", booking_id, profile_id
+            )
+
+        mock_fetch.assert_called_once()

@@ -53,10 +53,12 @@ export const cardSchema = z
       return month >= 1 && month <= 12;
     }, { message: 'الشهر يجب أن يكون بين 1 و 12' }),
 
+    // Two digits, same as what's printed on the card (Moyasar's API wants
+    // four - toFourDigitYear() converts right before the payload is built).
     year: z
       .string()
-      .refine((value) => digitsOnly(value).length === 4, {
-        message: 'أدخلوا السنة بأربعة أرقام',
+      .refine((value) => digitsOnly(value).length === 2, {
+        message: 'أدخلوا آخر رقمين من السنة',
       }),
 
     cvc: z.string().refine((value) => {
@@ -69,14 +71,20 @@ export const cardSchema = z
   .refine(
     (values) => {
       const now = new Date();
+      const currentTwoDigitYear = now.getFullYear() % 100;
       const expiryYear = Number(digitsOnly(values.year));
       const expiryMonth = Number(digitsOnly(values.month));
 
-      if (expiryYear > now.getFullYear()) return true;
-      if (expiryYear < now.getFullYear()) return false;
+      if (expiryYear > currentTwoDigitYear) return true;
+      if (expiryYear < currentTwoDigitYear) return false;
       return expiryMonth >= now.getMonth() + 1;
     },
     { message: 'البطاقة منتهية الصلاحية', path: ['year'] },
   );
 
 export type CardFormValues = z.infer<typeof cardSchema>;
+
+/** "27" -> "2027" - Moyasar's API requires a 4-digit year (>= 2000). */
+export function toFourDigitYear(twoDigitYear: string): string {
+  return `20${digitsOnly(twoDigitYear)}`;
+}

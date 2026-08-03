@@ -93,7 +93,7 @@ export function useWeddingPlan() {
         setLastInviteCode(invitation.invite_code);
         return true;
       } catch (err) {
-        setError(extractErrorMessage(err, 'تعذر إرسال الدعوة.'));
+        setError(extractErrorMessage(err, 'تعذر توليد رمز الدعوة.'));
         return false;
       } finally {
         setIsMutating(false);
@@ -242,6 +242,25 @@ export function useWeddingPlan() {
           price_at_booking: selection.estimated_price,
         })),
       });
+
+      // Mark the services we just booked as BOOKED - otherwise they stay
+      // APPROVED, the "ready to book" card resurfaces on the next visit,
+      // and pressing it again books the same services a second time. This
+      // is a status change (not a delete) so the plan keeps showing them,
+      // now flagged as booked and awaiting the provider's confirmation.
+      const bookedPlanServiceIds = new Set(approved.map(({ selection }) => selection.plan_service_id));
+      const bookedSelections = await Promise.all(
+        approved.map(({ selection }) => weddingPlanService.markAsBooked(selection.plan_service_id)),
+      );
+      setSelections((current) =>
+        current.map((item) => {
+          if (!bookedPlanServiceIds.has(item.selection.plan_service_id)) return item;
+          const updated = bookedSelections.find(
+            (s) => s.plan_service_id === item.selection.plan_service_id,
+          );
+          return updated ? { ...item, selection: updated } : item;
+        }),
+      );
 
       toastActions.success('تم إنشاء الحجز، بانتظار تأكيد المزوّد.');
       return booking;
