@@ -92,6 +92,26 @@ deployment forced the question. `main` is the branch Render deploys
 from and the one a new contributor would see first. For most of the
 project's life, it didn't reflect the real state of the work.
 
+**Our own documentation went stale twice, and we only caught it by
+checking.** The landing page advertised counts for API endpoints,
+database tables, and passing tests. Both times the project changed
+underneath those numbers — once when features were added, once when the
+payment feature was removed from production — and both times the page
+kept claiming the old figures. Nothing warned us; we found it by
+recounting from the source. Any number written by hand is a claim with
+an expiry date, and a reviewer can check it in seconds.
+
+**We validated the type of a value and thought we had validated the
+value.** The signup and plan forms had thorough client-side rules, and
+the backend schemas declared each numeric field as a decimal. That
+looked like two layers of protection. It wasn't: a budget of `-5000` and
+a wedding date in the year 2020 were both accepted by the API, because
+declaring a field a decimal says nothing about its range. The
+client-side rules are JavaScript — turn them off, or skip the browser
+entirely with `curl`, and nothing was left. Ranges are now enforced
+server-side on every numeric field, with tests that fail if they are
+ever removed.
+
 ---
 
 ## Checking our own risk log
@@ -130,6 +150,11 @@ common thread behind most of the "what didn't go well" section above.
   one instead of expensively at the end.
 - Merge to `main` on a fixed schedule so it's never more than a few
   commits away from what's actually deployable.
+- Validate the *value*, not just the type. "Is this a number" and "is
+  this a number that makes sense" are different questions, and only the
+  second one protects anything.
+- Derive counts instead of writing them down. Any figure typed by hand
+  into a document or a page is a claim that will quietly go stale.
 
 ---
 

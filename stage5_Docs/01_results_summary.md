@@ -22,7 +22,7 @@ The Charter set three objectives. All three shipped.
 | # | Objective (Charter target) | Delivered | Evidence |
 |---|---|---|---|
 | 1 | Browse and book at least two service categories — halls and photographers — within 4 weeks of the development stage | Both categories are live: listing pages (with filters), detail pages, and booking. Shipped in Sprint 2 (Jul 6–16), on the edge of the 4-week window. | [`HallsListPage`](../frontend/src/features/halls/pages/HallsListPage.tsx), [`PhotographersListPage`](../frontend/src/features/photographers/pages/PhotographersListPage.tsx), `POST /api/bookings` |
-| 2 | Providers register offerings, set pricing, and manage requests through a vendor dashboard by the end of Stage 4 | Providers register, list services with pricing, manage media, and accept/reject bookings from a dashboard. Registration + pricing landed in Sprint 2 (by Jul 16); media + booking management followed in Sprint 3 (Jul 17–21), about a week past the original date. | [`ProviderDashboardPage.tsx`](../frontend/src/pages/ProviderDashboardPage.tsx) |
+| 2 | Providers register offerings, set pricing, and manage requests through a vendor dashboard by the end of Stage 4 | Providers register, list services with pricing, manage media, and accept/reject bookings from a dashboard. Registration + pricing landed in Sprint 2 (by Jul 16); media + booking management followed in Sprint 3 (Jul 17–21), about a week past the original date. | [`ProviderDashboardPage.tsx`](../frontend/src/features/provider/pages/ProviderDashboardPage.tsx) |
 | 3 | A shared couple workspace where both partners make booking decisions together in the same session | Working end to end: create a plan, invite a partner by code, add a service, partner approves or rejects. A solo plan auto-approves; a shared one waits. This is the project's core differentiator and it works. Shipped in Sprint 3 (Jul 17–21). | 7 dedicated tests in [`test_wedding_plan_selection_service.py`](../back%20end/tests/unit/test_wedding_plan_selection_service.py) |
 
 ## The MVP, in one paragraph
@@ -39,13 +39,13 @@ production, not just running locally.
 
 | | |
 |---|---|
-| Total commits (`main`) | 112 |
+| Total commits (`main`) | 163 |
 | Active contributors | 3 of 4 team members |
-| API endpoints | 63 |
+| API endpoints | 73 |
 | Database tables | 14 |
-| Automated tests | 47 — 24 backend, 23 frontend — all passing |
-| Bugs found and fixed | 7 (2 security, 2 validation/data, 3 deployment) |
-| Production deploy attempts | 4 during Stage 4 (3 failed and were fixed forward, 4th succeeded) + 2 further clean deploys since, both verified end-to-end before pushing |
+| Automated tests | 127 — 61 backend, 66 frontend — all passing |
+| Bugs found and fixed | 14 (3 security/authorization, 6 validation & data integrity, 5 deployment) |
+| Production deploys | 4 during Stage 4 (3 failed and were fixed forward, 4th succeeded); every deploy since has been verified against a clean clone before pushing, with no failures |
 
 Full detail behind these numbers: [Stage 4 deliverables](../stage4_Docs/README.md).
 
@@ -54,17 +54,40 @@ Full detail behind these numbers: [Stage 4 deliverables](../stage4_Docs/README.m
 Straight from the Charter's own scope, plus limitations we documented
 honestly in the [README](../README.md#ملاحظات-وحدود-حالية):
 
-- No real payment processing — out of scope from the Charter; the
-  payments screen is a "coming soon" placeholder with no logic behind it.
+- **No payment processing in production.** Payments were out of scope in
+  the Charter. A full Moyasar integration was built and tested afterward
+  on the [`v5-payment`](https://github.com/Mohammed2254/final-project/tree/v5-payment)
+  branch — card entry, server-side verification against the gateway, and
+  an amount check against the booking total — but it is deliberately not
+  deployed: Moyasar's test keys reject real cards, and its test card
+  routes through an external 3-D Secure page that is not dependable
+  during a live demo. A booking ends at `CONFIRMED` in production.
 - No mobile app.
-- No file upload for service photos — images are added by pasting a
-  URL. A real upload/storage layer wasn't built.
+- **No real-time sync between partners.** Both partners see the shared
+  plan, but a change by one requires the other to refresh. This is the
+  fallback the Charter's own risk log described, not a shortcut.
 - Schema changes go through `db.create_all()` on startup, not migrations
-  (Flask-Migrate). Fine for a project this size; would need to change
-  for a real production app that evolves its schema over time.
+  (Flask-Migrate). Because `create_all()` creates missing tables but
+  never alters existing ones, columns added later are applied by an
+  explicit startup check ([`_add_missing_columns`](../back%20end/app/__init__.py)).
+  Workable at this size; a real production app needs migrations.
 
-None of these are things that got forgotten — they're the same list from
-Stage 2, still true.
+## Delivered beyond the Charter
+
+Three things shipped after the Stage 4 retrospective that the Charter
+did not ask for, each closing a gap the MVP exposed in use:
+
+- **Real image upload** (Cloudinary). Service photos were previously
+  added by pasting a URL. The browser now uploads directly to Cloudinary
+  and only the resulting URL reaches our server — no change to the
+  existing `service-media` endpoint was needed.
+- **Password reset by email** (Resend). The reset token is signed with a
+  30-minute expiry rather than stored, so no new database column was
+  required.
+- **Booking straight from the shared plan.** Previously the plan was a
+  dead end: partners could agree on services with no way to book them.
+  All approved services now become a single booking, so the couple pays
+  once for the total.
 
 ## Timeline vs. plan
 
