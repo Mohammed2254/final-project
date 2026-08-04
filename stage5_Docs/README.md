@@ -12,9 +12,9 @@
 |---|---|---|
 | Results summary | ✅ Done | [`01_results_summary.md`](01_results_summary.md) |
 | Lessons learned | ✅ Done | [`02_lessons_learned.md`](02_lessons_learned.md) |
-| Team retrospective (Stage 5 meeting) | ⬜ Not started — needs a real team meeting | see the pending section in [`02_lessons_learned.md`](02_lessons_learned.md#team-retrospective-stage-5) |
-| Presentation slide deck | ⬜ Not started | — |
-| Live presentation | ⬜ Not started | — |
+| Team retrospective (Stage 5 meeting) | ✅ Done | [`02_lessons_learned.md` — final section](02_lessons_learned.md#team-retrospective-stage-5) |
+| Presentation slide deck | ✅ Done | Submitted with the Stage 5 form |
+| Live presentation | ⬜ Scheduled | — |
 
 ## What's in the two documents already written
 
@@ -30,13 +30,11 @@ lifecycle: what worked from Stage 1 onward, what didn't and why, a
 direct check of every risk the Charter predicted back in Stage 2 against
 what actually happened, and concrete changes for next time.
 
+The retrospective section at the end of that second document is the
+team's own discussion, held separately from the technical retrospective
+and written from what was actually said in it.
+
 ## What's left
 
-1. **Hold the Stage 5 team retrospective** — an actual meeting, using
-   the guiding questions already written at the bottom of
-   `02_lessons_learned.md`. Once it happens, its real highlights get
-   added to that document — not invented ahead of time.
-2. **Build the presentation deck** covering the suggested structure
-   (intro, process, technical showcase, demo, results, lessons,
-   conclusion).
-3. **Deliver the live presentation** to stakeholders/tutors.
+**Deliver the live presentation.** Everything written is done; the deck
+is built and the product is deployed and verified.

@@ -44,10 +44,33 @@ production, not just running locally.
 | API endpoints | 73 |
 | Database tables | 14 |
 | Automated tests | 127 — 61 backend, 66 frontend — all passing |
-| Bugs found and fixed | 14 (3 security/authorization, 6 validation & data integrity, 5 deployment) |
+| Bugs found and fixed | 14 (3 security/authorization, 6 validation & data integrity, 5 deployment) — [7 during Stage 4](../stage4_Docs/04_bug_tracking.md), [7 after](#bugs-found-after-stage-4) |
 | Production deploys | 4 during Stage 4 (3 failed and were fixed forward, 4th succeeded); every deploy since has been verified against a clean clone before pushing, with no failures |
 
 Full detail behind these numbers: [Stage 4 deliverables](../stage4_Docs/README.md).
+
+## Bugs found after Stage 4
+
+The seven recorded during Stage 4 are documented in
+[`04_bug_tracking.md`](../stage4_Docs/04_bug_tracking.md). Seven more
+were found afterward — most of them by using the deployed product rather
+than by reading the code. Each links to the commit that fixed it.
+
+| # | Bug | Class | Fixed in |
+|---|---|---|---|
+| 08 | Either partner could delete the other's selection outright, which is exactly what approve/reject exists to prevent. Only the member who added a service can remove it now. | Authorization | `afab432` |
+| 09 | Numeric fields were declared as decimals but had no range, so a budget of `-5000` and a wedding date in 2020 were both accepted by the API. Client-side rules had hidden this: they are JavaScript, and `curl` never runs them. | Validation | `d1584d5` |
+| 10 | Booking from the shared plan a second time re-booked services that were already booked, because they stayed `APPROVED` after the first booking. | Data integrity | `afab432` |
+| 11 | The budget bar summed `APPROVED` only, so a service dropped out of the committed total the moment it was booked — emptying the bar exactly when the money was actually spent. | Data integrity | `12b002a` |
+| 12 | A booked service kept reading "waiting for the provider" long after the provider had answered, because the plan tracked its own flag instead of reading the booking. | Data integrity | `12b002a` |
+| 13 | A gateway id the payment provider did not recognise raised out of the helper as a 500 with a stack trace, instead of the failed confirmation it actually was. | Error handling | `afab432` |
+| 14 | A column added to an existing table was never applied to databases created before it, because `db.create_all()` creates missing tables but never alters existing ones. | Deployment | `ef66017` |
+
+Two of these are worth separating from the rest. **BUG-09** is the only
+one that was exploitable from outside the browser, and it existed
+because we had mistaken a type declaration for a validation rule.
+**BUG-14** would have taken production down on the next schema change
+and was invisible on any fresh database — including every developer's.
 
 ## What we deliberately left out
 
