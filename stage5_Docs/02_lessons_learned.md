@@ -160,16 +160,43 @@ common thread behind most of the "what didn't go well" section above.
 
 ## Team retrospective (Stage 5)
 
-*Pending — this section will be filled in after the team holds the
-Stage 5 retrospective meeting itself. Everything above reflects the
-project's real history; the discussion below needs the team's own
-voice, not a reconstruction.*
+The team held this discussion directly, separate from the technical
+retrospective above.
 
-**Guiding questions for that meeting:**
+**What worked well as a team — not just technically, but in how we
+communicated and split work?**
 
-- What worked well as a team — not just technically, but in how we
-  communicated and split work?
-- What challenges came up, and did we actually resolve them or just
-  route around them?
-- What would we change about how we work together, specifically, if we
-  started a new project tomorrow?
+A real sense of mutual understanding and responsibility. Each person
+carried their own part and delivered on the timeline they'd committed
+to, without needing to be chased. Alongside the work itself, the team
+also made time to just mix and spend time together outside of tasks —
+that closeness made coordinating the actual work easier, not harder.
+
+**What challenges came up, and did we actually resolve them or just
+route around them?**
+
+Two, and we resolved both rather than routing around them:
+
+- *Personal circumstances.* More than one member went through
+  situations outside the project that pulled them away from it
+  temporarily. The team's answer was to rebalance the workload in the
+  moment: when someone had to step back, the rest picked up what they'd
+  been carrying; when they came back, they returned the favor by
+  carrying for someone else in turn. This is the same pattern the
+  Charter's risk log anticipated in the abstract ("part-time team,"
+  Section 4) — living through it for real is what's new here.
+- *Project-management complexity.* Early attempts to formalize process
+  (a Jira board, more structured tracking) added overhead without
+  adding clarity. What actually worked was simpler: less process, more
+  direct coordination. The lesson wasn't "we need more structure," it
+  was that the structure we'd reached for wasn't the right size for a
+  three-person team.
+
+**What would we change about how we work together, specifically, if we
+started a new project tomorrow?**
+
+Start earlier, and run real sprints — fixed-length, with a defined
+scope going in, not a rolling to-do list. "Stage boundaries blurred"
+earlier in this document and "no single place tracked deadlines" are
+two sides of the same gap; starting the sprint rhythm on day one instead
+of easing into it is the concrete fix the team agreed on.
