@@ -13,7 +13,7 @@
 | Results summary | ✅ Done | [`01_results_summary.md`](01_results_summary.md) |
 | Lessons learned | ✅ Done | [`02_lessons_learned.md`](02_lessons_learned.md) |
 | Team retrospective (Stage 5 meeting) | ✅ Done | [`02_lessons_learned.md` — final section](02_lessons_learned.md#team-retrospective-stage-5) |
-| Presentation slide deck | ✅ Done | Submitted with the Stage 5 form |
+| Presentation slide deck | ✅ Done | [`farah_presentation.pdf`](farah_presentation.pdf) |
 | Live presentation | ⬜ Scheduled | — |
 
 ## What's in the two documents already written
